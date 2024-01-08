@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SerialPort;
 
 public class DriveGyro implements Gyro{
   static public enum gyros {
@@ -29,7 +30,7 @@ public class DriveGyro implements Gyro{
         gyro_name="FRC450";
         break;
       case NAVX:
-        gyro= new AHRS();
+        gyro= new AHRS(SerialPort.Port.kUSB);
         gyro_name="NAVX";
         break;
       case BNO55:

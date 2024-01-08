@@ -57,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
 
 
   static int count = 0;
-  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.FRC450);
+  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
   double last_heading = 0; 
   SwerveModulePosition[] m_positions = {
       new SwerveModulePosition(), new SwerveModulePosition(),
@@ -68,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putBoolean("Field Oriented" , m_field_oriented);
     SmartDashboard.putBoolean("Switch" , false);
     //SmartDashboard.putBoolean("optimize", m_optimize);
-    m_gyro.reset();
+    //m_gyro.reset(); This is already called in resetOdometry()
 
     m_frontLeft.setDriveInverted(false);
     m_backLeft.setDriveInverted(false);
