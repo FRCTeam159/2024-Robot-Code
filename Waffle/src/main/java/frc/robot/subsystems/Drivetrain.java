@@ -27,8 +27,8 @@ import static frc.robot.Constants.*;
 public class Drivetrain extends SubsystemBase {
   public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase); // 0.2949 metters
   public static double delx = Units.inchesToMeters(0.5 * kFrontWheelBase);
-  public static final double kMaxAcceleration = 1.0;
-  public static final double kMaxVelocity = 2.0;
+  public static final double kMaxAcceleration = 2.0;
+  public static final double kMaxVelocity = 3.0;
   public static final double kMaxAngularAcceleration =Math.PI; // 1 rotations/s/s
 
   private final Translation2d m_frontLeftLocation = new Translation2d(delx, dely);

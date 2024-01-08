@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.Autos;
 import frc.robot.commands.DriveBack;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.DriveToAprilTag;
@@ -68,6 +67,7 @@ public class RobotContainer {
 
   public void autonomousInit() {
     m_Drivetrain.reset();
+    m_Drivetrain.resetOdometry();
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -77,5 +77,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return m_auto.getCommand();
+  }
+  public void teleopInit() {
+    m_Drivetrain.resetOdometry();
   }
 }

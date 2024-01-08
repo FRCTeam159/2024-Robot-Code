@@ -73,6 +73,7 @@ public class DriveGyro implements Gyro{
       case FRC450:
         return -gyro.getAngle();
       case NAVX:
+      return -gyro.getAngle();
       case BNO55:
         return gyro.getAngle();
     }

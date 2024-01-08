@@ -37,7 +37,8 @@ public class DrivePath extends CommandBase {
   double last_time;
 
   private final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
-    new PIDController(6,0,0), new PIDController(2,0,0), new PIDController(2,0,0));
+    new PIDController(8,0,0), new PIDController(4,0,0), new PIDController(10,0,0));
+    // 1:1.6,0.6,-10.0; 2:1.8,0.8,21.2; 2,2,1:1.8,0.7,-0.2; 3,3,1:1.9,0.8,13.8/3.0; 3.5,3.5,1:1.9,0.8,4.3; 4,4,1:1.9,0.9,-10.2
 
   public DrivePath(Drivetrain drive) {
     m_drive = drive;
@@ -86,7 +87,7 @@ public class DrivePath extends CommandBase {
 
   Trajectory pathPlannerTest() {
     try {
-      String file="Test";//m_drive.centerPosition()?"Center":"NotCenter";
+      String file="CurvePath";//m_drive.centerPosition()?"Center":"NotCenter";
       PathPlannerTrajectory trajectory = PathPlanner.loadPath(file, 
         new PathConstraints(Drivetrain.kMaxVelocity,Drivetrain.kMaxAcceleration)); // max vel & accel
 
@@ -108,7 +109,7 @@ public class DrivePath extends CommandBase {
         Pose2d pr=p.relativeTo(p0);
         //if(i==0)
        //  pr=new Pose2d(pr.getTranslation(),new Rotation2d()); // 
-        state.holonomicRotation=h.plus(new Rotation2d(Math.toRadians(180))); // go backwards
+        //state.holonomicRotation=h.plus(new Rotation2d(Math.toRadians(180))); // go backwards
 
         //Pose2d psi=state.poseMeters.relativeTo(p0);
         state.poseMeters=pr;
@@ -169,7 +170,7 @@ public class DrivePath extends CommandBase {
       System.out.println("Failed to Create Trajectory");
       return true;
     }
-    return (elapsed >= 1.001 * runtime || m_trajectory == null);
+    return (elapsed >= 1.3 * runtime || m_trajectory == null);
 
     //||m_drive.disabled()
   }
