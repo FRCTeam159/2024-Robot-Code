@@ -11,7 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//import frc.robot.sensors.DriveGyro;
+import frc.robot.sensors.DriveGyro;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -57,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
 
 
   static int count = 0;
-  //DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
   double last_heading = 0; 
   SwerveModulePosition[] m_positions = {
       new SwerveModulePosition(), new SwerveModulePosition(),

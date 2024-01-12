@@ -6,24 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DriveBack;
-import frc.robot.commands.DrivePath;
-import frc.robot.commands.DriveToAprilTag;
-import frc.robot.commands.DriveToPlatform;
-import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.DriveWithGamepad;
-import frc.robot.commands.PoseArm;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
 //import frc.robot.subsystems.DetectorAprilTag;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SwerveModule;
-import frc.robot.subsystems.TargetMgr;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Autonomous;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,14 +24,13 @@ public class RobotContainer {
   private final XboxController m_Controller = new XboxController(0);
   //Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain();
-  private final Autonomous m_auto = new Autonomous(m_Drivetrain);
+  //private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
 
   //private final Camera m_Camera = new Camera();
-  private final TargetMgr m_TargetMgr = new TargetMgr();
-  public final Limelight m_Limelight = new Limelight();
-  private final Arm m_Arm = new Arm(m_Limelight);
-
+  
+  //public final Limelight m_Limelight = new Limelight();
+  
   //commands
    
   //private final DetectorAprilTag m_apriltag = new DetectorAprilTag(m_Camera);
@@ -56,7 +43,7 @@ public class RobotContainer {
   }
   public void robotInit() {
    // m_apriltag.start();
-   m_Limelight.start();
+   //m_Limelight.start();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -76,6 +63,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_auto.getCommand();
+    //return m_auto.getCommand();
+    return null;
   }
 }
