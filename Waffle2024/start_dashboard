@@ -1,0 +1,2 @@
+#!/bin/bash
+java -jar /c/Users/deans/Robotics/SmartDashboard/build/libs/SmartDashboard-winx64.jar ip localhost file "C:\Users\deans\Robotics\FRCTeamRepos\2023-Robot-Code\Waffle\dashboard.xml"

@@ -4,12 +4,16 @@
 
 package frc.robot.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPoint;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -37,7 +41,7 @@ public class DrivePath extends CommandBase {
   double last_time;
 
   private final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
-    new PIDController(8,0,0), new PIDController(4,0,0), new PIDController(10,0,0));
+    new PIDConstants(8,0,0), new PIDConstants(4,0,0), Drivetrain.kMaxVelocity, 0.337);
     // 1:1.6,0.6,-10.0; 2:1.8,0.8,21.2; 2,2,1:1.8,0.7,-0.2; 3,3,1:1.9,0.8,13.8/3.0; 3.5,3.5,1:1.9,0.8,4.3; 4,4,1:1.9,0.9,-10.2
 
   public DrivePath(Drivetrain drive) {
@@ -88,23 +92,25 @@ public class DrivePath extends CommandBase {
   Trajectory pathPlannerTest() {
     try {
       String file="DriveForward";//m_drive.centerPosition()?"Center":"NotCenter";
-      PathPlannerTrajectory trajectory = PathPlanner.loadPath(file, 
-        new PathConstraints(Drivetrain.kMaxVelocity,Drivetrain.kMaxAcceleration)); // max vel & accel
+      PathPlannerPath pathFile = PathPlannerPath.fromPathFile(file);
+      List<PathPoint> pathPoints = pathFile.getAllPathPoints();
+      PathConstraints constraints = new PathConstraints(Drivetrain.kMaxVelocity, Drivetrain.kMaxAcceleration, Drivetrain.kMaxAngularVelocity, Drivetrain.kMaxAngularAcceleration); // max vel & accel
+      PathPlannerPath path = PathPlannerPath.fromPathPoints(pathPoints, constraints, new GoalEndState(0, pathPoints.get(pathPoints.size()-1).rotationTarget.getTarget())); // creates path based on the pathpoints, the constraints, and info on the final velocity (0) and rotation
+      PathPlannerTrajectory trajectory = new PathPlannerTrajectory(path, new ChassisSpeeds(0, 0, 0), pathPoints.get(0).rotationTarget.getTarget());
 
         System.out.println("selecting auto path:"+file);
     
-      Pose2d p0 = trajectory.getInitialHolonomicPose();
+      Pose2d p0 = trajectory.getInitialTargetHolonomicPose();
 
       // Pathplanner sets 0,0 as the lower left hand corner (FRC field coord system) 
       // for Gazebo, need to subtract intitial pose from each state so that 0,0 is 
       // in the center of the field 
 
-      List<State> states = trajectory.getStates();
+      List<PathPlannerTrajectory.State> states = trajectory.getStates();
       for(int i=0;i<states.size();i++){
-        PathPlannerTrajectory.PathPlannerState state=trajectory.getState(i);
-        Pose2d p=state.poseMeters;
-
-        Rotation2d h=state.holonomicRotation;
+        PathPlannerTrajectory.State state = states.get(i);
+        Pose2d p=state.getTargetHolonomicPose();
+        Rotation2d h=state.targetHolonomicRotation;
 
         Pose2d pr=p.relativeTo(p0);
         //if(i==0)
@@ -112,10 +118,16 @@ public class DrivePath extends CommandBase {
         //state.holonomicRotation=h.plus(new Rotation2d(Math.toRadians(180))); // go backwards
 
         //Pose2d psi=state.poseMeters.relativeTo(p0);
-        state.poseMeters=pr;
+        state.positionMeters=pr.getTranslation();
+        state.heading=pr.getRotation();
         //System.out.println(state.poseMeters);
       }
-      return trajectory;
+      List<State> stateList = new ArrayList<Trajectory.State>();
+      for(int i=0;i<states.size();i++){
+        PathPlannerTrajectory.State state = states.get(i);
+        stateList.add(new State(state.timeSeconds, state.velocityMps, state.accelerationMpsSq, state.getTargetHolonomicPose(), state.curvatureRadPerMeter));
+      }
+      return new Trajectory(stateList);
     } catch (Exception ex) {
       System.out.println("failed to create pathweaver trajectory");
       ex.printStackTrace();
@@ -135,11 +147,12 @@ public class DrivePath extends CommandBase {
     //elapsed = m_drive.getTime();
   
     Trajectory.State reference = m_trajectory.sample(elapsed);
+    PathPlannerTrajectory.State reference2 = new PathPlannerTrajectory.State();
     //System.out.format("Time:%-1.3f X Current X:%-1.2f Target:%-1.2f\n",
     //elapsed,m_drive.getPose().getX(),reference.poseMeters.getX()
    // );
 
-    ChassisSpeeds speeds = m_ppcontroller.calculate(m_drive.getPose(), (PathPlannerState) reference);
+    ChassisSpeeds speeds = m_ppcontroller.calculate(m_drive.getPose(), (PathPlannerTrajectory.State) reference);
       m_drive.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
 
   }
