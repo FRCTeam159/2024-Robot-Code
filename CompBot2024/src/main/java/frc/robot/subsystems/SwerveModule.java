@@ -13,6 +13,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
@@ -24,8 +29,10 @@ public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
 
+  private final CANCoder m_turningEncoder;
+
   private final RelativeEncoder m_driveEncoder;
-  private final RelativeEncoder m_turningEncoder;
+ //private final RelativeEncoder m_turningEncoder;
 
   public static boolean debug = false;
   String name;
@@ -67,6 +74,8 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
+      int turningEncoder,
+      double turningEncoderOffset,
       int id) {
 
     m_id = id;
@@ -86,9 +95,23 @@ public class SwerveModule extends SubsystemBase {
     m_driveEncoder.setVelocityConversionFactor(kDistPerRot / 60); // convert RPM to meters per second
 
     // Set the distance (in this case, angle) in radians per pulse for the turning
-    m_turningEncoder = m_turningMotor.getEncoder();
-    m_turningEncoder.setPositionConversionFactor(kRadiansPerRot); // inches to meters
-    m_turningEncoder.setVelocityConversionFactor(kRadiansPerRot / 60); // convert RPM to meters per second
+    //m_turningEncoder = m_turningMotor.getEncoder();
+     m_turningEncoder = new CANCoder(turningEncoder);
+
+     CANCoderConfiguration config = new CANCoderConfiguration();
+     // set units of the CANCoder to radians, with velocity being radians per second
+     config.sensorCoefficient = 2 * Math.PI / kEncoderResolution; // 4096 for CANcoder
+     config.unitString = "rad";
+     config.sensorTimeBase = SensorTimeBase.PerSecond; // set timebase to seconds
+     config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180; // should avoid discontinuity at 0 degrees or
+                                                                           // 360
+     // config.absoluteSensorRange=AbsoluteSensorRange.Unsigned_0_to_360;
+     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+     config.magnetOffsetDegrees = turningEncoderOffset;
+    //m_turningEncoder.configAllSettings(config);
+
+    //m_turningEncoder.setPositionConversionFactor(kRadiansPerRot); // inches to meters
+    //m_turningEncoder.setVelocityConversionFactor(kRadiansPerRot / 60); // convert RPM to meters per second
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.

@@ -38,10 +38,10 @@ public class Drivetrain extends SubsystemBase {
 
   public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
 
-  private final SwerveModule m_frontLeft = new SwerveModule(kFl_Drive, kFl_Turn,1);
-  private final SwerveModule m_frontRight = new SwerveModule(kFr_Drive, kFr_Turn,2);
-  private final SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn,3);
-  private final SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, 4);
+  private final SwerveModule m_frontLeft = new SwerveModule(kFl_Drive, kFl_Turn,kFl_Encoder,kFl_Offset,1);
+  private final SwerveModule m_frontRight = new SwerveModule(kFr_Drive, kFr_Turn,kFr_Encoder,kFr_Offset,2);
+  private final SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn,kBr_Encoder,kBr_Offset,3);
+  private final SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn,kBl_Encoder, kBl_Offset,4);
 
   public static boolean m_field_oriented=true;
 

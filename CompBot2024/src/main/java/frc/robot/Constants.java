@@ -32,26 +32,28 @@ public final class Constants {
     public static final double kConeTargetArea = 12;
     public static final double kPostTargetArea = 2;
 
-    public static final double kStageOneLength = Units.inchesToMeters(43.18);
-    public static final double kStageTwoLength = Units.inchesToMeters(30.59);
-
+    //in degrees, need to be set in degrees
+    
     public static final int kFl_Drive = 3;
-    public static final int kFl_Turn = 8;
+    public static final int kFl_Turn = 7;
+    public static final int kFl_Encoder = 10;
+    public static final double kFl_Offset = -133; 
 
-    public static final int kFr_Drive = 7;
-    public static final int kFr_Turn = 6;
+    public static final int kFr_Drive = 4;
+    public static final int kFr_Turn = 8;
+    public static final int kFr_Encoder = 9;
+    public static final double kFr_Offset = 73; //-102
 
-    public static final int kBr_Drive = 5;
-    public static final int kBr_Turn = 1;
+    public static final int kBr_Drive = 2;
+    public static final int kBr_Turn = 6;
+    public static final int kBr_Encoder = 12;
+    public static final double kBr_Offset = -23; 
 
-    public static final int kBl_Drive = 2;
-    public static final int kBl_Turn = 4;   
+    public static final int kBl_Drive = 1;
+    public static final int kBl_Turn = 5;
+    public static final int kBl_Encoder = 11;
+    public static final double kBl_Offset = -15; 
 
-    public static final int kSpareSpark = 9;    
-
-    public static final int kStageOneChannel = 13;
-    public static final int kStageTwoChannel = 14;
-    public static final int kWristChannel = 15;
 
     // public static final int 
 
