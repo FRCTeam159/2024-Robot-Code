@@ -96,12 +96,19 @@ public class DrivePath extends CommandBase {
 
   Trajectory pathPlannerTest() {
     try {
-      file = "ForwardPath"; //m_drive.centerPosition()?"Center":"NotCenter";
+      file = "CirclePathRotation"; //m_drive.centerPosition()?"Center":"NotCenter";
       pathFile = PathPlannerPath.fromPathFile(file);
       pathPoints = pathFile.getAllPathPoints();
-      System.out.println("[][][][][][][][][][][][][][][][][]Number of points = " + pathPoints.get(0));
+      ArrayList<Rotation2d> rotationList = new ArrayList<>();
+      for(int i=0;i<pathPoints.size();i++){
+        if (pathPoints.get(i).rotationTarget != null) {
+          System.out.println("[ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]Number of points = " + pathPoints.get(i).rotationTarget);
+          rotationList.add(pathPoints.get(i).rotationTarget.getTarget());
+        }
+      }
+      System.out.println(rotationList);
       constraints = new PathConstraints(Drivetrain.kMaxVelocity, Drivetrain.kMaxAcceleration, Drivetrain.kMaxAngularVelocity, Drivetrain.kMaxAngularAcceleration); // max vel & accel
-      path = PathPlannerPath.fromPathPoints(pathPoints, constraints, new GoalEndState(0, new Rotation2d(0/*Math.PI/2*/)/*pathPoints.get(pathPoints.size()-1).rotationTarget.getTarget()*/)); // creates path based on the pathpoints, the constraints, and info on the final velocity (0) and rotatio
+      path = PathPlannerPath.fromPathPoints(pathPoints, constraints, new GoalEndState(0, rotationList.get(rotationList.size()-1))); // creates path based on the pathpoints, the constraints, and info on the final velocity (0) and rotatio
       trajectory = new PathPlannerTrajectory(path, new ChassisSpeeds(0, 0, 0), new Rotation2d(0)/*pathPoints.get(0).rotationTarget.getTarget()*/);
 
         System.out.println("selecting auto path:"+file);
