@@ -6,12 +6,9 @@ package frc.robot.sensors;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SerialPort;
 
-public class DriveGyro implements Gyro{
+public class DriveGyro {
   static public enum gyros {
     FRC450,
     NAVX,
@@ -19,33 +16,16 @@ public class DriveGyro implements Gyro{
   } ;
   gyros gyro_type=gyros.FRC450;
   String gyro_name;
-  Gyro gyro;
+  AHRS gyro;
   /** Creates a new Gyros. */
   public DriveGyro(gyros type) {
     gyro_type=type;
     switch(type){
       default:
-      case FRC450:
-        gyro= new ADXRS450_Gyro();
-        gyro_name="FRC450";
-        break;
       case NAVX:
         gyro= new AHRS(SerialPort.Port.kUSB);
         gyro_name="NAVX";
         break;
-      case BNO55:
-        {
-          int[] bnoOffsets = {0, -42, -8, -24, -3, 0, 2, 299, -59, -25, 523};
-          gyro=BNO055.getInstance(
-            BNO055.opmode_t.OPERATION_MODE_IMUPLUS,
-            BNO055.vector_type_t.VECTOR_EULER,
-            I2C.Port.kMXP,
-            BNO055.BNO055_ADDRESS_A,
-            bnoOffsets
-            );
-        }
-        gyro_name="BN055";
-      break;
     }
   }
   public gyros getType(){
@@ -54,19 +34,9 @@ public class DriveGyro implements Gyro{
   public String toString(){
     return gyro_name;
   }
-  @Override
-  public void close() throws Exception {
-    gyro.close(); 
-  }
-  @Override
-  public void calibrate() {
-   gyro.calibrate();
-  }
-  @Override
   public void reset() {
    gyro.reset();
   }
-  @Override
   public double getAngle() {
     switch(gyro_type){
       default:
@@ -78,7 +48,6 @@ public class DriveGyro implements Gyro{
         return gyro.getAngle();
     }
   }
-  @Override
   public double getRate() {
     return gyro.getRate();
   }

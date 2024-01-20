@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
-public class DriveToPlatform extends CommandBase {
+public class DriveToPlatform extends Command {
   /** Creates a new DriveToPlatform. */
   private Drivetrain m_Drive;
 

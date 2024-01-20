@@ -21,10 +21,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
-public class DrivePath extends CommandBase {
+public class DrivePath extends Command {
 
   private Drivetrain m_drive;
   private Trajectory m_trajectory;
@@ -96,7 +96,7 @@ public class DrivePath extends CommandBase {
 
   Trajectory pathPlannerTest() {
     try {
-      file = "CirclePathRotation"; //m_drive.centerPosition()?"Center":"NotCenter";
+      file = "SmallCirclePath"; //m_drive.centerPosition()?"Center":"NotCenter";
       pathFile = PathPlannerPath.fromPathFile(file);
       pathPoints = pathFile.getAllPathPoints();
       ArrayList<Rotation2d> rotationList = new ArrayList<>();
@@ -152,7 +152,6 @@ public class DrivePath extends CommandBase {
   // =================================================
   @Override
   public void execute() {
-    System.out.println("Alive");
     elapsed = m_timer.get();
     if(m_trajectory==null){
       System.out.print("ERROR DrivePath.execute - trajectory is null");

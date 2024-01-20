@@ -15,8 +15,6 @@ import frc.robot.commands.DriveToAprilTag;
 import frc.robot.commands.DriveToPlatform;
 import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.DriveWithGamepad;
-import frc.robot.commands.PoseArm;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
 //import frc.robot.subsystems.DetectorAprilTag;
@@ -44,7 +42,6 @@ public class RobotContainer {
   //private final Camera m_Camera = new Camera();
   private final TargetMgr m_TargetMgr = new TargetMgr();
   public final Limelight m_Limelight = new Limelight();
-  private final Arm m_Arm = new Arm(m_Limelight);
 
   //commands
    
