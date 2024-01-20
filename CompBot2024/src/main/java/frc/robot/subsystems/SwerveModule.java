@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,31 +20,30 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
-//import frc.robot.subsystems.Averager;
 
 import static frc.robot.Constants.*;
 
 public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
-
   private final CANCoder m_turningEncoder;
-
   private final RelativeEncoder m_driveEncoder;
- //private final RelativeEncoder m_turningEncoder;
-
-  public static boolean debug = false;
+ 
+  public static boolean debug = true;
   String name;
 
   int cnt = 0;
 
   boolean m_inverted = false;
   boolean m_optimize = true;
-
+  // SET calibrate_offsets=false TO CALIBRATE CANCODER OFFSETS
+  // - READ VALUES FROM SMART DASHBOARD
+  // - SET OFFSETS ON CONSTANTS
+  // - THEN SET  calibrate_offsets=true
+  static boolean calibrate_offsets=false;
 
   // PID controllers for drive and steer motors
   private final PIDController m_drivePIDController = new PIDController(2, 0, 0);
-
   private final PIDController m_turningPIDController = new PIDController(
       0.5,
       0,
@@ -58,8 +56,6 @@ public class SwerveModule extends SubsystemBase {
 
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
-
-  //Averager m_averager = new Averager(5);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -106,15 +102,16 @@ public class SwerveModule extends SubsystemBase {
      config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180; // should avoid discontinuity at 0 degrees or
                                                                            // 360
      // config.absoluteSensorRange=AbsoluteSensorRange.Unsigned_0_to_360;
-     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-     config.magnetOffsetDegrees = turningEncoderOffset;
-    //m_turningEncoder.configAllSettings(config);
-
-    //m_turningEncoder.setPositionConversionFactor(kRadiansPerRot); // inches to meters
-    //m_turningEncoder.setVelocityConversionFactor(kRadiansPerRot / 60); // convert RPM to meters per second
-
-    // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
+     if(calibrate_offsets){
+      config.initializationStrategy = SensorInitializationStrategy.BootToZero;
+      config.magnetOffsetDegrees = 0;     
+    }
+    else{
+      config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+      config.magnetOffsetDegrees = turningEncoderOffset;
+    }
+    m_turningEncoder.configAllSettings(config);
+    
     //TODO check example and see if this is there: 
     m_turningPIDController.enableContinuousInput(-Math.PI,Math.PI);
   }
@@ -133,11 +130,14 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public double heading(){
-    return m_turningEncoder.getPosition();
+    return m_turningEncoder.getAbsolutePosition();
   }
   
+  public double cummulativeAngle(){
+    return m_turningEncoder.getPosition();
+  }
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromRadians(heading());
+    return Rotation2d.fromRadians(cummulativeAngle());
   }
 
   public void showWheelPosition(){
@@ -151,7 +151,7 @@ public class SwerveModule extends SubsystemBase {
    */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-        m_driveEncoder.getVelocity(), getRotation2d());
+        getVelocity(), getRotation2d());
   }
 
   /**
@@ -206,10 +206,7 @@ public class SwerveModule extends SubsystemBase {
       String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n", 
       velocity,state.speedMetersPerSecond,set_drive,Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn); 
       SmartDashboard.putString(name, s);
-      // if((cnt%10)==0){
-      //     System.out.println(name+" "+s);
-      // }
-      // cnt++;
+    
     }   
   }
 

@@ -45,7 +45,6 @@ public class Drivetrain extends SubsystemBase {
 
   public static boolean m_field_oriented=true;
 
-  //private final SwerveModule[] modules={m_frontLeft,m_frontRight,m_backRight,m_backLeft};
   private final SwerveModule[] modules={m_frontLeft,m_frontRight,m_backLeft,m_backRight};
 
   DigitalInput input = new DigitalInput(0);
@@ -54,7 +53,6 @@ public class Drivetrain extends SubsystemBase {
   Timer m_timer = new Timer();
 
   static boolean m_optimize=true;
-
 
   static int count = 0;
   DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
@@ -232,15 +230,6 @@ public class Drivetrain extends SubsystemBase {
  
   @Override
   public void periodic() {
-    // if(!m_optimize && m_timer.get()> 0.5){
-    //   System.out.println("Drivetrain.reset after aligned="+wheelsAreAligned());
-    //   showWheelPositions();
-    //   m_optimize = true;
-    //   setOptimize(m_optimize);
-    //   resetPositions();
-    // }
     log();
   }
-
-
 }
