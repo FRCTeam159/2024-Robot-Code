@@ -96,8 +96,8 @@ public class Drivetrain extends SubsystemBase {
         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
         4.5, // Max module speed, in m/s
-        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-        new ReplanningConfig() // Default path replanning config. See the API for the options here
+        0.3, // Drive base radius in meters. Distance from robot center to furthest module.
+        new ReplanningConfig(false, false) // Default path replanning config. See the API for the options here
       ),
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -131,7 +131,7 @@ public class Drivetrain extends SubsystemBase {
       m_positions[i] = modules[i].getPosition();
   }
 
-  private void resetPose(Pose2d pose){
+  public void resetPose(Pose2d pose){
     System.out.println("resetPose working");
     m_poseEstimator.resetPosition(getRotation2d(), m_positions, pose);
   }

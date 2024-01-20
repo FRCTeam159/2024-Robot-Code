@@ -14,7 +14,7 @@ public class DriveGyro {
     NAVX,
     BNO55  
   } ;
-  gyros gyro_type=gyros.FRC450;
+  gyros gyro_type=gyros.NAVX;
   String gyro_name;
   AHRS gyro;
   /** Creates a new Gyros. */
@@ -38,12 +38,12 @@ public class DriveGyro {
    gyro.reset();
   }
   public double getAngle() {
-    switch(gyro_type){
+    switch(gyro_type) {
       default:
       case FRC450:
         return -gyro.getAngle();
       case NAVX:
-      return -gyro.getAngle();
+        return -gyro.getAngle();
       case BNO55:
         return gyro.getAngle();
     }
