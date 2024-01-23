@@ -28,45 +28,24 @@ public final class Constants {
     public static final int kImageWidth = 640;
     public static final int kImageHeight = 480;
 
-    public static final double kBoxTargetArea = 17;
-    public static final double kConeTargetArea = 12;
-    public static final double kPostTargetArea = 2;
-
-    //in degrees, need to be set in degrees
-    
     public static final int kFl_Drive = 3;
     public static final int kFl_Turn = 7;
     public static final int kFl_Encoder = 10;
-    public static final double kFl_Offset = -133; 
+    public static final double kFl_Offset = 0;  // now fractional rotation ?
 
     public static final int kFr_Drive = 4;
     public static final int kFr_Turn = 8;
     public static final int kFr_Encoder = 9;
-    public static final double kFr_Offset = 73; //-102
+    public static final double kFr_Offset = 0;
 
     public static final int kBr_Drive = 2;
     public static final int kBr_Turn = 6;
     public static final int kBr_Encoder = 12;
-    public static final double kBr_Offset = -23; 
+    public static final double kBr_Offset = 0; 
 
     public static final int kBl_Drive = 1;
     public static final int kBl_Turn = 5;
     public static final int kBl_Encoder = 11;
-    public static final double kBl_Offset = -15; 
+    public static final double kBl_Offset = 0; 
 
-
-    // public static final int 
-
-    public static final Object[][] modes = { //1st letter is operation P-pickup, D-Dropoff; 2nd letter is type C-cone, B-box; 3rd letter is location B-bottom, M-middle T-top
-        {"PCB", 0, 10, 2}, //modes[x][1] is y-target on camera; modes[x][2] is area-target; modes[x][3] is target type (refer to limelight subsys)
-        {"PCM", 0, 10, 2},
-        {"PBB", 0, 10, 1},
-        {"PBM", 0, 10, 1},
-        {"DCB", 0, 10, 3},
-        {"DCM", 0, 10, 3},
-        {"DCT", 0, 10, 3},
-        {"DBB", 0, 10, 0},
-        {"DBM", 0, 10, 0},
-        {"DBT", 0, 10, 0},
-    };
 }

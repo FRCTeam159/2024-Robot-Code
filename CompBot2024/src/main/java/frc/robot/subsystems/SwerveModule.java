@@ -12,13 +12,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 
 import static frc.robot.Constants.*;
@@ -26,7 +25,7 @@ import static frc.robot.Constants.*;
 public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
-  private final CANCoder m_turningEncoder;
+  private final CANcoder m_turningEncoder;
   private final RelativeEncoder m_driveEncoder;
  
   public static boolean debug = true;
@@ -41,6 +40,7 @@ public class SwerveModule extends SubsystemBase {
   // - SET OFFSETS ON CONSTANTS
   // - THEN SET  calibrate_offsets=true
   static boolean calibrate_offsets=false;
+  static double RotationsToRadians=2*Math.PI;
 
   // PID controllers for drive and steer motors
   private final PIDController m_drivePIDController = new PIDController(2, 0, 0);
@@ -76,15 +76,11 @@ public class SwerveModule extends SubsystemBase {
 
     m_id = id;
 
-    m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMaxLowLevel.MotorType.kBrushless);
-    m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMaxLowLevel.MotorType.kBrushless);
+    m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
+    m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
 
     name = Drivetrain.chnlnames[m_id - 1];
     SmartDashboard.putString(name, "Working");
-
-    // Set the distance per pulse for the drive encoder. We can simply use the
-    // distance traveled for one rotation of the wheel divided by the encoder
-    // resolution.
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPositionConversionFactor(kDistPerRot); // inches to meters
@@ -92,25 +88,25 @@ public class SwerveModule extends SubsystemBase {
 
     // Set the distance (in this case, angle) in radians per pulse for the turning
     //m_turningEncoder = m_turningMotor.getEncoder();
-     m_turningEncoder = new CANCoder(turningEncoder);
+     m_turningEncoder = new CANcoder(turningEncoder);
 
-     CANCoderConfiguration config = new CANCoderConfiguration();
+     CANcoderConfiguration config = new CANcoderConfiguration();
      // set units of the CANCoder to radians, with velocity being radians per second
-     config.sensorCoefficient = 2 * Math.PI / kEncoderResolution; // 4096 for CANcoder
-     config.unitString = "rad";
-     config.sensorTimeBase = SensorTimeBase.PerSecond; // set timebase to seconds
-     config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180; // should avoid discontinuity at 0 degrees or
+    // config.sensorCoefficient = 2 * Math.PI / kEncoderResolution; // 4096 for CANcoder
+    // config.unitString = "rad";
+    // config.sensorTimeBase = SensorTimeBase.PerSecond; // set timebase to seconds
+     config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; // should avoid discontinuity at 0 degrees or
                                                                            // 360
      // config.absoluteSensorRange=AbsoluteSensorRange.Unsigned_0_to_360;
      if(calibrate_offsets){
-      config.initializationStrategy = SensorInitializationStrategy.BootToZero;
-      config.magnetOffsetDegrees = 0;     
+      //config.initializationStrategy = SensorInitializationStrategy.BootToZero;
+      config.MagnetSensor.MagnetOffset  = 0;     
     }
     else{
-      config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-      config.magnetOffsetDegrees = turningEncoderOffset;
+      //config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+      config.MagnetSensor.MagnetOffset = turningEncoderOffset; // now in rotations
     }
-    m_turningEncoder.configAllSettings(config);
+    m_turningEncoder.getConfigurator().apply(config);
     
     //TODO check example and see if this is there: 
     m_turningPIDController.enableContinuousInput(-Math.PI,Math.PI);
@@ -130,11 +126,12 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public double heading(){
-    return m_turningEncoder.getAbsolutePosition();
+    StatusSignal<Double> val=m_turningEncoder.getPosition();
+    return RotationsToRadians*val.getValue(); // return radians for rotations
   }
   
   public double cummulativeAngle(){
-    return m_turningEncoder.getPosition();
+    return heading();
   }
   public Rotation2d getRotation2d() {
     return Rotation2d.fromRadians(cummulativeAngle());
