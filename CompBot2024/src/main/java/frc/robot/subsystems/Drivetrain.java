@@ -52,10 +52,10 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_Field2d = new Field2d();
   Timer m_timer = new Timer();
 
-  static boolean m_optimize=true;
+	boolean use_tags=true;
 
   static int count = 0;
-  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
   double last_heading = 0; 
   SwerveModulePosition[] m_positions = {
       new SwerveModulePosition(), new SwerveModulePosition(),
@@ -64,8 +64,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     SmartDashboard.putData("Field" , m_Field2d);
     SmartDashboard.putBoolean("Field Oriented" , m_field_oriented);
-    SmartDashboard.putBoolean("Switch" , false);
-    //SmartDashboard.putBoolean("optimize", m_optimize);
+		SmartDashboard.putBoolean("Use Tags", use_tags);
     //m_gyro.reset(); This is already called in resetOdometry()
 
     m_frontLeft.setDriveInverted(false);
@@ -232,4 +231,14 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     log();
   }
+
+public boolean useTags() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'useTags'");
+}
+
+public Rotation2d gyroRotation2d() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'gyroRotation2d'");
+}
 }
