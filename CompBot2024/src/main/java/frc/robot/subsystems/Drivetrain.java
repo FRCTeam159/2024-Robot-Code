@@ -36,7 +36,7 @@ public class Drivetrain extends SubsystemBase {
 	private final Translation2d m_backLeftLocation = new Translation2d(-delx, dely);
 	private final Translation2d m_backRightLocation = new Translation2d(-delx, -dely);
 
-  public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
+  public static String chnlnames[] = { "FL", "FR", "BR", "BL" };
 
   private final SwerveModule m_frontLeft = new SwerveModule(kFl_Drive, kFl_Turn,kFl_Encoder,kFl_Offset,1);
   private final SwerveModule m_frontRight = new SwerveModule(kFr_Drive, kFr_Turn,kFr_Encoder,kFr_Offset,2);
@@ -67,11 +67,17 @@ public class Drivetrain extends SubsystemBase {
 		SmartDashboard.putBoolean("Use Tags", use_tags);
     //m_gyro.reset(); This is already called in resetOdometry()
 
+    // Set drive inverted (right side is inverted, left is not)
     m_frontLeft.setDriveInverted(false);
     m_backLeft.setDriveInverted(false);
+    m_frontRight.setDriveInverted(true);
+    m_backRight.setDriveInverted(true);
 
-   m_frontRight.setDriveInverted(true);
-   m_backRight.setDriveInverted(true);
+    // Set turn inverted (all are not inverted)
+    m_frontLeft.setTurnInverted(false);
+    m_backLeft.setTurnInverted(false);
+    m_frontRight.setTurnInverted(false);
+    m_backRight.setTurnInverted(false);
 
     resetOdometry();
   }

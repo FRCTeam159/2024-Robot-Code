@@ -14,16 +14,21 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    static public final double kDriveGearRatio=6.67;  // MK4i drive (standard)
-    static public final double kTurnGearRatio=30; // MK4i turn (all)
+    static public final double kDriveGearRatio=8.14;  // MK4i drive (standard)
+    static public final double kTurnGearRatio=21.429; // MK4i turn (all)
   
     public static final double kWheelRadius = 2;
     public static final int kEncoderResolution = 42;
     public static final double kDistPerRot =(Units.inchesToMeters(kWheelRadius)* 2*Math.PI)/kDriveGearRatio;
     public static final double kRadiansPerRot = Math.PI * 2/kTurnGearRatio;
 
-    public static final double kFrontWheelBase = 15; // distance bewteen front wheels
-	public static final double kSideWheelBase = 19;  // distance beteen side wheels
+    public static final double kFrontRightOffset/*9*/ = 0.403076;
+    public static final double kFrontLeftOffset/*10*/ = -0.405518;
+    public static final double kBackLeftOffset/*11*/ = 0.268555;
+    public static final double kBackRightOffset/*12*/ = 0.156730;
+
+    public static final double kFrontWheelBase = 19.5; // distance bewteen front wheels
+	public static final double kSideWheelBase = 19.5;  // distance beteen side wheels
 
     public static final int kImageWidth = 640;
     public static final int kImageHeight = 480;
@@ -31,21 +36,21 @@ public final class Constants {
     public static final int kFl_Drive = 3;
     public static final int kFl_Turn = 7;
     public static final int kFl_Encoder = 10;
-    public static final double kFl_Offset = 0;  // now fractional rotation ?
+    public static final double kFl_Offset = kFrontLeftOffset;  // now fractional rotation ?
 
     public static final int kFr_Drive = 4;
     public static final int kFr_Turn = 8;
     public static final int kFr_Encoder = 9;
-    public static final double kFr_Offset = 0;
+    public static final double kFr_Offset = kFrontRightOffset;
 
     public static final int kBr_Drive = 2;
     public static final int kBr_Turn = 6;
     public static final int kBr_Encoder = 12;
-    public static final double kBr_Offset = 0; 
+    public static final double kBr_Offset = kBackRightOffset; 
 
     public static final int kBl_Drive = 1;
     public static final int kBl_Turn = 5;
     public static final int kBl_Encoder = 11;
-    public static final double kBl_Offset = 0; 
+    public static final double kBl_Offset = kBackLeftOffset; 
 
 }

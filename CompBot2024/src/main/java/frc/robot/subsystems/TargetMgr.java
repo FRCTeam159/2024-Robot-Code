@@ -92,7 +92,9 @@ public class TargetMgr {
     public static void setStartPose(AprilTag[] tags) {
         position = UNKNOWN;
         alliance = UNKNOWN;
-       // start_pose_set=true;
+        // start_pose_set=true;
+        if (tags == null) return;
+        
         if (tags.length > 0) {
             AprilTag closest = tags[0];
             double dp = 0;

@@ -91,8 +91,8 @@ public class TagDetector extends Thread {
     wpi_poseEstConfig = new AprilTagPoseEstimator.Config(TargetMgr.targetSize, fx, fy, cx, cy);
     wpi_pose_estimator = new AprilTagPoseEstimator(wpi_poseEstConfig);
 
-    ouputStream = CameraServer.putVideo("USBCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
-    test();
+    ouputStream = CameraServer.putVideo("RobotCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
+    //test();
   }
 
   // test tag detection jni using an image file
@@ -222,6 +222,7 @@ public class TagDetector extends Thread {
         }
         
         if (!TargetMgr.tagsPresent() || !m_drivetrain.useTags() || tags==null) {
+          System.out.println("No tags detected");
           TargetMgr.setStartPose(tags);
           ouputStream.putFrame(mat);
           continue;

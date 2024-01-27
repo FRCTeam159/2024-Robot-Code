@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.SwerveModule;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TagDetector;
 
