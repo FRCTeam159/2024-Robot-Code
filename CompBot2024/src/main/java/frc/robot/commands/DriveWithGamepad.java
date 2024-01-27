@@ -74,7 +74,7 @@ public class DriveWithGamepad extends Command {
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))* Drivetrain.kMaxAngularAcceleration;
+    final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))* Drivetrain.kMaxAngularVelocity;
     /*if (DriveToTarget.currentMode != DriveToTarget.targetFound)*/ {
       m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
     }
