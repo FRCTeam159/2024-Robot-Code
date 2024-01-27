@@ -45,7 +45,7 @@ public class SwerveModule extends SubsystemBase {
   // PID controllers for drive and steer motors
   private final PIDController m_drivePIDController = new PIDController(2, 0, 0);
   private final PIDController m_turningPIDController = new PIDController(
-      0.2,
+      0.5,
       0,
       0
   // new TrapezoidProfile.Constraints(

@@ -68,10 +68,10 @@ public class Drivetrain extends SubsystemBase {
     //m_gyro.reset(); This is already called in resetOdometry()
 
     // Set drive inverted (right side is inverted, left is not)
-    m_frontLeft.setDriveInverted(false);
-    m_backLeft.setDriveInverted(false);
-    m_frontRight.setDriveInverted(true);
-    m_backRight.setDriveInverted(true);
+    m_frontLeft.setDriveInverted(true);
+    m_backLeft.setDriveInverted(true);
+    m_frontRight.setDriveInverted(false);
+    m_backRight.setDriveInverted(false);
 
     // Set turn inverted (all are not inverted)
     m_frontLeft.setTurnInverted(false);
@@ -85,6 +85,7 @@ public class Drivetrain extends SubsystemBase {
   public boolean centerPosition(){
     return input.get();
   }
+  
 
   private void resetPositions() {
     for(int i=0;i<modules.length;i++)
@@ -192,8 +193,24 @@ public class Drivetrain extends SubsystemBase {
         m_positions,
         new Pose2d(0, 0, new Rotation2d()));
   }
+  
   public Pose2d getPose(){
     return m_poseEstimator.getEstimatedPosition();
+  }
+  
+  public void resetPose(Pose2d pose){
+    System.out.println("resetPose working");
+    m_poseEstimator.resetPosition(getRotation2d(), m_positions, pose);
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds(){
+    System.out.println("getRobotRelativeSpeeds working " + m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState()));
+    return m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState());
+  }
+
+  public void driveRobotRelative(ChassisSpeeds speed){
+    System.out.println("driveRobotRelative working");
+    this.drive(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond, false);
   }
 
     // removes heading discontinuity at 180 degrees
