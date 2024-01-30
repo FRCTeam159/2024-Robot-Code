@@ -53,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_Field2d = new Field2d();
   Timer m_timer = new Timer();
 
-	boolean use_tags=true;
+	boolean m_use_tags=true;
 
   static int count = 0;
   DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
@@ -65,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     SmartDashboard.putData("Field" , m_Field2d);
     SmartDashboard.putBoolean("Field Oriented" , m_field_oriented);
-		SmartDashboard.putBoolean("Use Tags", use_tags);
+		SmartDashboard.putBoolean("Use Tags", m_use_tags);
     //m_gyro.reset(); This is already called in resetOdometry()
 
     // Set drive inverted (right side is inverted, left is not)
@@ -87,7 +87,6 @@ public class Drivetrain extends SubsystemBase {
     return input.get();
   }
   
-
   private void resetPositions() {
     for(int i=0;i<modules.length;i++)
       modules[i].reset();
@@ -164,6 +163,7 @@ public class Drivetrain extends SubsystemBase {
     pose.getX(),pose.getY(),pose.getRotation().getDegrees());
     SmartDashboard.putString("Pose", s);
     m_field_oriented=SmartDashboard.getBoolean("Field Oriented" , m_field_oriented);
+    m_use_tags=SmartDashboard.getBoolean("Use Tags" , m_use_tags);
     SmartDashboard.putBoolean("Switch" , input.get());
     for(int i=0;i<modules.length;i++)
       modules[i].log();
@@ -256,13 +256,9 @@ public class Drivetrain extends SubsystemBase {
     log();
   }
 
-public boolean useTags() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'useTags'");
-}
+  public boolean useTags() {
+    return m_use_tags;
+  }
 
-public Rotation2d gyroRotation2d() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'gyroRotation2d'");
-}
+
 }
