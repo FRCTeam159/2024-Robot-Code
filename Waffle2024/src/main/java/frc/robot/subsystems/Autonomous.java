@@ -8,6 +8,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,9 +27,32 @@ public class Autonomous extends SubsystemBase {
 
   static public int trajectory_option = PATHPLANNER;
 
+  SendableChooser<Integer> m_path_chooser = new SendableChooser<Integer>();
+
+  static double XF=0.95;
+  static double YF=-1.6;
+  static double RF=-60;
+
+  static double YR=-0.5;
+  static double XR=-1.65;
+  static double RR=60;
+
+  static double xp=XF;
+  static double yp=YF;
+  static double rp=RF;
+
   /** Creates a new Autonomous. */
   public Autonomous(Drivetrain drive) {
     m_drive = drive;
+	  m_path_chooser.setDefaultOption("Pathplanner", PATHPLANNER);
+    m_path_chooser.addOption("Program", PROGRAM);
+    m_path_chooser.addOption("AutoTest", AUTOTEST);
+   // m_path_chooser.addOption("Calibrate", CALIBRATE);
+
+    SmartDashboard.putNumber("xPath", xp);
+    SmartDashboard.putNumber("yPath", yp);
+    SmartDashboard.putNumber("rPath", rp);
+
   }
   public SequentialCommandGroup getCommand(){
     switch(trajectory_option){
