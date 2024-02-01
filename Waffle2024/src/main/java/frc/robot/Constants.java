@@ -18,22 +18,14 @@ public final class Constants {
     static public final double kTurnGearRatio=30; // MK4i turn (all)
   
     public static final double kWheelRadius = 2;
-    public static final int kEncoderResolution = 42;
     public static final double kDistPerRot =(Units.inchesToMeters(kWheelRadius)* 2*Math.PI)/kDriveGearRatio;
     public static final double kRadiansPerRot = Math.PI * 2/kTurnGearRatio;
 
-    public static final double kFrontWheelBase = 15; // distance bewteen front wheels
-	public static final double kSideWheelBase = 19;  // distance beteen side wheels
+    public static final double kFrontWheelBase = 17; // distance bewteen front wheels
+	public static final double kSideWheelBase = 17;  // distance beteen side wheels
 
     public static final int kImageWidth = 640;
     public static final int kImageHeight = 480;
-
-    public static final double kBoxTargetArea = 17;
-    public static final double kConeTargetArea = 12;
-    public static final double kPostTargetArea = 2;
-
-    public static final double kStageOneLength = Units.inchesToMeters(43.18);
-    public static final double kStageTwoLength = Units.inchesToMeters(30.59);
 
     public static final int kFl_Drive = 3;
     public static final int kFl_Turn = 8;
@@ -49,22 +41,5 @@ public final class Constants {
 
     public static final int kSpareSpark = 9;    
 
-    public static final int kStageOneChannel = 13;
-    public static final int kStageTwoChannel = 14;
-    public static final int kWristChannel = 15;
-
-    // public static final int 
-
-    public static final Object[][] modes = { //1st letter is operation P-pickup, D-Dropoff; 2nd letter is type C-cone, B-box; 3rd letter is location B-bottom, M-middle T-top
-        {"PCB", 0, 10, 2}, //modes[x][1] is y-target on camera; modes[x][2] is area-target; modes[x][3] is target type (refer to limelight subsys)
-        {"PCM", 0, 10, 2},
-        {"PBB", 0, 10, 1},
-        {"PBM", 0, 10, 1},
-        {"DCB", 0, 10, 3},
-        {"DCM", 0, 10, 3},
-        {"DCT", 0, 10, 3},
-        {"DBB", 0, 10, 0},
-        {"DBM", 0, 10, 0},
-        {"DBT", 0, 10, 0},
-    };
+    
 }

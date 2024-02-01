@@ -30,10 +30,6 @@ public class RobotContainer {
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
   private final TagDetector m_detector= new TagDetector(m_Drivetrain);
 
-
-  //private final Camera m_Camera = new Camera();
-  //public final Limelight m_Limelight = new Limelight();
-
   //commands
    
   //private final DetectorAprilTag m_apriltag = new DetectorAprilTag(m_Camera);
@@ -45,9 +41,7 @@ public class RobotContainer {
     configureBindings();
   }
   public void robotInit() {
-   // m_apriltag.start();
-   //m_Limelight.start();
-    m_detector.start();
+      m_detector.start();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
