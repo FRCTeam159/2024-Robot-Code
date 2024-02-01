@@ -35,8 +35,7 @@ public class RobotContainer {
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
 
   //private final Camera m_Camera = new Camera();
-  private final TargetMgr m_TargetMgr = new TargetMgr();
-  public final Limelight m_Limelight = new Limelight();
+  //public final Limelight m_Limelight = new Limelight();
 
   //commands
    
@@ -50,7 +49,7 @@ public class RobotContainer {
   }
   public void robotInit() {
    // m_apriltag.start();
-   m_Limelight.start();
+   //m_Limelight.start();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -70,14 +69,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    m_Drivetrain.resetPose(new Pose2d());
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile("ForwardPath");
-    
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
-    //return m_auto.getCommand();
+      return m_auto.getCommand();
   }
   
   public void teleopInit() {
