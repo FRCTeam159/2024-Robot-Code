@@ -67,7 +67,7 @@ public class Drivetrain extends SubsystemBase {
 
 
   static int count = 0;
-  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
   double last_heading = 0; 
   SwerveModulePosition[] m_positions = {
       new SwerveModulePosition(), new SwerveModulePosition(),
