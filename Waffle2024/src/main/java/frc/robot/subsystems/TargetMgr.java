@@ -93,7 +93,8 @@ public class TargetMgr {
         position = UNKNOWN;
         alliance = UNKNOWN;
         // start_pose_set=true;
-        if (tags == null) return;
+        if (tags == null) 
+            return;
         
         if (tags.length > 0) {
             AprilTag closest = tags[0];

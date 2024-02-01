@@ -5,7 +5,6 @@ import java.util.TimerTask;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * BNO055 IMU for the FIRST Robotics Competition.
@@ -66,7 +65,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  *MIT license, all text above must be included in any redistribution
  *
  */
-public class BNO055 implements Gyro{
+public class BNO055 {
 	//Tread variables
 	private java.util.Timer executor;
 	private static final long THREAD_PERIOD = 20; //ms - max poll rate on sensor.
@@ -996,26 +995,7 @@ public class BNO055 implements Gyro{
 		headingOffset = getHeading();
 	}
 
-	@Override
-	public void close() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void calibrate() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public double getAngle() {
 		return -getHeading();
-	}
-
-	@Override
-	public double getRate() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }

@@ -1,11 +1,10 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithGamepad;
@@ -15,9 +14,7 @@ import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
 //import frc.robot.subsystems.DetectorAprilTag;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.TagDetector;
-import frc.robot.subsystems.TargetMgr;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -33,11 +30,7 @@ public class RobotContainer {
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
-  private final Arm m_Arm = new Arm();
-  private final TagDetector m_TagDetector = new TagDetector(m_Drivetrain);
-
-  //private final Camera m_Camera = new Camera();
-  public final Limelight m_Limelight = new Limelight();
+  private final TagDetector m_detector= new TagDetector(m_Drivetrain);
 
   //commands
   private final ShootNote m_shootNote = new ShootNote();
@@ -55,7 +48,7 @@ public class RobotContainer {
     configureBindings();
   }
   public void robotInit() {
-    m_TagDetector.start();
+      m_detector.start();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -75,16 +68,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    m_Drivetrain.resetPose(new Pose2d());
-    // Load the path you want to follow using its name in the GUI
-    //PathPlannerPath path = PathPlannerPath.fromPathFile("ForwardPath");
-    
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    //return AutoBuilder.followPath(path);
-    //return m_auto.getCommand();
-
-    return AutoBuilder.buildAuto("BlueCenter");
+      return m_auto.getCommand();
   }
   
   public void teleopInit() {

@@ -63,6 +63,7 @@ public class Drivetrain extends SubsystemBase {
   Timer m_timer = new Timer();
 
   static boolean m_optimize=true;
+  static boolean m_usetags=true;
 
   boolean m_useTags=true;
 
@@ -221,6 +222,8 @@ public class Drivetrain extends SubsystemBase {
     m_field_oriented=SmartDashboard.getBoolean("Field Oriented" , m_field_oriented);
     m_useTags=SmartDashboard.getBoolean("Use Tags" , m_useTags);
     SmartDashboard.putBoolean("Switch" , input.get());
+    m_usetags=SmartDashboard.getBoolean("Use Tags", m_usetags);
+
     for(int i=0;i<modules.length;i++)
       modules[i].log();
     
@@ -293,15 +296,11 @@ public class Drivetrain extends SubsystemBase {
  
   @Override
   public void periodic() {
-    // if(!m_optimize && m_timer.get()> 0.5){
-    //   System.out.println("Drivetrain.reset after aligned="+wheelsAreAligned());
-    //   showWheelPositions();
-    //   m_optimize = true;
-    //   setOptimize(m_optimize);
-    //   resetPositions();
-    // }
     log();
   }
 
+  public boolean useTags() {
+      return  m_usetags;
+  }
 
 }

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-//import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -25,12 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import static frc.robot.Constants.*;
 
 public class Drivetrain extends SubsystemBase {
-  public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase); // 0.2949 metters
+  public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase);
   public static double delx = Units.inchesToMeters(0.5 * kFrontWheelBase);
-  public static final double kMaxAcceleration = 1.0;
-  public static final double kMaxVelocity = 7.0;
-  public static final double kMaxAngularAcceleration = Math.PI; // 1 rotations/s/s
-  public static final double kMaxAngularVelocity = 28; // radians/s
+  public static final double kMaxAcceleration = 1.0;  // m/s/s
+  public static final double kMaxVelocity = 3.5;  // m/s
+  public static final double kMaxAngularAcceleration = 2*Math.PI; // 1 rotations/s/s
+  public static final double kMaxAngularVelocity = 14; // radians/s
 
   private final Translation2d m_frontLeftLocation = new Translation2d(delx, dely);
 	private final Translation2d m_frontRightLocation = new Translation2d(delx, -dely);
@@ -69,16 +67,16 @@ public class Drivetrain extends SubsystemBase {
     //m_gyro.reset(); This is already called in resetOdometry()
 
     // Set drive inverted (right side is inverted, left is not)
-    m_frontLeft.setDriveInverted(true);
-    m_backLeft.setDriveInverted(true);
-    m_frontRight.setDriveInverted(false);
-    m_backRight.setDriveInverted(false);
+    m_frontLeft.setDriveInverted(false);
+    m_backLeft.setDriveInverted(false);
+    m_frontRight.setDriveInverted(true);
+    m_backRight.setDriveInverted(true);
 
-    // Set turn inverted (all are not inverted)
-    m_frontLeft.setTurnInverted(false);
-    m_backLeft.setTurnInverted(false);
-    m_frontRight.setTurnInverted(false);
-    m_backRight.setTurnInverted(false);
+    // Set turn inverted (all are inverted)
+    m_frontLeft.setTurnInverted(true);
+    m_backLeft.setTurnInverted(true);
+    m_frontRight.setTurnInverted(true);
+    m_backRight.setTurnInverted(true);
 
     resetOdometry();
   }

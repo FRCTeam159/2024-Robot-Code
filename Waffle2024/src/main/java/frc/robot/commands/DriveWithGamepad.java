@@ -10,9 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 
-import static frc.robot.Constants.*;
-import frc.robot.subsystems.Limelight;
-
 /** An example command that uses an example subsystem. */
 public class DriveWithGamepad extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -47,7 +44,6 @@ public class DriveWithGamepad extends Command {
   @Override
   public void execute() {
     driveWithJoystick(Drivetrain.isFieldOriented());
-    testLimelight();
   }
 
   // Called once the command ends or is interrupted.
@@ -75,25 +71,10 @@ public class DriveWithGamepad extends Command {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))* Drivetrain.kMaxAngularAcceleration;
-    if (DriveToTarget.currentMode != DriveToTarget.targetFound) {
-      m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
-    }
+    m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
+    
     // m_drive.driveForwardAll(xSpeed/10);
     // m_drive.turnAroundAll(rot/50);
   }
-  public void testLimelight() {
-    if (m_controller.getAButtonPressed()) {
-      if (DriveToTarget.getMode() == DriveToTarget.driverCam){
-      DriveToTarget.setMode(DriveToTarget.looking);
-      
-      } else {
-        
-      }
-    } else if (m_controller.getBButtonPressed()) {
-
-    } else if (m_controller.getXButtonPressed()) {
-
-    } else if (m_controller.getYButtonPressed()) {
-        }
-  }
+ 
 }
