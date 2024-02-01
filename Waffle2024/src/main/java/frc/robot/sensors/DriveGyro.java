@@ -6,6 +6,8 @@ package frc.robot.sensors;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class DriveGyro {
@@ -14,18 +16,38 @@ public class DriveGyro {
     NAVX,
     BNO55  
   } ;
-  gyros gyro_type=gyros.NAVX;
+  gyros gyro_type=gyros.FRC450;
   String gyro_name;
-  AHRS gyro;
-  /** Creates a new Gyros. */
+  AHRS navx=null;
+  ADXRS450_Gyro adx450=null;
+  BNO055 bno=null;
+  
+  /** Creates a new Gyro. */
   public DriveGyro(gyros type) {
     gyro_type=type;
     switch(type){
       default:
+      case FRC450:
+        adx450= new ADXRS450_Gyro();
+        gyro_name="FRC450";
+        break;
       case NAVX:
-        gyro= new AHRS(SerialPort.Port.kUSB);
+        navx= new AHRS(SerialPort.Port.kUSB);
         gyro_name="NAVX";
         break;
+      case BNO55:
+        {
+          int[] bnoOffsets = {0, -42, -8, -24, -3, 0, 2, 299, -59, -25, 523};
+          bno=BNO055.getInstance(
+            BNO055.opmode_t.OPERATION_MODE_IMUPLUS,
+            BNO055.vector_type_t.VECTOR_EULER,
+            I2C.Port.kMXP,
+            BNO055.BNO055_ADDRESS_A,
+            bnoOffsets
+            );
+        }
+        gyro_name="BN055";
+      break;
     }
   }
   public gyros getType(){
@@ -34,21 +56,29 @@ public class DriveGyro {
   public String toString(){
     return gyro_name;
   }
+  
   public void reset() {
-   gyro.reset();
-  }
-  public double getAngle() {
-    switch(gyro_type) {
+    switch(gyro_type){
       default:
       case FRC450:
-        return -gyro.getAngle();
+        adx450.reset();break;
       case NAVX:
-        return -gyro.getAngle();
+        navx.reset();break;
       case BNO55:
-        return gyro.getAngle();
+        bno.reset();break;
     }
   }
-  public double getRate() {
-    return gyro.getRate();
+
+  public double getAngle() {
+    switch(gyro_type){
+      default:
+      case FRC450:
+        return -adx450.getAngle();
+      case NAVX:
+        return -navx.getAngle();
+      case BNO55:
+        return bno.getAngle();
+    }
   }
+  
 }

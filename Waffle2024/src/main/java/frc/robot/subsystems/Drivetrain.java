@@ -64,9 +64,15 @@ public class Drivetrain extends SubsystemBase {
 
   static boolean m_optimize=true;
 
+  boolean m_useTags=true;
+
+  public boolean getUseTags() {
+    return m_useTags;
+  }
+
 
   static int count = 0;
-  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
   double last_heading = 0; 
   SwerveModulePosition[] m_positions = {
       new SwerveModulePosition(), new SwerveModulePosition(),
@@ -93,7 +99,7 @@ public class Drivetrain extends SubsystemBase {
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+        new PIDConstants(7.0, 0.0, 0.0), // Translation PID constants
         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
         4.5, // Max module speed, in m/s
         0.3, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -206,12 +212,14 @@ public class Drivetrain extends SubsystemBase {
     return m_field_oriented;
   }
   public void log() {
+   m_useTags=SmartDashboard.getBoolean("use tags", m_useTags);
     SmartDashboard.putNumber("Gyro", getHeading());
     Pose2d pose=getPose();
     String s=String.format("X:%-2.1f Y:%-2.1f H:%-2.1f",
     pose.getX(),pose.getY(),pose.getRotation().getDegrees());
     SmartDashboard.putString("Pose", s);
     m_field_oriented=SmartDashboard.getBoolean("Field Oriented" , m_field_oriented);
+    m_useTags=SmartDashboard.getBoolean("Use Tags" , m_useTags);
     SmartDashboard.putBoolean("Switch" , input.get());
     for(int i=0;i<modules.length;i++)
       modules[i].log();

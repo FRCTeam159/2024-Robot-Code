@@ -5,26 +5,20 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.DriveBack;
-import frc.robot.commands.DrivePath;
-import frc.robot.commands.DriveToAprilTag;
-import frc.robot.commands.DriveToPlatform;
-import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.DriveWithGamepad;
+import frc.robot.commands.ShootNote;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
 //import frc.robot.subsystems.DetectorAprilTag;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.SwerveModule;
+import frc.robot.subsystems.TagDetector;
 import frc.robot.subsystems.TargetMgr;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Autonomous;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,24 +33,29 @@ public class RobotContainer {
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
+  private final Arm m_Arm = new Arm();
+  private final TagDetector m_TagDetector = new TagDetector(m_Drivetrain);
 
   //private final Camera m_Camera = new Camera();
-  private final TargetMgr m_TargetMgr = new TargetMgr();
   public final Limelight m_Limelight = new Limelight();
 
   //commands
-   
+  private final ShootNote m_shootNote = new ShootNote();
+
   //private final DetectorAprilTag m_apriltag = new DetectorAprilTag(m_Camera);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
+    
+    // Commands
+    //NamedCommands.registerCommand("shootNote", m_shootNote);
+    
     // Configure the button bindings
     configureBindings();
   }
   public void robotInit() {
-   // m_apriltag.start();
-   m_Limelight.start();
+    m_TagDetector.start();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -79,11 +78,13 @@ public class RobotContainer {
     // An example command will be run in autonomous
     m_Drivetrain.resetPose(new Pose2d());
     // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile("ForwardPath");
+    //PathPlannerPath path = PathPlannerPath.fromPathFile("ForwardPath");
     
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    //return AutoBuilder.followPath(path);
     //return m_auto.getCommand();
+
+    return AutoBuilder.buildAuto("BlueCenter");
   }
   
   public void teleopInit() {
