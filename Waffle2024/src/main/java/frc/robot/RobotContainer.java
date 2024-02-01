@@ -5,10 +5,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithGamepad;
@@ -16,8 +12,7 @@ import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
 //import frc.robot.subsystems.DetectorAprilTag;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.TargetMgr;
+import frc.robot.subsystems.TagDetector;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -33,6 +28,8 @@ public class RobotContainer {
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
+  private final TagDetector m_detector= new TagDetector(m_Drivetrain);
+
 
   //private final Camera m_Camera = new Camera();
   //public final Limelight m_Limelight = new Limelight();
@@ -50,6 +47,7 @@ public class RobotContainer {
   public void robotInit() {
    // m_apriltag.start();
    //m_Limelight.start();
+    m_detector.start();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by

@@ -1,161 +1,252 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import frc.robot.objects.AprilTag;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class TargetMgr extends SubsystemBase {
+public class TargetMgr {
+    static ArrayList<TagTarget> targets=new ArrayList<>();
 
-  public static ArrayList<TagTarget> targets=new ArrayList<>();
+    static final public  int NO_TAGS=0;
+    static final public  int FIELD_TAGS=1;
 
-  static final public  int NO_TAGS=0;
-  static final public  int SINGLE_TAG=1;
-  static final public  int FRONT_TAGS=2;
-  static final public  int PERIMETER_TAGS=3;
-  static final public  int FIELD_TAGS=4;
+    static final public  int UNKNOWN=0;
+    static final public  int OUTSIDE=1;
+    static final public  int CENTER=2;
+    static final public  int INSIDE=3;
 
-  public static Translation3d field_center_offset=new Translation3d(325.4,157,0); 
+    static final public  int RED=1;
+    static final public  int BLUE=2;
 
-  public static Translation3d robot_offset=new Translation3d(0,0,0);
-  public static Rotation3d robot_rotation=new Rotation3d(0,0,0);
-  public static Translation3d field_center=field_center_offset.times(Units.inchesToMeters(1));
+    static final String[] pStrings={"???","OUTSIDE","CENTER","INSIDE"};
+    static final String[] aStrings={"???","RED","BLUE"};
 
-  public static double targetSize=0.1524;
+    public static double targetSize=0.1524; //0.371; side of inner rectangle of apriltag (meters)
 
-  static int type=FIELD_TAGS;
+    public static Translation3d field_center_offset=new Translation3d(325.4,157,0); 
+   
+    public static Translation3d robot_offset=new Translation3d(0,0,0);
+    public static Rotation3d robot_rotation=new Rotation3d(0,0,0);
+    public static Translation3d field_center=field_center_offset.times(Units.inchesToMeters(1));
 
-  static void setFieldTargets(){
-    // data taken from inset in field drawing 5 of 7
+    static int type=FIELD_TAGS;  // changed by init function
 
-    Translation3d tags[]={
-    new Translation3d(610.77,42.19,18.22), // 1 180
-    new Translation3d(610.77,108.19,18.22),// 2 180
-    new Translation3d(610.77,174.19,18.22),// 3 180 - drawing chart bug (says y=147)
-    new Translation3d(636.96,265.74,27.38),// 4 180
-    new Translation3d(14.45,265.74,27.38), // 5 0
-    new Translation3d(40.25,174.19,18.22), // 6 0   - drawing chart bug (says y=147)
-    new Translation3d(40.25,108.19,18.22), // 7 0
-    new Translation3d(40.25,42.19,18.22)   // 8 0
-    };
+    static int alliance=UNKNOWN;
+    static int position=UNKNOWN;
 
-    for(int i=0;i<tags.length;i++)
-        tags[i]=tags[i].times(Units.inchesToMeters(1)).minus(field_center);
-
-
-
-    // frc has 0,0 at lower left corner but for Gazebo 0,0 is center of field
-    // for display and simulation translate tags to field center
-
-    System.out.println("Robot:"+robot_offset);
-
-    for(int i=0;i<tags.length;i++){
-        Translation3d tag=robot_offset.minus(tags[i]);
-        double x=tag.getX();
-        double y=tag.getY();
-        double z=tag.getZ();
-        double tag_angle=i>3?Math.toRadians(180):0; // looking forward
-        Rotation3d tag_rotation=new Rotation3d(0,0,tag_angle);
-        Rotation3d robot_angle=robot_rotation.rotateBy(tag_rotation);
-        TagTarget tt=new TagTarget(i+1,x,y,z,robot_angle.getZ());
-        targets.add(tt); 
+    static Pose2d start_pose=new Pose2d();
+    static boolean start_pose_set=false;
+    public static boolean show_tag_info=false;
+    
+    static boolean field_relative=true;
+    static public void init(){ 
+        setFieldTargets();  
     }
-    System.out.println("tag offsets from FRC origin");
-    for(int i=0;i<targets.size();i++){
-        Translation3d tag=robotToFRC(targets.get(i).getTranslation());
-        System.out.println("id:"+(i+1)+" "+getString(tag));
+    public static boolean FRCfield(){
+        return true;
     }
-    System.out.println("\ntag offsets to robot");
-    for(int i=0;i<targets.size();i++)
-        System.out.println(targets.get(i));
-
-    System.out.println("\noffsets from field center");
-    System.out.println("robot "+getString(robot_offset.minus(field_center)));
-    for(int i=0;i<targets.size();i++){
-        Translation3d tag_frc=robotToFRC(targets.get(i).getTranslation());
-        Translation3d tag_center=tag_frc.minus(field_center);    // offsets to gazebo origin
-        System.out.println("id:"+(i+1)+" "+getString(tag_center));
+    static public void setFieldRelative(boolean b){
+        field_relative=b;
     }
-}
-
-static String getString(Translation3d t){
-    return String.format("x:%-2.2f y:%-2.2f z:%-2.2f",t.getX(),t.getY(),t.getZ());
-}
-static Translation3d robotToFRC(Translation3d loc){
-    return robot_offset.minus(loc);
-}
-static Translation2d robotToFRC(Translation2d loc, int tag_id){
-    TagTarget target=getTarget(tag_id);
-    Translation3d tag=robotToFRC(target.getTranslation());
-    Translation2d pos=tag.toTranslation2d().plus(loc);
-    //System.out.println(tag_id+" "+pos+" "+tag+" "+loc);
-
-    return pos;
-}
-
-  /** Creates a new TargetMgr. */
-  public TargetMgr() {
-    setFieldTargets();
-  }
-
-  static public TagTarget getTarget(int i){
-    int id=(type==FIELD_TAGS)?i-1:i;
-    if(id<0 || id >targets.size())
-        return null;
-    //System.out.println(i+" "+id+" "+type);
-    return targets.get(id);
-}
-
-  static public class TagTarget {
-    Pose3d targetPose;
-    int targetID=0;
-
-    public TagTarget( int id, Pose3d pose) {
-        targetPose = pose;
-        targetID = id;
+    public static void clearStartPose(){
+        start_pose=new Pose2d();
+        start_pose_set=false;
+    }
+    public static Pose2d startPose(){
+        return start_pose;
+    }
+    public static Pose2d fieldToRobot(Pose2d r){
+        return r.relativeTo(start_pose);
+    }
+    static boolean fieldRelative(){
+        return field_relative;
+    }
+    Pose2d getFieldPose(Pose2d robotpose){
+        return robotpose;     
+    }
+    public static int getAlliance(){
+        return alliance;
+    }
+    public static int getStartPosition(){
+        return position;
     }
 
-    public TagTarget(int id, double x, double y, double z, double a) {
-        targetPose = new Pose3d(x,y,z,new Rotation3d(0,0,a));
-        targetID = id;
+    public static boolean startPoseSet(){
+        return start_pose_set;
+    }
+    public static Translation2d getTagTranslation(int id){
+        TagTarget target = getTarget(id);
+        Translation2d tag_trans = target.getPose().getTranslation().toTranslation2d();
+        if(start_pose_set)
+            tag_trans=tag_trans.minus(start_pose.getTranslation());
+        return tag_trans;
     }
     
-    public int getID(){ 
-        return targetID;
+    public static void setStartPose(AprilTag[] tags) {
+        position = UNKNOWN;
+        alliance = UNKNOWN;
+        // start_pose_set=true;
+        if (tags == null) 
+            return;
+        
+        if (tags.length > 0) {
+            AprilTag closest = tags[0];
+            double dp = 0;
+            if (tags.length > 1)
+                dp = Math.abs(closest.getPitch() - tags[1].getPitch());
+            // determine alliance and position
+            switch (closest.getTagId()) {
+            default:
+                break;
+            case 3: // offset tag red
+                alliance = RED;
+                position = INSIDE;
+                break;
+            case 4: // center tag red
+                alliance = RED;
+                if (dp > 2)
+                    position = OUTSIDE;
+                else if (dp > 0)
+                    position = CENTER;
+                break;
+            case 7: // center tag blue
+                alliance = BLUE;
+                if (dp > 2)
+                    position = INSIDE;
+                else if (dp > 0)
+                    position = CENTER;
+                break;
+            case 8: // offset tag blue
+                alliance = BLUE;
+                position = OUTSIDE;
+                break;
+            }
+        }
+        SmartDashboard.putString("Alliance", aStrings[alliance]);
+        SmartDashboard.putString("Position", pStrings[position]);
     }
-    public Pose3d getPose(){
-        return targetPose;
+    static void setFieldTargets(){
+        // data taken from inset in field drawing 4 of 6
+
+        TagTarget tags[]={
+            new TagTarget(1,593,9.68,53.68,120),
+            new TagTarget(2,637,34.8,53.68,120),
+            new TagTarget(3,652,196,57,180), // red speaker 
+            new TagTarget(4,652,218,57,180), // red speaker middle
+            new TagTarget(5,578,323,53,270),
+            new TagTarget(6,72.5,323,53,270), 
+            new TagTarget(7,-1.5,218,57,0), // blue speaker middle
+            new TagTarget(8,-1.5,196,57,0), // blue speaker
+            new TagTarget(9,14,34,53,60),
+            new TagTarget(10,57,9.7,53,60),
+            new TagTarget(11,468,146,52,300),
+            new TagTarget(12,468,177,52,60),
+            new TagTarget(13,441,161,52,180),
+            new TagTarget(14,209,161,52,0),
+            new TagTarget(15,182,177,52,120),
+            new TagTarget(15,182,146,52,240),
+        };
+
+        for(int i=0;i<tags.length;i++)
+            tags[i].scale(Units.inchesToMeters(1));
+
+        for(int i=0;i<tags.length;i++){
+           
+            targets.add(tags[i]); 
+        }
+        if(show_tag_info){
+        System.out.println("tag offsets from FRC origin");
+        for(int i=0;i<targets.size();i++){
+            Translation3d tag=targets.get(i).getTranslation();
+            System.out.println("id:"+(i+1)+" "+getString(tag));
+        }
     }
-    public Translation3d getTranslation(){
-        return targetPose.getTranslation();
+     
     }
-    public double getTargetSize(){
-        return targetSize;
+    static String getString(Translation3d t){
+        return String.format("x:%-2.2f y:%-2.2f z:%-2.2f",t.getX(),t.getY(),t.getZ());
+    }
+  
+    static Translation3d fromField(Translation3d tt){
+        return tt.minus(field_center);
+    }
+    static Translation2d fromField(Translation2d tt){
+        return tt.minus(field_center.toTranslation2d());
+    }
+    
+    static public int maxTargetId(){
+       int i=numTargets();
+       return i;
+    }
+    static public int minTargetId(){
+       return 1;
+    }
+    static public int numTargets(){
+        return 16;   
+    }
+    static public TagTarget getTarget(int i){
+        int id=i-1;
+        if(id<0 || id >targets.size())
+            return null;
+        return targets.get(id);
     }
 
-    public TagTarget moveTo(Translation3d loc){
-        Translation3d trans=loc.minus(targetPose.getTranslation());
-        Pose3d pose=new Pose3d(trans,targetPose.getRotation());
-        return new TagTarget(targetID,pose);
+    static boolean tagsPresent(){
+        return type == NO_TAGS ?false:true;
     }
-    public String toString(){
-        double angle=targetPose.getRotation().toRotation2d().getDegrees();
-        return String.format("id:%d x:%-2.1f y:%2.1f z:%1.2f a:%3.1f",
-        targetID,targetPose.getX(),targetPose.getY(),targetPose.getZ(),angle);
-    }
-   
-}
+    static public class TagTarget {
+        Pose3d targetPose;
+        int targetID=0;
+    
+        public TagTarget( int id, Pose3d pose) {
+            targetPose = pose;
+            targetID = id;
+        }
+    
+        public void scale(double inchesToMeters) {
+            Translation3d t=getTranslation();
+            t=t.times(inchesToMeters);
+        }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+        public TagTarget(int id, double x, double y, double z, double a) {
+            targetPose = new Pose3d(x,y,z,new Rotation3d(0,0,a));
+            targetID = id;
+        }
+        
+        public int getID(){ 
+            return targetID;
+        }
+        public Pose3d getPose(){
+            return targetPose;
+        }
+        public Translation3d getTranslation(){
+            return targetPose.getTranslation();
+        }
+        public Rotation3d getRotation(){
+            return targetPose.getRotation();
+        }
+        public double getTargetSize(){
+            return targetSize;
+        }
+
+        public TagTarget moveTo(Translation3d loc){
+            Translation3d trans=loc.minus(targetPose.getTranslation());
+            Pose3d pose=new Pose3d(trans,targetPose.getRotation());
+            return new TagTarget(targetID,pose);
+        }
+        public String toString(){
+            double angle=targetPose.getRotation().toRotation2d().getDegrees();
+            return String.format("id:%d x:%-2.1f y:%2.1f z:%1.2f a:%3.1f",
+            targetID,targetPose.getX(),targetPose.getY(),targetPose.getZ(),angle);
+        }
+       
+    }
+    
 }
