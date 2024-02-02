@@ -5,6 +5,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithGamepad;
@@ -32,17 +34,11 @@ public class RobotContainer {
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
   private final TagDetector m_detector= new TagDetector(m_Drivetrain);
 
-  //commands
-  private final ShootNote m_shootNote = new ShootNote();
-
   //private final DetectorAprilTag m_apriltag = new DetectorAprilTag(m_Camera);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
-    
-    // Commands
-    //NamedCommands.registerCommand("shootNote", m_shootNote);
     
     // Configure the button bindings
     configureBindings();

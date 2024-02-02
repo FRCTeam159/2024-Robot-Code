@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DriveProgram;
+import frc.robot.commands.ShootNote;
 
 public class Autonomous extends SubsystemBase {
   //PathPlannerTrajectory examplePath = PathPlanner.loadPath("Example path", new PathConstraints(4,3));
@@ -41,6 +44,9 @@ public class Autonomous extends SubsystemBase {
   static double yp=YF;
   static double rp=RF;
 
+  // Commands
+  public final ShootNote m_shootNote = new ShootNote();
+
   /** Creates a new Autonomous. */
   public Autonomous(Drivetrain drive) {
     m_drive = drive;
@@ -48,6 +54,8 @@ public class Autonomous extends SubsystemBase {
     m_path_chooser.addOption("Program", PROGRAM);
     m_path_chooser.addOption("AutoTest", AUTOTEST);
    // m_path_chooser.addOption("Calibrate", CALIBRATE);
+
+    SmartDashboard.putData(m_path_chooser);
 
     SmartDashboard.putNumber("xPath", xp);
     SmartDashboard.putNumber("yPath", yp);
@@ -80,8 +88,11 @@ public class Autonomous extends SubsystemBase {
     // An example command will be run in autonomous
     m_drive.resetPose(new Pose2d());
     // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile("ForwardPath");   
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+
+    // Commands
+    NamedCommands.registerCommand("shootNote", m_shootNote);
+
+    return AutoBuilder.buildAuto("BlueCenter");
   }
 }

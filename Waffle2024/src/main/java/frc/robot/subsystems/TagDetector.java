@@ -221,8 +221,8 @@ public class TagDetector extends Thread {
           SmartDashboard.putString("Detect", s);
         }
         
-        if (!TargetMgr.tagsPresent() || !m_drivetrain.useTags() || tags==null) {
-          System.out.println("No tags detected");
+        if (/*!TargetMgr.tagsPresent() ||*/ !m_drivetrain.useTags() || tags==null) {
+          //System.out.println("No tags detected");
           TargetMgr.setStartPose(tags);
           ouputStream.putFrame(mat);
           continue;

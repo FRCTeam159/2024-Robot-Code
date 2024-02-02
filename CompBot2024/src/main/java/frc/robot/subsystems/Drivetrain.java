@@ -26,9 +26,9 @@ public class Drivetrain extends SubsystemBase {
   public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase);
   public static double delx = Units.inchesToMeters(0.5 * kFrontWheelBase);
   public static final double kMaxAcceleration = 1.0;  // m/s/s
-  public static final double kMaxVelocity = 3.5;  // m/s
+  public static final double kMaxVelocity = 7;  // m/s
   public static final double kMaxAngularAcceleration = 2*Math.PI; // 1 rotations/s/s
-  public static final double kMaxAngularVelocity = 14; // radians/s
+  public static final double kMaxAngularVelocity = 28; // radians/s
 
   private final Translation2d m_frontLeftLocation = new Translation2d(delx, dely);
 	private final Translation2d m_frontRightLocation = new Translation2d(delx, -dely);
