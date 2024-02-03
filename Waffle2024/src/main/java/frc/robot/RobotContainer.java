@@ -31,8 +31,10 @@ public class RobotContainer {
   //Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Autonomous m_auto = new Autonomous(m_Drivetrain);
-  private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
+  private final Arm m_arm = new Arm();
+  private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_arm, m_Controller);
   private final TagDetector m_detector= new TagDetector(m_Drivetrain);
+
 
   //private final DetectorAprilTag m_apriltag = new DetectorAprilTag(m_Camera);
 

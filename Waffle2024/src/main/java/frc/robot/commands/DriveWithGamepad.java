@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
@@ -15,20 +17,23 @@ public class DriveWithGamepad extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final XboxController m_controller;
   private final Drivetrain m_drive;
+  private final Arm m_arm;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
+  private double m_armPos = 0;
  
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveWithGamepad(Drivetrain drive, XboxController controller) {
+  public DriveWithGamepad(Drivetrain drive, Arm arm, XboxController controller) {
     m_drive = drive;
+    m_arm =  arm;
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -44,6 +49,7 @@ public class DriveWithGamepad extends Command {
   @Override
   public void execute() {
     driveWithJoystick(Drivetrain.isFieldOriented());
+    useArm();
   }
 
   // Called once the command ends or is interrupted.
@@ -76,5 +82,15 @@ public class DriveWithGamepad extends Command {
     // m_drive.driveForwardAll(xSpeed/10);
     // m_drive.turnAroundAll(rot/50);
   }
- 
+  private void useArm(){
+    if(m_controller.getAButtonPressed()){
+      m_arm.setAngle(Constants.kPickup);
+    }
+    if(m_controller.getBButtonPressed()){
+      m_arm.setAngle(Constants.kSpeaker);
+    }
+    if(m_controller.getXButtonPressed()){
+      m_arm.setAngle(Constants.kAmp);
+    }
+  }
 }
