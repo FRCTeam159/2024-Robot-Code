@@ -185,10 +185,6 @@ public class SwerveModule extends SubsystemBase {
       String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n", 
       velocity,state.speedMetersPerSecond,set_drive,Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn); 
       SmartDashboard.putString(name, s);
-      // if((cnt%10)==0){
-      //     System.out.println(name+" "+s);
-      // }
-      // cnt++;
     }   
   }
 
@@ -217,15 +213,28 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor.setVoltage(dist);
   }
  
-  @Override
+  public void resetWheel(){
+    setAngle(0,0);
+  }
+  public boolean wheelReset(){
+    return m_turningPIDController.atSetpoint();
+  }
+   // use a PID controller to set an explicit turn angle
+  public void setAngle(double a, double d){
+    double r=Math.toRadians(a);
+    m_turningPIDController.setSetpoint(r);
+    double current=getRotation2d().getRadians(); // rotations in radians
+    double turnOutput = m_turningPIDController.calculate(current,r);
+    m_driveMotor.set(d);
+    m_turningMotor.set(turnOutput); 
+  }
+
+   @Override
   public void periodic() {
     if(debug)
       log();
     // This method will be called once per scheduler run
   }
 
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+ 
 }

@@ -10,8 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithGamepad;
-import frc.robot.commands.ShootNote;
-import frc.robot.subsystems.Arm;
+//import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
 //import frc.robot.subsystems.DetectorAprilTag;
@@ -33,8 +32,6 @@ public class RobotContainer {
   private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
   private final TagDetector m_detector= new TagDetector(m_Drivetrain);
-
-  //private final DetectorAprilTag m_apriltag = new DetectorAprilTag(m_Camera);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

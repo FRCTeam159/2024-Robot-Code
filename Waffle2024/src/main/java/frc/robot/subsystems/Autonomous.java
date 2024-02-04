@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DriveProgram;
-import frc.robot.commands.ShootNote;
+//import frc.robot.commands.ShootNote;
 
 public class Autonomous extends SubsystemBase {
   //PathPlannerTrajectory examplePath = PathPlanner.loadPath("Example path", new PathConstraints(4,3));
@@ -45,7 +45,7 @@ public class Autonomous extends SubsystemBase {
   static double rp=RF;
 
   // Commands
-  public final ShootNote m_shootNote = new ShootNote();
+  //public final ShootNote m_shootNote = new ShootNote();
 
   /** Creates a new Autonomous. */
   public Autonomous(Drivetrain drive) {
@@ -91,7 +91,7 @@ public class Autonomous extends SubsystemBase {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
 
     // Commands
-    NamedCommands.registerCommand("shootNote", m_shootNote);
+    //NamedCommands.registerCommand("shootNote", m_shootNote);
 
     return AutoBuilder.buildAuto("BlueCenter");
   }
