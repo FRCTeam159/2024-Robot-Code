@@ -41,5 +41,11 @@ public final class Constants {
 
     public static final int kSpareSpark = 9;    
 
+    public static final double kPickup = 0; 
+    public static final double kSpeaker = 10;
+    public static final double kAmp = 95;
+    
+    public static final double kArmGearRatio = 144.0 * 0.1;
     
 }
+ 
