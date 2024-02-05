@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithGamepad;
+import frc.robot.subsystems.Arm;
 //import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
 //import frc.robot.subsystems.Camera;
