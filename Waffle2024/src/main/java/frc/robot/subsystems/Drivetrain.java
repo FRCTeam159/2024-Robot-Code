@@ -66,6 +66,7 @@ public class Drivetrain extends SubsystemBase {
   static boolean m_usetags=true;
 
   boolean m_useTags=true;
+  boolean m_resetting=false;
 
   public boolean getUseTags() {
     return m_useTags;
@@ -271,9 +272,28 @@ public class Drivetrain extends SubsystemBase {
     // m_timer.reset();
   }
  
-  // public static boolean resetting(){
-  //   return !m_optimize;
-  // }
+  // reset wheels turn motor to starting position
+  public void resetWheels(boolean begin){
+    if(!begin){
+      m_resetting=true;
+		  System.out.println("Drivetrain-ALIGNING_WHEELS");
+    }
+    for(int i=0;i<modules.length;i++){
+      modules[i].resetWheel();
+    }
+	}
+	
+  // return true if all wheels are reset
+  public boolean wheelsReset(){
+    for(int i=0;i<modules.length;i++){
+      if(!modules[i].wheelReset())
+        return false;     
+    }
+    m_resetting=false;
+		System.out.println("Drivetrain-WHEELS_ALIGNED");
+		return true;
+	}
+  // another way to check if wheels are realighned
   public boolean wheelsAreAligned(){
     for(int i=0;i<modules.length;i++){
       for(int j=0;j<modules.length;j++){
