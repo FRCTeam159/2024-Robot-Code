@@ -82,7 +82,7 @@ public class Autonomous extends SubsystemBase {
   }
 
   public Command driveProgram() {
-    return new DriveProgram(m_drive);
+    return new DriveProgram(m_drive,false,false);
   }
  public Command drivePathplanner() {
     // An example command will be run in autonomous
