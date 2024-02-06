@@ -20,12 +20,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import static frc.robot.Constants.*;
 
-import org.ejml.simple.SimpleSparseOperations;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -52,7 +51,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn,3);
   private final SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, 4);
 
-  public static boolean m_field_oriented=true;
+  public static boolean m_field_oriented=false;
 
   //private final SwerveModule[] modules={m_frontLeft,m_frontRight,m_backRight,m_backLeft};
   private final SwerveModule[] modules={m_frontLeft,m_frontRight,m_backLeft,m_backRight};
@@ -84,6 +83,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("Field" , m_Field2d);
     SmartDashboard.putBoolean("Field Oriented" , m_field_oriented);
     SmartDashboard.putBoolean("Switch" , false);
+    SmartDashboard.putBoolean("Use Tags", m_usetags);
     //SmartDashboard.putBoolean("optimize", m_optimize);
     //m_gyro.reset(); This is already called in resetOdometry()
 
@@ -129,8 +129,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void resetPositions() {
-    for(int i=0;i<modules.length;i++)
+    for(int i=0;i<modules.length;i++){
       modules[i].reset();
+    }
     updatePositions();
   }
 

@@ -5,16 +5,14 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.ControlArm;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.subsystems.Arm;
 //import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
-//import frc.robot.subsystems.Camera;
-//import frc.robot.subsystems.DetectorAprilTag;
+
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,18 +25,23 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final XboxController m_Controller = new XboxController(0);
+  private final XboxController m_controller = new XboxController(0);
   //Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Autonomous m_auto = new Autonomous(m_Drivetrain);
-  private final Arm m_arm = new Arm();
-  private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_arm, m_Controller);
+  private Arm m_arm = new Arm();
+  private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_controller);
   private final TagDetector m_detector= new TagDetector(m_Drivetrain);
+
+  public static boolean m_have_arm=false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
-    
+    if(m_have_arm){
+      m_arm = new Arm();
+      m_arm.setDefaultCommand(new ControlArm(m_arm,m_controller));
+    } 
     // Configure the button bindings
     configureBindings();
   }

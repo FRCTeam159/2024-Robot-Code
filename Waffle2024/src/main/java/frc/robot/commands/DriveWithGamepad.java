@@ -8,32 +8,35 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import javax.lang.model.util.ElementScanner14;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 
 /** An example command that uses an example subsystem. */
 public class DriveWithGamepad extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+
   private final XboxController m_controller;
   private final Drivetrain m_drive;
-  private final Arm m_arm;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-  private double m_armPos = 0;
- 
+  boolean resetting=false;
+  static boolean alignment_test=true;
+
+  AlignWheels m_align=null;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveWithGamepad(Drivetrain drive, Arm arm, XboxController controller) {
+  public DriveWithGamepad(Drivetrain drive, XboxController controller) {
     m_drive = drive;
-    m_arm =  arm;
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -49,7 +52,6 @@ public class DriveWithGamepad extends Command {
   @Override
   public void execute() {
     driveWithJoystick(Drivetrain.isFieldOriented());
-    useArm();
   }
 
   // Called once the command ends or is interrupted.
@@ -65,32 +67,47 @@ public class DriveWithGamepad extends Command {
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed =-m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.2)) * Drivetrain.kMaxVelocity;
+    final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.2))
+        * Drivetrain.kMaxVelocity;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.2)) * Drivetrain.kMaxVelocity;
+    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.2))
+        * Drivetrain.kMaxVelocity;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))* Drivetrain.kMaxAngularAcceleration;
-    m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
-    
-    // m_drive.driveForwardAll(xSpeed/10);
-    // m_drive.turnAroundAll(rot/50);
+
+    if (!testAlign()) {
+      final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))
+          * Drivetrain.kMaxAngularAcceleration;
+      m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
+    }
+   
   }
-  private void useArm(){
-    if(m_controller.getAButtonPressed()){
-      m_arm.setAngle(Constants.kPickup);
+
+  boolean testAlign() {
+    if (!alignment_test)
+      return false;
+    if (m_controller.getYButtonPressed()) {
+      if(!resetting){
+        m_align=new AlignWheels(m_drive,2.0);
+        m_align.initialize();
+        m_drive.resetWheels(true);
+        resetting=true;
+      }
+      else
+        resetting=false;
     }
-    if(m_controller.getBButtonPressed()){
-      m_arm.setAngle(Constants.kSpeaker);
+    if (resetting) {
+        if(m_align.isFinished())
+          resetting=false;
+        else
+          m_align.execute();
     }
-    if(m_controller.getXButtonPressed()){
-      m_arm.setAngle(Constants.kAmp);
-    }
-  }
+    return resetting;
+  } 
 }

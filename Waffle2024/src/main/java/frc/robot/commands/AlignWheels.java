@@ -12,6 +12,7 @@ public class AlignWheels extends Command {
   private final Timer m_timer = new Timer();
   private final Drivetrain m_drive;
   double timeout;
+  boolean done=false;
   /** Creates a new AlignWheels. */
   public AlignWheels(Drivetrain drive, double tm) {
     m_drive=drive;
@@ -32,18 +33,24 @@ public class AlignWheels extends Command {
   public void execute() {
     if(!m_drive.wheelsReset())
       m_drive.resetWheels(false);
+    else{
+      timeout=0.2;
+      done=true;
+      m_drive.resetOdometry();
+    }     
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+     if(!done)
+      m_drive.resetOdometry();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if(m_timer.get()>timeout)
-      return true;
-    if(m_drive.wheelsReset())
       return true;
     return false;
   }
