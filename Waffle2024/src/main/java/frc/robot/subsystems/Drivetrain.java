@@ -53,7 +53,6 @@ public class Drivetrain extends SubsystemBase {
 
   public static boolean m_field_oriented=false;
 
-  //private final SwerveModule[] modules={m_frontLeft,m_frontRight,m_backRight,m_backLeft};
   private final SwerveModule[] modules={m_frontLeft,m_frontRight,m_backLeft,m_backRight};
 
   DigitalInput input = new DigitalInput(0);
@@ -62,13 +61,12 @@ public class Drivetrain extends SubsystemBase {
   Timer m_timer = new Timer();
 
   static boolean m_optimize=true;
-  static boolean m_usetags=true;
+  static boolean m_showtags=false;
 
-  boolean m_useTags=true;
   boolean m_resetting=false;
 
-  public boolean getUseTags() {
-    return m_useTags;
+  public boolean getShowTags() {
+    return m_showtags;
   }
 
 
@@ -83,10 +81,8 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("Field" , m_Field2d);
     SmartDashboard.putBoolean("Field Oriented" , m_field_oriented);
     SmartDashboard.putBoolean("Switch" , false);
-    SmartDashboard.putBoolean("Use Tags", m_usetags);
-    //SmartDashboard.putBoolean("optimize", m_optimize);
-    //m_gyro.reset(); This is already called in resetOdometry()
-
+    SmartDashboard.putBoolean("ShowTags", m_showtags);
+   
     m_frontLeft.setDriveInverted(false);
     m_backLeft.setDriveInverted(false);
     
@@ -122,10 +118,6 @@ public class Drivetrain extends SubsystemBase {
       },
       this // Reference to this subsystem to set requirements
     );
-  }
-
-  public boolean centerPosition(){
-    return input.get();
   }
 
   private void resetPositions() {
@@ -215,21 +207,17 @@ public class Drivetrain extends SubsystemBase {
     return m_field_oriented;
   }
   public void log() {
-   m_useTags=SmartDashboard.getBoolean("use tags", m_useTags);
     SmartDashboard.putNumber("Gyro", getHeading());
     Pose2d pose=getPose();
     String s=String.format("X:%-2.1f Y:%-2.1f H:%-2.1f",
     pose.getX(),pose.getY(),pose.getRotation().getDegrees());
     SmartDashboard.putString("Pose", s);
     m_field_oriented=SmartDashboard.getBoolean("Field Oriented" , m_field_oriented);
-    m_useTags=SmartDashboard.getBoolean("Use Tags" , m_useTags);
     SmartDashboard.putBoolean("Switch" , input.get());
-    m_usetags=SmartDashboard.getBoolean("Use Tags", m_usetags);
+    m_showtags=SmartDashboard.getBoolean("ShowTags", m_showtags);
 
     for(int i=0;i<modules.length;i++)
       modules[i].log();
-    
-    //SmartDashboard.putBoolean("optimize", m_optimize);
   }
      
   /** Updates the field relative position of the robot. */
@@ -237,15 +225,6 @@ public class Drivetrain extends SubsystemBase {
     updatePositions();
     m_poseEstimator.update(getRotation2d(), m_positions);
     m_Field2d.setRobotPose(getPose());
-
-    // Also apply vision measurements. We use 0.3 seconds in the past as an example
-    // -- on
-    // a real robot, this must be calculated based either on latency or timestamps.
-    // m_poseEstimator.addVisionMeasurement(
-    // ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
-    // m_poseEstimator.getEstimatedPosition()),
-    // Timer.getFPGATimestamp() - 0.3);
-    
   }
 
   public void resetOdometry() {
@@ -275,7 +254,7 @@ public class Drivetrain extends SubsystemBase {
  
   // reset wheels turn motor to starting position
   public void resetWheels(boolean begin){
-    if(!begin){
+    if(begin){
       m_resetting=true;
 		  System.out.println("Drivetrain-ALIGNING_WHEELS");
     }
@@ -290,8 +269,9 @@ public class Drivetrain extends SubsystemBase {
       if(!modules[i].wheelReset())
         return false;     
     }
-    m_resetting=false;
-		System.out.println("Drivetrain-WHEELS_ALIGNED");
+    if(m_resetting)
+      System.out.println("Drivetrain-WHEELS_ALIGNED");
+    m_resetting = false;
 		return true;
 	}
   // another way to check if wheels are realighned
@@ -314,14 +294,12 @@ public class Drivetrain extends SubsystemBase {
     for(int i=0;i<modules.length;i++)
       modules[i].setOptimize(b);
   }
+   public boolean showTags() {
+      return  m_showtags;
+  }
  
   @Override
   public void periodic() {
     log();
   }
-
-  public boolean useTags() {
-      return  m_usetags;
-  }
-
 }

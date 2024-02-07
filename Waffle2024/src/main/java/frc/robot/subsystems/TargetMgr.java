@@ -15,6 +15,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TargetMgr {
     static ArrayList<TagTarget> targets=new ArrayList<>();
 
+    static final public double XC = 1.0; // forward
+    static final public double YC = 0;
+    static final public double RC = 0;
+
+    static final public double XF = 1.0; // forward
+    static final public double YF = -1.6;
+    static final public double RF = -60;
+
+    static final public double YR = -0.5; //reverse
+    static final public double XR = -2.1;
+    static final public double RR = 60;
+
     static final public  int NO_TAGS=0;
     static final public  int FIELD_TAGS=1;
 
@@ -39,16 +51,27 @@ public class TargetMgr {
 
     static int type=FIELD_TAGS;  // changed by init function
 
-    static int alliance=UNKNOWN;
-    static int position=UNKNOWN;
+    public static int alliance=BLUE;
+    public static int position=OUTSIDE;
+    public static boolean reversed=false;
 
     static Pose2d start_pose=new Pose2d();
     static boolean start_pose_set=false;
     public static boolean show_tag_info=false;
     
     static boolean field_relative=true;
+    
+
+    public TargetMgr(){
+        SmartDashboard.putString("Alliance", aStrings[alliance]);
+        SmartDashboard.putString("Position", pStrings[position]);
+        SmartDashboard.putBoolean("reversed", reversed);   
+    }
     static public void init(){ 
         setFieldTargets();  
+    }
+    public static String getStartString(){
+        return aStrings[alliance]+"-"+pStrings[position];
     }
     public static boolean FRCfield(){
         return true;
@@ -58,6 +81,9 @@ public class TargetMgr {
     }
     public static void clearStartPose(){
         start_pose=new Pose2d();
+        start_pose_set=false;
+    }
+    public static void reset(){
         start_pose_set=false;
     }
     public static Pose2d startPose(){
@@ -90,19 +116,19 @@ public class TargetMgr {
         return tag_trans;
     }
     
-public static Pose2d getTarget(boolean reversed) {
-        double XF = 1.0; // forward
-        double YF = -1.6;
-        double RF = -60;
-
-        double YR = -0.5; //reverse
-        double XR = -2.1;
-        double RR = 60;
-
-        double xr = XR;  // center
+    public static void setTarget(int side, int pos, boolean rev){
+        alliance=side;
+        position=pos;
+        reversed=rev;
+        SmartDashboard.putString("Alliance", aStrings[alliance]);
+        SmartDashboard.putString("Position", pStrings[position]);
+        SmartDashboard.putBoolean("reversed", reversed);
+    }
+    public static Pose2d getTarget(boolean reversed) {
+        double xr = XC;  // center
         double yr = 0;
         double rr = 0;
-        double xf = -XR;
+        double xf = -XC;
         double yf = 0;
         double rf = 0;
         if ((alliance == TargetMgr.RED && position == TargetMgr.OUTSIDE) ||
@@ -131,10 +157,9 @@ public static Pose2d getTarget(boolean reversed) {
     public static void setStartPose(AprilTag[] tags) {
         position = UNKNOWN;
         alliance = UNKNOWN;
-        // start_pose_set=true;
-        if (tags == null) 
+        if(tags==null) 
             return;
-        
+        start_pose_set=true;
         if (tags.length > 0) {
             AprilTag closest = tags[0];
             double dp = 0;
@@ -170,6 +195,7 @@ public static Pose2d getTarget(boolean reversed) {
         }
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
+        SmartDashboard.putBoolean("reversed", reversed);
     }
     static void setFieldTargets(){
         // data taken from inset in field drawing 4 of 6

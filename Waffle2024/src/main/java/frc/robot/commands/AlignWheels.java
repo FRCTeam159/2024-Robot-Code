@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
@@ -34,9 +35,10 @@ public class AlignWheels extends Command {
     if(!m_drive.wheelsReset())
       m_drive.resetWheels(false);
     else{
-      timeout=0.2;
+      //timeout=0.2;
       done=true;
       m_drive.resetOdometry();
+      m_drive.resetPose(new Pose2d());
     }     
   }
 
@@ -50,7 +52,7 @@ public class AlignWheels extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_timer.get()>timeout)
+    if(done || m_timer.get()>timeout)
       return true;
     return false;
   }

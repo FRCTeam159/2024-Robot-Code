@@ -19,7 +19,6 @@ import frc.robot.commands.DriveProgram;
 //import frc.robot.commands.ShootNote;
 
 public class Autonomous extends SubsystemBase {
-  //PathPlannerTrajectory examplePath = PathPlanner.loadPath("Example path", new PathConstraints(4,3));
   public static boolean autoReset = false;
   Drivetrain m_drive;
 
@@ -30,7 +29,9 @@ public class Autonomous extends SubsystemBase {
 
   static public int trajectory_option = PATHPLANNER;
 
-  SendableChooser<Integer> m_path_chooser = new SendableChooser<Integer>();
+  static SendableChooser<Integer> m_path_chooser = new SendableChooser<Integer>();
+  static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
+  static SendableChooser<Integer> m_alliance_chooser = new SendableChooser<Integer>();
 
   static double XF=0.95;
   static double YF=-1.6;
@@ -40,9 +41,9 @@ public class Autonomous extends SubsystemBase {
   static double XR=-1.65;
   static double RR=60;
 
-  static double xp=XF;
-  static double yp=YF;
-  static double rp=RF;
+  static double xp=2;
+  static double yp=0;
+  static double rp=0;
 
   // Commands
   //public final ShootNote m_shootNote = new ShootNote();
@@ -61,6 +62,22 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putNumber("yPath", yp);
     SmartDashboard.putNumber("rPath", rp);
 
+    m_alliance_chooser.setDefaultOption("Blue", TargetMgr.BLUE);
+    m_alliance_chooser.addOption("Red", TargetMgr.RED);
+    SmartDashboard.putData(m_alliance_chooser);
+
+    m_position_chooser.setDefaultOption("Outside", TargetMgr.OUTSIDE);
+    m_position_chooser.addOption("Center", TargetMgr.CENTER);
+    m_position_chooser.addOption("Inside", TargetMgr.INSIDE);
+    
+    SmartDashboard.putData(m_position_chooser);
+
+  }
+  static public int getAlliance(){
+    return m_alliance_chooser.getSelected();
+  }
+  static public int getPosition(){
+    return m_position_chooser.getSelected();
   }
   public SequentialCommandGroup getCommand(){
     switch(trajectory_option){
