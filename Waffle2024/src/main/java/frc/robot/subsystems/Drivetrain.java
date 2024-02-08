@@ -233,6 +233,7 @@ public class Drivetrain extends SubsystemBase {
     m_poseEstimator.resetPosition(getRotation2d(),
         m_positions,
         new Pose2d(0, 0, new Rotation2d()));
+    last_heading=0;
   }
   public Pose2d getPose(){
     return m_poseEstimator.getEstimatedPosition();
