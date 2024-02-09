@@ -58,7 +58,7 @@ public class RobotContainer {
 
   public void autonomousInit() {
     m_Drivetrain.reset();
-    m_Drivetrain.resetOdometry();
+    //m_Drivetrain.resetOdometry();
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -70,6 +70,6 @@ public class RobotContainer {
   }
   
   public void teleopInit() {
-    m_Drivetrain.resetOdometry();
+    //m_Drivetrain.resetOdometry();
   }
 }

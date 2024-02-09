@@ -227,6 +227,14 @@ public class Drivetrain extends SubsystemBase {
     m_Field2d.setRobotPose(getPose());
   }
 
+  public void resetOdometry(Pose2d pose) {
+		 m_gyro.reset();
+    //resetPositions();
+    m_poseEstimator.resetPosition(getRotation2d(),
+        m_positions,
+        pose);
+    //last_heading=0;
+	}
   public void resetOdometry() {
     m_gyro.reset();
     resetPositions();

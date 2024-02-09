@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AlignWheels;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.ShootNote;
+import frc.robot.commands.Wait;
 
 public class Autonomous extends SubsystemBase {
   public static boolean autoReset = false;
@@ -84,14 +88,15 @@ public class Autonomous extends SubsystemBase {
       default:
       case PROGRAM:
         return new SequentialCommandGroup(
-          new AlignWheels(m_drive,2),
-          new DrivePath(m_drive)
+          new AlignWheels(m_drive,1),
+          new DrivePath(m_drive),
+          new AlignWheels(m_drive,1)
         );
       case AUTOTEST:
          return new SequentialCommandGroup(
-           new AlignWheels(m_drive,2),
+          // new AlignWheels(m_drive,2),
            new DrivePath(m_drive,true),
-           new AlignWheels(m_drive,2),
+          // new AlignWheels(m_drive,2),
            new DrivePath(m_drive,false)
          );
       case PATHPLANNER:
@@ -108,6 +113,20 @@ public class Autonomous extends SubsystemBase {
     // Commands
     //NamedCommands.registerCommand("shootNote", m_shootNote);
 
-    return AutoBuilder.buildAuto("BlueCenter");
+    //return AutoBuilder.buildAuto("BlueCenter");
+
+    // Paths
+    // Load the path you want to follow using its name in the GUI
+    PathPlannerPath path1 = PathPlannerPath.fromPathFile("BlueTopForward");
+    PathPlannerPath path2 = PathPlannerPath.fromPathFile("BlueTopBack");
+    Pose2d p = path1.getPreviewStartingHolonomicPose();
+    m_drive.resetOdometry(p);
+    return new SequentialCommandGroup(
+        AutoBuilder.followPath(path1),
+        // new ShootNote(),
+        new Wait(m_drive, 3.0),
+        AutoBuilder.followPath(path2)
+        //AutoBuilder.buildAuto("BlueCenter")
+    );
   }
 }
