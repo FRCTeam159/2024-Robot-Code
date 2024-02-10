@@ -21,8 +21,8 @@ public final class Constants {
     public static final double kDistPerRot =(Units.inchesToMeters(kWheelRadius)* 2*Math.PI)/kDriveGearRatio;
     public static final double kRadiansPerRot = Math.PI * 2/kTurnGearRatio;
 
-    public static final double kFrontWheelBase = 17; // distance bewteen front wheels
-	public static final double kSideWheelBase = 17;  // distance beteen side wheels
+    public static final double kFrontWheelBase = Units.inchesToMeters(19); // distance bewteen front wheels
+	public static final double kSideWheelBase = Units.inchesToMeters(15);  // distance beteen side wheels
 
     public static final int kImageWidth = 640;
     public static final int kImageHeight = 480;

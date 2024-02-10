@@ -23,6 +23,12 @@ public class Wait extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Debug
+    System.out.println("-");
+    System.out.println("Waiting started");
+    System.out.println("-");
+
+    // Reset timer
     m_timer.reset();
   }
 
@@ -34,7 +40,12 @@ public class Wait extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // Debug
+    System.out.println("-");
+    System.out.println("Waiting done");
+    System.out.println("-");
+  }
 
   // Returns true when the command should end.
   @Override

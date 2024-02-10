@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -117,16 +119,27 @@ public class Autonomous extends SubsystemBase {
 
     // Paths
     // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path1 = PathPlannerPath.fromPathFile("BlueTopForward");
-    PathPlannerPath path2 = PathPlannerPath.fromPathFile("BlueTopBack");
-    Pose2d p = path1.getPreviewStartingHolonomicPose();
-    m_drive.resetOdometry(p);
-    return new SequentialCommandGroup(
-        AutoBuilder.followPath(path1),
-        // new ShootNote(),
-        new Wait(m_drive, 3.0),
-        AutoBuilder.followPath(path2)
-        //AutoBuilder.buildAuto("BlueCenter")
-    );
+
+    String pathname="RightSideZeroed";
+    Pose2d p = PathPlannerAuto.getStaringPoseFromAutoFile(pathname);
+    //if(p!=null)
+        //m_drive.resetOdometry(p);
+    return AutoBuilder.buildAuto(pathname);
+    // List<PathPlannerPath> pathGroup = PathPlannerAuto.getPathGroupFromAutoFile(pathname);
+    // return new SequentialCommandGroup(
+    //   AutoBuilder.followPath(pathGroup.get(0)),
+    //   new Wait(m_drive, 3.0),
+    //   AutoBuilder.followPath(pathGroup.get(1))
+    // );
+
+    // PathPlannerPath path1 = PathPlannerPath.fromPathFile("BlueTopForward");
+    // PathPlannerPath path2 = PathPlannerPath.fromPathFile("BlueTopBack");
+    // Pose2d p = path1.getPreviewStartingHolonomicPose();
+    // m_drive.resetOdometry(p);
+    // return new SequentialCommandGroup(
+    //     AutoBuilder.followPath(path1),
+    //     new Wait(m_drive, 3.0),
+    //     AutoBuilder.followPath(path2)
+    // );
   }
 }

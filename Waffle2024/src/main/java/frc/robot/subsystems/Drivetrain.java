@@ -97,10 +97,10 @@ public class Drivetrain extends SubsystemBase {
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-        new PIDConstants(7.0, 0.0, 0.0), // Translation PID constants
-        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+        new PIDConstants(7.0, 1, 0.0), // Translation PID constants
+        new PIDConstants(5.0, 1, 0.0), // Rotation PID constants
         4.5, // Max module speed, in m/s
-        0.3, // Drive base radius in meters. Distance from robot center to furthest module.
+        /*Units.inchesToMeters(12.1)*/0.3, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig(false, false) // Default path replanning config. See the API for the options here
       ),
       () -> {
@@ -133,12 +133,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose){
-    System.out.println("resetPose working");
+    // System.out.println("resetPose working");
     m_poseEstimator.resetPosition(getRotation2d(), m_positions, pose);
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds(){
-    System.out.println("getRobotRelativeSpeeds working " + m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState()));
+    // System.out.println("getRobotRelativeSpeeds working " + m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState()));
     return m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState());
   }
 
@@ -199,7 +199,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void driveRobotRelative(ChassisSpeeds speed){
-    System.out.println("driveRobotRelative working");
+    //System.out.println("driveRobotRelative working");
     this.drive(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond, false);
   }
 
