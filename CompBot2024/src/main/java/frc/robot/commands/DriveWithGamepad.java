@@ -22,7 +22,7 @@ public class DriveWithGamepad extends Command {
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(2);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(1);
 
  
   /**
@@ -63,23 +63,27 @@ public class DriveWithGamepad extends Command {
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward. 
-    final var xSpeed =-m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getLeftY(), 0.2), 3)) * Drivetrain.kMaxVelocity;
+    final var xSpeed =-m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1)) * Drivetrain.kMaxVelocity;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = -m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getLeftX(), 0.2), 3)) * Drivetrain.kMaxVelocity;
+    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1)) * Drivetrain.kMaxVelocity;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))* Drivetrain.kMaxAngularVelocity;
+    final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.1), 5)) * Drivetrain.kMaxAngularVelocity;
     /*if (DriveToTarget.currentMode != DriveToTarget.targetFound)*/ {
       m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
     }
     // m_drive.driveForwardAll(xSpeed/10);
     // m_drive.turnAroundAll(rot/50);
+  }
+
+  public void logJoystick() {
+    
   }
   /*public void testLimelight() {
     if (m_controller.getAButtonPressed()) {
