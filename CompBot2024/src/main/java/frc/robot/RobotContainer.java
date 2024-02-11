@@ -16,6 +16,7 @@ import frc.robot.commands.DriveWithGamepad;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TagDetector;
+import frc.robot.Constants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,7 +48,7 @@ public class RobotContainer {
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
         new PIDConstants(7.0, 0.0, 0.0), // Translation PID constants
         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-        m_Drivetrain.kMaxVelocity, // Max module speed, in m/s
+        Constants.kMaxVelocity, // Max module speed, in m/s
         0.3, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig(false, false) // Default path replanning config. See the API for the options here
       ),

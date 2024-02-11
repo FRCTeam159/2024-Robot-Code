@@ -43,7 +43,7 @@ public class SwerveModule extends SubsystemBase {
   static double rotationsToRadians = 2 * Math.PI;
 
   // PID controllers for drive and steer motors
-  private final PIDController m_drivePIDController = new PIDController(2, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.2, 0, 0);
   private final PIDController m_turningPIDController = new PIDController(
       0.5,
       0,
@@ -55,7 +55,7 @@ public class SwerveModule extends SubsystemBase {
   // private final PIDController m_turningPIDController = new PIDController(7, 0,
   // 0);
 
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 1);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
   /**
@@ -200,6 +200,7 @@ public class SwerveModule extends SubsystemBase {
     double turnFeedforward = 0; // -m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     double set_drive = driveOutput + driveFeedforward;
+    set_drive = set_drive/kMaxVelocity; // Scale our output from 0:maxV to 0:1
     double set_turn = turnOutput + turnFeedforward;
 
     // System.out.println(set_drive);
@@ -212,8 +213,7 @@ public class SwerveModule extends SubsystemBase {
       String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n",
           velocity, state.speedMetersPerSecond, set_drive, Math.toDegrees(turn_angle), state.angle.getDegrees(),
           set_turn);
-      SmartDashboard.putString(name, s);
-
+      SmartDashboard.putString(name + "_debug_output", s);
     }
   }
 
@@ -221,7 +221,7 @@ public class SwerveModule extends SubsystemBase {
     String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n",
         getDistance(), getRotation2d().getDegrees(), getRotations());
     SmartDashboard.putString(name, s);
-
+    SmartDashboard.putNumber(name + "_velocity", getVelocity());
   }
 
   public boolean isInverted() {
@@ -237,9 +237,9 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor.setInverted(b);
   }
 
-  public void driveForward(double dist) {
+  public void driveForward(double velocity) {
     // dist = m_inverted? -dist: dist;
-    m_driveMotor.setVoltage(dist);
+    m_driveMotor.set(velocity);
   }
 
   public void turnAround(double dist) {

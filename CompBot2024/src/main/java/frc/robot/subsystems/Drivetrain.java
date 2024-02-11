@@ -23,13 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import static frc.robot.Constants.*;
 
 public class Drivetrain extends SubsystemBase {
-  public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase);
-  public static double delx = Units.inchesToMeters(0.5 * kFrontWheelBase);
-  public static final double kMaxAcceleration = 1.0;  // m/s/s
-  public static final double kMaxVelocity = 7;  // m/s
-  public static final double kMaxAngularAcceleration = 2*Math.PI; // 1 rotations/s/s
-  public static final double kMaxAngularVelocity = 28; // radians/s
-
   private final Translation2d m_frontLeftLocation = new Translation2d(delx, dely);
 	private final Translation2d m_frontRightLocation = new Translation2d(delx, -dely);
 	private final Translation2d m_backLeftLocation = new Translation2d(-delx, dely);
@@ -224,6 +217,7 @@ public class Drivetrain extends SubsystemBase {
     // m_optimize = false;
     // setOptimize(m_optimize);
     // m_timer.reset();
+    //resetOdometry();
   }
  
   // public static boolean resetting(){
