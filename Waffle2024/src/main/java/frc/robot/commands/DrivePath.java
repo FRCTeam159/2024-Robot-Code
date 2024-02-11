@@ -50,13 +50,7 @@ public class DrivePath extends Command {
   double elapsed = 0;
   int states;
   int intervals;
-  /** Creates a new ProgramPath. */
-  public DrivePath(Drivetrain drive) {
-    m_drive = drive;
-    m_reversed=Autonomous.getReversed();
-    addRequirements(drive);
-  }
-   public DrivePath(Drivetrain drive,boolean rev) {
+public DrivePath(Drivetrain drive,boolean rev) {
     m_reversed=rev;
     m_drive = drive;
     addRequirements(drive);
@@ -65,18 +59,19 @@ public class DrivePath extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("PROGRAMPATH_INIT");
+    System.out.println("DRIVEPATH_INIT");
     m_autoset=Autonomous.getAutoset();
     if(m_autoset){ // construct target from apriltags position
-      Pose2d target=TargetMgr.getTarget(m_reversed);
+      Pose2d target=TargetMgr.getTarget();
       xPath=target.getX();
       yPath=target.getY();
       rPath=target.getRotation().getRadians();
+
       SmartDashboard.putNumber("xPath", xPath);
       SmartDashboard.putNumber("yPath", yPath);
       SmartDashboard.putNumber("rPath", rPath);
     }
-    else {
+    else{ // set path manually
       xPath = SmartDashboard.getNumber("xPath", xPath);
       yPath = SmartDashboard.getNumber("yPath", yPath);
       rPath = SmartDashboard.getNumber("rPath", rPath);
@@ -91,6 +86,12 @@ public class DrivePath extends Command {
     }
     runtime = m_pptrajectory.getTotalTimeSeconds();
     states = m_pptrajectory.getStates().size();
+    intervals = (int) (runtime / 0.02);
+
+// important ! otherwise get rotation glitch at start or reverse path
+    m_ppcontroller.reset(m_drive.getPose(), new ChassisSpeeds());
+
+    System.out.println("runtime:" + runtime + " states:" + states + " intervals:" + intervals);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -105,7 +106,7 @@ public class DrivePath extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("PROGRAMPATH_END");
+    System.out.println("DRIVEPATH_END");
   }
 
   // Returns true when the command should end.
@@ -118,14 +119,19 @@ public class DrivePath extends Command {
   // =================================================
   PathPlannerTrajectory pathplannerProgramPath() {
     List<Pose2d> points = new ArrayList<Pose2d>();
-    Pose2d pos1 = new Pose2d(0, 0, new Rotation2d(0));
-    Pose2d pos2 = new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath));
+    double rpg = rPath;
+    double rps = 0;
 
-    points.add(pos1);
-    points.add(pos2);
- 
-    if (m_reversed) 
-      points=reverse(points);
+    if (m_reversed) { // go back to 0,0 !
+      Pose2d pose = m_drive.getPose(); // start at current robot pose
+      rpg = 0;
+      rps = m_drive.getHeading();
+      points.add(pose);
+      points.add(new Pose2d());
+ } else {
+      points.add(new Pose2d()); // start at 0,0 
+      points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));
+}
     
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(points);   
     PathConstraints constraints= new PathConstraints(
@@ -135,11 +141,10 @@ public class DrivePath extends Command {
       Drivetrain.kMaxAngularAcceleration);
   
     PathPlannerPath path = new PathPlannerPath(
-        bezierPoints,constraints,
-        new GoalEndState(0.0, Rotation2d.fromDegrees(rPath))
-    );
+        bezierPoints, constraints,
+        new GoalEndState(0.0, Rotation2d.fromDegrees(rpg)));
    
-    PathPlannerTrajectory traj=new PathPlannerTrajectory(path,new ChassisSpeeds(),new Rotation2d(0));
+    PathPlannerTrajectory traj = new PathPlannerTrajectory(path, new ChassisSpeeds(), Rotation2d.fromDegrees(rps));
     return traj; 
   }
 

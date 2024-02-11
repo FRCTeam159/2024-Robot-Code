@@ -1,0 +1,84 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="reversed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="242" y="133"/>
+	</widget>
+	<widget field="UseTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="203" y="76"/>
+	</widget>
+	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="340" y="-1"/>
+	</widget>
+	<widget field="Autoset" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="205" y="97"/>
+	</widget>
+	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="450" y="583"/>
+		<width>142</width>
+	</widget>
+	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="148" y="585"/>
+		<width>132</width>
+	</widget>
+	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="290" y="585"/>
+		<width>148</width>
+	</widget>
+	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="11" y="584"/>
+		<width>130</width>
+	</widget>
+	<widget field="Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="98" y="134"/>
+		<width>93</width>
+	</widget>
+	<widget field="Alliance" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="17" y="132"/>
+		<width>72</width>
+	</widget>
+	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="177" y="12"/>
+	</widget>
+	<widget field="SendableChooser[2]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="275" y="1"/>
+	</widget>
+	<widget field="yPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="426" y="35"/>
+		<width>85</width>
+		<height>20</height>
+	</widget>
+	<widget field="xPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="12"/>
+		<width>86</width>
+		<height>20</height>
+	</widget>
+	<widget field="rPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="430" y="58"/>
+		<width>81</width>
+		<height>21</height>
+	</widget>
+	<widget field="SendableChooser[1]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="274" y="53"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="12" y="8"/>
+		<width>23</width>
+		<height>23</height>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="6" y="168"/>
+		<width>600</width>
+		<height>448</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
+</dashboard>
+<live-window>
+</live-window>
+	<hidden field="Field"/>
+	<hidden field="Switch"/>
+	<hidden field="Pose"/>
+	<hidden field="Gyro"/>
+	<hidden field="ArmAngle"/>
+	<hidden field="ShowTags"/>
+	<hidden field="Sensor"/>
+</xml>

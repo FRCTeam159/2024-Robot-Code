@@ -15,20 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TargetMgr {
     static ArrayList<TagTarget> targets=new ArrayList<>();
 
-    static final public double XC = 1.0; // forward
+    static final public double XC = 1.0; // center forward
     static final public double YC = 0;
     static final public double RC = 0;
 
-    static final public double XF = 1.0; // forward
-    static final public double YF = -1.6;
+    static final public double XF = 1.0; // side forward
+    static final public double YF = -1.5;
     static final public double RF = -60;
-
-    static final public double YR = -0.5; //reverse
-    static final public double XR = -2.1;
-    static final public double RR = 60;
-
-    static final public  int NO_TAGS=0;
-    static final public  int FIELD_TAGS=1;
 
     static final public  int UNKNOWN=0;
     static final public  int OUTSIDE=1;
@@ -49,26 +42,18 @@ public class TargetMgr {
     public static Rotation3d robot_rotation=new Rotation3d(0,0,0);
     public static Translation3d field_center=field_center_offset.times(Units.inchesToMeters(1));
 
-    static int type=FIELD_TAGS;  // changed by init function
-
     public static int alliance=BLUE;
     public static int position=OUTSIDE;
-    public static boolean reversed=false;
-
+    
     static Pose2d start_pose=new Pose2d();
     static boolean start_pose_set=false;
     public static boolean show_tag_info=false;
-    
     static boolean field_relative=true;
     
-
-    public TargetMgr(){
+    static public void init(){
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
-        SmartDashboard.putBoolean("reversed", reversed);   
-    }
-    static public void init(){ 
-        setFieldTargets();  
+            setFieldTargets();  
     }
     public static String getStartString(){
         return aStrings[alliance]+"-"+pStrings[position];
@@ -116,43 +101,30 @@ public class TargetMgr {
         return tag_trans;
     }
     
-    public static void setTarget(int side, int pos, boolean rev){
+    public static void setTarget(int side, int pos){
         alliance=side;
         position=pos;
-        reversed=rev;
+        
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
-        SmartDashboard.putBoolean("reversed", reversed);
-    }
-    public static Pose2d getTarget(boolean reversed) {
-        double xr = XC;  // center
-        double yr = 0;
-        double rr = 0;
-        double xf = -XC;
-        double yf = 0;
+        }
+    public static Pose2d getTarget() {
+        double xf = XC;  // center
+                double yf = 0;
         double rf = 0;
         if ((alliance == TargetMgr.RED && position == TargetMgr.OUTSIDE) ||
             (alliance == TargetMgr.BLUE && position == TargetMgr.INSIDE)) {
             xf = XF;
             yf = -YF;
             rf = -RF;
-            xr = XR;
-            yr = -YR;
-            rr = -RR;
-        }
+                    }
         if ((alliance == TargetMgr.BLUE && position == TargetMgr.OUTSIDE) ||
             (alliance == TargetMgr.RED && position == TargetMgr.INSIDE)) {
             xf = XF;
             yf = YF;
             rf = RF;
-            xr = XR;
-            yr = YR;
-            rr = RR;
-        }
-        if (reversed)
-            return new Pose2d(xr, yr, new Rotation2d(rr));
-        else
-            return new Pose2d(xf, yf, new Rotation2d(rf));
+                    }
+                    return new Pose2d(xf, yf, new Rotation2d(rf));
     }
     public static void setStartPose(AprilTag[] tags) {
         position = UNKNOWN;
@@ -195,8 +167,7 @@ public class TargetMgr {
         }
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
-        SmartDashboard.putBoolean("reversed", reversed);
-    }
+            }
     static void setFieldTargets(){
         // data taken from inset in field drawing 4 of 6
 
@@ -263,10 +234,7 @@ public class TargetMgr {
         return targets.get(id);
     }
 
-    static boolean tagsPresent(){
-        return type == NO_TAGS ?false:true;
-    }
-    static public class TagTarget {
+        static public class TagTarget {
         Pose3d targetPose;
         int targetID=0;
     

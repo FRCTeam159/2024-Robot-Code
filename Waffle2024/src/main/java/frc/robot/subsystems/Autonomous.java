@@ -75,7 +75,7 @@ public class Autonomous extends SubsystemBase {
   static public int getPosition(){
     return m_position_chooser.getSelected();
   }
-  static public boolean getReversed(){
+  static public boolean getReverse(){
     return SmartDashboard.getBoolean("reversed",m_reversed);
   }
   static public boolean getAutoset(){
@@ -90,9 +90,7 @@ public class Autonomous extends SubsystemBase {
       default:
       case PROGRAM:
         return new SequentialCommandGroup(
-          new AlignWheels(m_drive,1),
-          new DrivePath(m_drive),
-          new AlignWheels(m_drive,1)
+          new DrivePath(m_drive, getReverse())
         );
       case AUTOTEST:
          return new SequentialCommandGroup(
