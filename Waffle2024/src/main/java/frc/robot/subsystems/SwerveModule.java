@@ -27,14 +27,13 @@ public class SwerveModule extends SubsystemBase {
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningEncoder;
 
-  public static boolean debug = false;
+  public static boolean debug = true;
   String name;
 
   int cnt = 0;
 
   boolean m_inverted = false;
   boolean m_optimize = true;
-
 
   // PID controllers for drive and steer motors
   private final PIDController m_drivePIDController = new PIDController(2, 0, 0);
@@ -43,16 +42,17 @@ public class SwerveModule extends SubsystemBase {
       0.5,
       0,
       0
-      // new TrapezoidProfile.Constraints(
-      //     kMaxAngularSpeed, kMaxAngularAcceleration)
-      );
+  // new TrapezoidProfile.Constraints(
+  // kMaxAngularSpeed, kMaxAngularAcceleration)
+  );
 
-  //private final PIDController m_turningPIDController = new PIDController(7, 0, 0);
+  // private final PIDController m_turningPIDController = new PIDController(7, 0,
+  // 0);
 
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
-  //Averager m_averager = new Averager(5);
+  // Averager m_averager = new Averager(5);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -64,6 +64,7 @@ public class SwerveModule extends SubsystemBase {
    */
 
   private int m_id;
+
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
@@ -77,50 +78,48 @@ public class SwerveModule extends SubsystemBase {
     name = Drivetrain.chnlnames[m_id - 1];
     SmartDashboard.putString(name, "Working");
 
-    // Set the distance per pulse for the drive encoder. We can simply use the
-    // distance traveled for one rotation of the wheel divided by the encoder
-    // resolution.
-
     m_driveEncoder = m_driveMotor.getEncoder();
-    m_driveEncoder.setPositionConversionFactor(kDistPerRot); // inches to meters
-    m_driveEncoder.setVelocityConversionFactor(kDistPerRot / 60); // convert RPM to meters per second
+    m_driveEncoder.setPositionConversionFactor(Drivetrain.kDistPerRot); // inches to meters
+    m_driveEncoder.setVelocityConversionFactor(Drivetrain.kDistPerRot / 60); // convert RPM to meters per second
 
     // Set the distance (in this case, angle) in radians per pulse for the turning
     m_turningEncoder = m_turningMotor.getEncoder();
-    m_turningEncoder.setPositionConversionFactor(kRadiansPerRot); // inches to meters
-    m_turningEncoder.setVelocityConversionFactor(kRadiansPerRot / 60); // convert RPM to meters per second
+    m_turningEncoder.setPositionConversionFactor(Drivetrain.kRadiansPerRot); // inches to meters
+    m_turningEncoder.setVelocityConversionFactor(Drivetrain.kRadiansPerRot / 60); // convert RPM to meters per second
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
-    //TODO check example and see if this is there: 
-    m_turningPIDController.enableContinuousInput(-Math.PI,Math.PI);
+    // TODO check example and see if this is there:
+    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
     //
   }
 
-  public double getRotations(){
-    return m_driveEncoder.getPosition()/m_driveEncoder.getPositionConversionFactor();
+  public double getRotations() {
+    return m_driveEncoder.getPosition() / m_driveEncoder.getPositionConversionFactor();
   }
-  public void reset(){
+
+  public void reset() {
     m_driveEncoder.setPosition(0);
     m_turningEncoder.setPosition(0);
     System.out.println(name + " reset");
-    cnt=0;
+    cnt = 0;
   }
-  void setOptimize(boolean t){
-    m_optimize=t;
+
+  void setOptimize(boolean t) {
+    m_optimize = t;
   }
-  
-  public double heading(){
+
+  public double heading() {
     return m_turningEncoder.getPosition();
   }
-  
+
   public Rotation2d getRotation2d() {
     return Rotation2d.fromRadians(heading());
   }
 
-  public void showWheelPosition(){
-    System.out.format("%s %-3.1f\n",name,Math.toDegrees(heading()));
+  public void showWheelPosition() {
+    System.out.format("%s %-3.1f\n", name, Math.toDegrees(heading()));
   }
 
   /**
@@ -143,13 +142,14 @@ public class SwerveModule extends SubsystemBase {
         m_driveEncoder.getPosition(), getRotation2d());
   }
 
-  public double getDistance(){
+  public double getDistance() {
     return m_driveEncoder.getPosition();
   }
 
   public double getVelocity() {
-      return m_driveEncoder.getVelocity();
+    return m_driveEncoder.getVelocity();
   }
+
   /**
    * Sets the desired state for the module.
    *
@@ -157,85 +157,82 @@ public class SwerveModule extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState state;
-      state= SwerveModuleState.optimize(desiredState, getRotation2d());
-    //System.out.println("optimize = " + m_optimize);
-    double velocity=getVelocity();
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, getRotation2d());
+    // System.out.println("optimize = " + m_optimize);
+    double velocity = getVelocity();
     // Calculate the drive output from the drive PID controller.
     double driveOutput = m_drivePIDController.calculate(velocity, state.speedMetersPerSecond);
     double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
-    double turn_angle=getRotation2d().getRadians();
+    double turn_angle = getRotation2d().getRadians();
 
     // Calculate the turning motor output from the turning PID controller.
     double turnOutput = m_turningPIDController.calculate(turn_angle, state.angle.getRadians());
-    double turnFeedforward = 0; //-m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+    double turnFeedforward = 0; // -m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-
-    double set_drive=driveOutput +driveFeedforward;
-    double set_turn=turnOutput+turnFeedforward;
-
-    //System.out.println(set_drive);
-    //System.out.println(set_turn);
+    double set_drive = driveOutput + driveFeedforward;
+    double set_turn = turnOutput + turnFeedforward;
 
     driveForward(set_drive);
     m_turningMotor.set(set_turn);
-    
-    if(debug){
-      String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n", 
-      velocity,state.speedMetersPerSecond,set_drive,Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn); 
+
+    if (debug) {
+      String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n",
+          velocity, state.speedMetersPerSecond, set_drive, Math.toDegrees(turn_angle), state.angle.getDegrees(),
+          set_turn);
       SmartDashboard.putString(name, s);
-    }   
+    }
   }
 
   public void log() {
-    String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n", 
-    getDistance(), getRotation2d().getDegrees(), getRotations());
-    SmartDashboard.putString(name, s);
-    
+    if (!debug) {
+      String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n",
+          getDistance(), getRotation2d().getDegrees(), getRotations());
+      SmartDashboard.putString(name, s);
+    }
+
   }
 
-  public boolean isInverted(){
+  public boolean isInverted() {
     return m_inverted;
   }
 
-  public void setDriveInverted(boolean b){
+  public void setDriveInverted(boolean b) {
     m_inverted = b;
-  m_driveMotor.setInverted(b);
+    m_driveMotor.setInverted(b);
   }
-  
+
   public void driveForward(double dist) {
-   //dist = m_inverted? -dist: dist;
+    // dist = m_inverted? -dist: dist;
     m_driveMotor.setVoltage(dist);
   }
-  
+
   public void turnAround(double dist) {
     m_turningMotor.setVoltage(dist);
   }
- 
-  public void resetWheel(){
-    setAngle(0,0);
+
+  public void resetWheel() {
+    setAngle(0, 0);
   }
-  public boolean wheelReset(){
+
+  public boolean wheelReset() {
     return m_turningPIDController.atSetpoint();
   }
-  
-   // use a PID controller to set an explicit turn angle
-  public void setAngle(double a, double d){
-    double r=Math.toRadians(a);
+
+  // use a PID controller to set an explicit turn angle
+  public void setAngle(double a, double d) {
+    double r = Math.toRadians(a);
     m_turningPIDController.setSetpoint(r);
-    double current=getRotation2d().getRadians(); // rotations in radians
-    double turnOutput = m_turningPIDController.calculate(current,r);
+    double current = getRotation2d().getRadians(); // rotations in radians
+    double turnOutput = m_turningPIDController.calculate(current, r);
     m_driveMotor.set(d);
-    m_turningMotor.set(turnOutput); 
+    m_turningMotor.set(turnOutput);
   }
 
-   @Override
+  @Override
   public void periodic() {
-    if(debug)
+    if (!debug)
       log();
-    // This method will be called once per scheduler run
   }
 
- 
 }

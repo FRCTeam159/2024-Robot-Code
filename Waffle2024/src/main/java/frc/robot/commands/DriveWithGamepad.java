@@ -4,12 +4,8 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
-
-import javax.lang.model.util.ElementScanner14;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -22,9 +18,9 @@ public class DriveWithGamepad extends Command {
   private final Drivetrain m_drive;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(1);
 
   boolean resetting=false;
   static boolean alignment_test=true;
@@ -45,7 +41,12 @@ public class DriveWithGamepad extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //m_drive.reset();
+    double now=0;//WPIUtilJNI.now() * 1e-6;
+    m_xspeedLimiter.reset(now);
+    m_yspeedLimiter.reset(now);
+    m_rotLimiter.reset(now);
+
+    System.out.println("DriveWithGampad started");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -82,11 +83,11 @@ public class DriveWithGamepad extends Command {
     // the right by default.
 
     if (!testAlign()) {
-      final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))
-          * Drivetrain.kMaxAngularAcceleration;
+     // final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))
+     //     * Drivetrain.kMaxAngularAcceleration;
+      final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2))*Drivetrain.kMaxAngularAcceleration;
       m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
-    }
-   
+    } 
   }
 
   boolean testAlign() {

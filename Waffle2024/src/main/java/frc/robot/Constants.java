@@ -6,24 +6,18 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  */
 public final class Constants {
-    static public final double kDriveGearRatio=6.67;  // MK4i drive (standard)
-    static public final double kTurnGearRatio=30; // MK4i turn (all)
-  
-    public static final double kWheelRadius = 2;
-    public static final double kDistPerRot =(Units.inchesToMeters(kWheelRadius)* 2*Math.PI)/kDriveGearRatio;
-    public static final double kRadiansPerRot = Math.PI * 2/kTurnGearRatio;
-
-    public static final double kFrontWheelBase = Units.inchesToMeters(19); // distance bewteen front wheels
-	public static final double kSideWheelBase = Units.inchesToMeters(15);  // distance beteen side wheels
-
+    
     public static final int kImageWidth = 640;
     public static final int kImageHeight = 480;
 
@@ -37,15 +31,14 @@ public final class Constants {
     public static final int kBr_Turn = 1;
 
     public static final int kBl_Drive = 2;
-    public static final int kBl_Turn = 4;   
+    public static final int kBl_Turn = 4;
 
-    public static final int kSpareSpark = 9;    
+    public static final int kSpareSpark = 9;
 
-    public static final double kPickup = 0; 
+    public static final double kPickup = 0;
     public static final double kSpeaker = 10;
     public static final double kAmp = 95;
-    
+
     public static final double kArmGearRatio = 144.0 * 0.1;
-    
+
 }
- 
