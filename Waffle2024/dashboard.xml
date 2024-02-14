@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="115" y="15"/>
+	</widget>
+	<widget field="ArmAngle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="371" y="111"/>
+	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="16" y="81"/>
 	</widget>
@@ -8,9 +14,6 @@
 	</widget>
 	<widget field="Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="62" y="13"/>
-	</widget>
-	<widget field="ShowTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="198" y="37"/>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="14" y="103"/>
@@ -27,7 +30,7 @@
 	</widget>
 	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="310" y="565"/>
-		<width>304</width>
+		<width>289</width>
 	</widget>
 	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="15" y="565"/>
@@ -35,22 +38,19 @@
 	</widget>
 	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="310" y="541"/>
-		<width>299</width>
+		<width>293</width>
 	</widget>
 	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="16" y="540"/>
 		<width>285</width>
 	</widget>
 	<widget field="Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="99" y="58"/>
+		<location x="97" y="53"/>
 		<width>93</width>
 	</widget>
 	<widget field="Alliance" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="14" y="54"/>
 		<width>72</width>
-	</widget>
-	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="177" y="12"/>
 	</widget>
 	<widget field="SendableChooser[2]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="275" y="1"/>
@@ -85,14 +85,11 @@
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="6" y="133"/>
-		<width>621</width>
+		<width>610</width>
 		<height>483</height>
-		<property name="Camera Choice" value=""/>
+		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Field"/>
-	<hidden field="Switch"/>
-	<hidden field="ArmAngle"/>
 </xml>

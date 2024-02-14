@@ -41,8 +41,8 @@ public class Drivetrain extends SubsystemBase {
   public static final double kSideWheelBase = Units.inchesToMeters(19); // distance beteen side wheels
   public static final double kTrackRadius = 0.5* Math.sqrt(kFrontWheelBase*kFrontWheelBase+kSideWheelBase*kSideWheelBase);
  
-  public static final double kMaxVelocity = 3.0;
-  public static final double kMaxAcceleration = 2.0;
+  public static final double kMaxVelocity = 1.0;
+  public static final double kMaxAcceleration = 0.5;
   public static final double kMaxAngularVelocity = Math.toRadians(720);   // radians/s
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
 
@@ -84,8 +84,8 @@ public class Drivetrain extends SubsystemBase {
   boolean m_resetting = false;
 
   static int count = 0;
-  // DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
-  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
+ //  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
 
   double last_heading = 0;
   
