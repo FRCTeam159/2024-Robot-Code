@@ -32,7 +32,7 @@ import frc.robot.subsystems.TargetMgr;
 public class DrivePath extends Command {
 
   final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
-      new PIDConstants(3, 0.0, 0), new PIDConstants(4, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
+      new PIDConstants(2.0, 0.0, 0), new PIDConstants(4, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
 
   Timer m_timer = new Timer();
   Drivetrain m_drive;
@@ -124,6 +124,8 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public boolean isFinished() {
+   //if(m_autoset)
+   // return true;
     return elapsed >= 1.3 * runtime || m_pptrajectory == null;
   }
 

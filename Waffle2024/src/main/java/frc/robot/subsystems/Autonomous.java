@@ -4,21 +4,15 @@
 
 package frc.robot.subsystems;
 
-import java.util.List;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.AlignWheels;
 import frc.robot.commands.DrivePath;
-import frc.robot.commands.ShootNote;
 import frc.robot.commands.Wait;
 
 public class Autonomous extends SubsystemBase {
@@ -33,12 +27,12 @@ public class Autonomous extends SubsystemBase {
   static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_alliance_chooser = new SendableChooser<Integer>();
 
-  static double xp=TargetMgr.XF;
-  static double yp=TargetMgr.YF;
-  static double rp=TargetMgr.RF;
+  static double xp=2;
+  static double yp=1;
+  static double rp=-60;
 
   static boolean m_reversed=false;
-  static boolean m_autoselect=true;
+  static boolean m_autoselect=false;
   static boolean m_usetags=false;
 
    /** Creates a new Autonomous. 
@@ -51,8 +45,8 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putNumber("yPath", yp);
     SmartDashboard.putNumber("rPath", rp);
 
-	  m_path_chooser.setDefaultOption("Pathplanner", PATHPLANNER);
-    m_path_chooser.addOption("Program", PROGRAM);
+	  m_path_chooser.setDefaultOption("Program", PROGRAM);
+    m_path_chooser.addOption("Pathplanner", PATHPLANNER);
     m_path_chooser.addOption("AutoTest", AUTOTEST);
     SmartDashboard.putData(m_path_chooser);
   
@@ -96,9 +90,9 @@ public class Autonomous extends SubsystemBase {
       case AUTOTEST:
          return new SequentialCommandGroup(
           //new AlignWheels(m_drive,2),
-           new DrivePath(m_drive,true),
-          // new AlignWheels(m_drive,2),
-           new DrivePath(m_drive,false)
+           new DrivePath(m_drive,false),
+           new Wait(m_drive, 0.5),
+           new DrivePath(m_drive,true)
          );
       case PATHPLANNER:
         return new SequentialCommandGroup(drivePathplanner());
