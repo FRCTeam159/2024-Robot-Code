@@ -39,7 +39,7 @@ public class DriveGyro {
         {
           int[] bnoOffsets = {0, -42, -8, -24, -3, 0, 2, 299, -59, -25, 523};
           bno=BNO055.getInstance(
-            BNO055.opmode_t.OPERATION_MODE_IMUPLUS,
+            BNO055.opmode_t.OPERATION_MODE_NDOF,
             BNO055.vector_type_t.VECTOR_EULER,
             I2C.Port.kMXP,
             BNO055.BNO055_ADDRESS_A,

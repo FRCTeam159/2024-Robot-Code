@@ -12,7 +12,9 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.ArmControls;
 import frc.robot.commands.DriveWithGamepad;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TagDetector;
@@ -29,15 +31,18 @@ public class RobotContainer {
   private final XboxController m_Controller = new XboxController(0);
   //Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain();
+  private final Arm m_Arm = new Arm();
   //private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
-  private final TagDetector m_detector= new TagDetector(m_Drivetrain);
+  private final TagDetector m_detector = new TagDetector(m_Drivetrain);
+  private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Controller);
   
   //commands
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
+    m_Arm.setDefaultCommand(m_ArmControls);
     // Configure the button bindings
     configureBindings();
      AutoBuilder.configureHolonomic(
