@@ -29,6 +29,7 @@ public class ArmControls extends Command {
   @Override
   public void execute() {
     shootTheRing();
+    positionArm();
   }
 
   // Called once the command ends or is interrupted.
@@ -45,5 +46,12 @@ public class ArmControls extends Command {
     if (m_controller.getAButtonPressed()) {
        System.out.println("A button pressed");
     }
+  }
+
+  private void positionArm() {
+    double adjustment = 0;
+    adjustment -= m_controller.getLeftTriggerAxis() * 0.01;
+    adjustment += m_controller.getRightTriggerAxis() * 0.01;
+    m_arm.adjustAngle(adjustment);
   }
 }
