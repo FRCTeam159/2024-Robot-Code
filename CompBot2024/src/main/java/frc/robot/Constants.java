@@ -66,4 +66,5 @@ public final class Constants {
     public static final int kIntakeMotor = 14;
     public static final int kShooterMotor = 15;
 
+    public static final int kPigeonCanId = 30;
 }

@@ -5,17 +5,19 @@
 package frc.robot.sensors;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
+import static frc.robot.Constants.*;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class DriveGyro {
   static public enum gyros {
     FRC450,
     NAVX,
-    BNO55  
+    BNO55,
+    PIGEON
   } ;
   gyros gyro_type=gyros.FRC450;
   String gyro_name;
@@ -23,6 +25,7 @@ public class DriveGyro {
   ADXRS450_Gyro adx450=null;
   BNO055 bno=null;
   boolean bnoWasInitialized = false;
+  Pigeon2 pigeon=null;
   
   /** Creates a new Gyro. */
   public DriveGyro(gyros type) {
@@ -50,7 +53,10 @@ public class DriveGyro {
           );
         }
         gyro_name="BN055";
-      break;
+        break;
+      case PIGEON:
+        pigeon = new Pigeon2(kPigeonCanId);
+        break;
     }
   }
   public gyros getType(){
@@ -69,6 +75,8 @@ public class DriveGyro {
         navx.reset();break;
       case BNO55:
         bno.reset();break;
+      case PIGEON:
+        pigeon.reset();
     }
   }
 
@@ -85,6 +93,8 @@ public class DriveGyro {
           bno.reset();
         }
         return -bno.getRotation2d().getDegrees();
+      case PIGEON:
+        return -pigeon.getAngle();
     }
   }
   
