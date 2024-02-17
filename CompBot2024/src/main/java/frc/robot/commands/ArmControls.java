@@ -15,7 +15,7 @@ public class ArmControls extends Command {
   private final Arm m_arm;
   double m_arm_position;
 
-  public static final double ARM_MOVE_RATE=0.01;
+  public static final double ARM_MOVE_RATE=0.5;
 
   /** Creates a new ArmControlls. */
   public ArmControls(Arm arm, XboxController controller) {
@@ -49,7 +49,7 @@ public class ArmControls extends Command {
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);
     else if (right > 0)
       m_arm.adjustAngle(right*ARM_MOVE_RATE);
- 
+    
   }
 
   // Called once the command ends or is interrupted.
