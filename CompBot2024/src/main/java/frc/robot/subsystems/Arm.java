@@ -65,7 +65,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber(name + " Shoulder setpoint", shoulderAngleSetpoint);
     log();
     double shoulderCommand = m_shoulderFeedforward.calculate(shoulderAngleSetpoint, 1);
-    shoulderCommand += m_shoulderPIDController.calculate(currentAngle, shoulderAngleSetpoint);
+    shoulderCommand = m_shoulderPIDController.calculate(currentAngle, shoulderAngleSetpoint);
     m_shoulderMotor.set(shoulderCommand);
   }
 
@@ -73,6 +73,13 @@ public class Arm extends SubsystemBase {
     shoulderAngleSetpoint += adjustment;
   }
 
+  public void setTargetAngle(double a){
+    shoulderAngleSetpoint=a;
+  }
+
+  public double getTargetAngle(){
+    return shoulderAngleSetpoint;
+  }
   public double getAngleFromGyro() {
     return m_armGyro.getVector()[1]; // Y angle 
   }

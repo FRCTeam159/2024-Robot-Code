@@ -16,13 +16,11 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     static public final double kDriveGearRatio=8.14;  // MK4i drive (standard)
     static public final double kTurnGearRatio=21.429; // MK4i turn (all)
-
-
     public static final double kFrontWheelBase = 24; // inches bewteen front wheels
 	public static final double kSideWheelBase = 24;  // inches beteen side wheels
     public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase);
     public static double delx = Units.inchesToMeters(0.5 * kFrontWheelBase);
-
+    
     public static final double kMaxAcceleration = 1.0;  // m/s/s
     public static final double kMaxVelocity = 4;  // m/s
     public static final double kMaxAngularAcceleration = 2*Math.PI; // 1 rotations/s/s
@@ -67,4 +65,9 @@ public final class Constants {
     public static final int kShooterMotor = 15;
 
     public static final int kPigeonCanId = 30;
+
+    // arm angle settings
+    public static final double kPickup = 0;
+    public static final double kSpeaker = 10;
+    public static final double kAmp = 95;
 }

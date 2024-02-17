@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +33,6 @@ public class Autonomous extends SubsystemBase {
   static boolean m_reversed=false;
   static boolean m_autoselect=false;
   static boolean m_usetags=false;
-  static boolean m_plotpath=false;
 
    /** Creates a new Autonomous. 
    * @param m_arm */
@@ -60,10 +58,9 @@ public class Autonomous extends SubsystemBase {
     m_position_chooser.addOption("Inside", TargetMgr.INSIDE);
     SmartDashboard.putData(m_position_chooser);
 
-    SmartDashboard.putBoolean("Reversed",m_reversed);
+    SmartDashboard.putBoolean("reversed",m_reversed);
     SmartDashboard.putBoolean("Autoset",m_autoselect);
     SmartDashboard.putBoolean("UseTags",m_usetags);
-    SmartDashboard.putBoolean("Plot",m_plotpath);
   }
   static public int getAlliance(){
     return m_alliance_chooser.getSelected();
@@ -72,16 +69,13 @@ public class Autonomous extends SubsystemBase {
     return m_position_chooser.getSelected();
   }
   static public boolean getReverse(){
-    return SmartDashboard.getBoolean("Reversed",m_reversed);
+    return SmartDashboard.getBoolean("reversed",m_reversed);
   }
   static public boolean getAutoset(){
     return SmartDashboard.getBoolean("Autoset",m_autoselect);
   }
   static public boolean getUsetags(){
     return SmartDashboard.getBoolean("UseTags",m_usetags);
-  }
-  static public boolean getPlotpath(){
-    return SmartDashboard.getBoolean("Plot",m_plotpath);
   }
   public SequentialCommandGroup getCommand(){
     int selected_path = m_path_chooser.getSelected();
@@ -119,25 +113,7 @@ public class Autonomous extends SubsystemBase {
     // Load the path you want to follow using its name in the GUI
 
     String pathname="RightSideZeroed";
-    Pose2d p = PathPlannerAuto.getStaringPoseFromAutoFile(pathname);
-    //if(p!=null)
-        //m_drive.resetOdometry(p);
     return AutoBuilder.buildAuto(pathname);
-    // List<PathPlannerPath> pathGroup = PathPlannerAuto.getPathGroupFromAutoFile(pathname);
-    // return new SequentialCommandGroup(
-    //   AutoBuilder.followPath(pathGroup.get(0)),
-    //   new Wait(m_drive, 3.0),
-    //   AutoBuilder.followPath(pathGroup.get(1))
-    // );
-
-    // PathPlannerPath path1 = PathPlannerPath.fromPathFile("BlueTopForward");
-    // PathPlannerPath path2 = PathPlannerPath.fromPathFile("BlueTopBack");
-    // Pose2d p = path1.getPreviewStartingHolonomicPose();
-    // m_drive.resetOdometry(p);
-    // return new SequentialCommandGroup(
-    //     AutoBuilder.followPath(path1),
-    //     new Wait(m_drive, 3.0),
-    //     AutoBuilder.followPath(path2)
-    // );
+    
   }
 }

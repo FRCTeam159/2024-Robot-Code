@@ -22,7 +22,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import static frc.robot.Constants.*;
 
-public class Drivetrain extends SubsystemBase {
+public class Drivetrain extends SubsystemBase {public static final double kMaxVelocity = 1.0;
+  
   private final Translation2d m_frontLeftLocation = new Translation2d(delx, dely);
 	private final Translation2d m_frontRightLocation = new Translation2d(delx, -dely);
 	private final Translation2d m_backLeftLocation = new Translation2d(-delx, dely);

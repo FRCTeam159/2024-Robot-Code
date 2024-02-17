@@ -35,7 +35,7 @@ public class Wait extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.drive(0, 0, 0, false);
+    m_drive.drive(0.01, 0, 0, false);
   }
 
   // Called once the command ends or is interrupted.

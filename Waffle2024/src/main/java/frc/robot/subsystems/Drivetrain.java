@@ -242,6 +242,18 @@ public class Drivetrain extends SubsystemBase {
     return m_pose;
   }
 
+  public double getVelocity() {
+    double left=0.5*(m_frontLeft.getVelocity()+m_backLeft.getVelocity());
+    double right=0.5*(m_frontRight.getVelocity()+m_backRight.getVelocity());
+		return 0.5 * (left + right);
+	}
+
+  public double getDistance() {
+    double left=0.5*(m_frontLeft.getDistance()+m_backLeft.getDistance());
+    double right=0.5*(m_frontRight.getDistance()+m_backRight.getDistance());
+		return 0.5 * (left + right);
+	}
+
   // removes heading discontinuity at 180 degrees
   public static double unwrap(double previous_angle, double new_angle) {
     double d = new_angle - previous_angle;
@@ -296,11 +308,6 @@ public class Drivetrain extends SubsystemBase {
   public void showWheelPositions() {
     for (int i = 0; i < modules.length; i++)
       modules[i].showWheelPosition();
-  }
-
-  public void setOptimize(boolean b) {
-    for (int i = 0; i < modules.length; i++)
-      modules[i].setOptimize(b);
   }
 
   @Override

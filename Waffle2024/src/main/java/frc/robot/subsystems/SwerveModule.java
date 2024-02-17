@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.RelativeEncoder;
-//import frc.robot.subsystems.Averager;
-
-import static frc.robot.Constants.*;
 
 public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_driveMotor;
@@ -86,13 +83,7 @@ public class SwerveModule extends SubsystemBase {
     m_turningEncoder = m_turningMotor.getEncoder();
     m_turningEncoder.setPositionConversionFactor(Drivetrain.kRadiansPerRot); // inches to meters
     m_turningEncoder.setVelocityConversionFactor(Drivetrain.kRadiansPerRot / 60); // convert RPM to meters per second
-
-    // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
-    // TODO check example and see if this is there:
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-
-    //
   }
 
   public double getRotations() {

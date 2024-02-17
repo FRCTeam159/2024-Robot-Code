@@ -6,17 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class ArmControls extends Command {
 
   private final XboxController m_controller;
   private final Arm m_arm;
+  double m_arm_position;
+
+  public static final double ARM_MOVE_RATE=0.01;
 
   /** Creates a new ArmControlls. */
   public ArmControls(Arm arm, XboxController controller) {
     m_arm = arm;
-    m_controller = controller;
+      m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm);
   }
@@ -28,8 +32,24 @@ public class ArmControls extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shootTheRing();
-    positionArm();
+    double left=m_controller.getLeftTriggerAxis();
+    double right=m_controller.getRightTriggerAxis();
+
+    // if(m_controller.getRightBumperPressed())
+    //   m_arm.togglePusher();
+    // else if(m_controller.getLeftBumperPressed())
+    //   m_arm.toggleShooter();
+    if(m_controller.getAButtonPressed())
+      m_arm.setTargetAngle(Constants.kPickup);   
+    if(m_controller.getBButtonPressed())
+      m_arm.setTargetAngle(Constants.kSpeaker);
+    if(m_controller.getXButtonPressed())
+      m_arm.setTargetAngle(Constants.kAmp);
+    else if (left > 0)
+      m_arm.adjustAngle(-left*ARM_MOVE_RATE);
+    else if (right > 0)
+      m_arm.adjustAngle(right*ARM_MOVE_RATE);
+ 
   }
 
   // Called once the command ends or is interrupted.
@@ -42,16 +62,4 @@ public class ArmControls extends Command {
     return false;
   }
 
-  private void shootTheRing() {
-    if (m_controller.getAButtonPressed()) {
-       System.out.println("A button pressed");
-    }
-  }
-
-  private void positionArm() {
-    double adjustment = 0;
-    adjustment -= m_controller.getLeftTriggerAxis() * 0.01;
-    adjustment += m_controller.getRightTriggerAxis() * 0.01;
-    m_arm.adjustAngle(adjustment);
-  }
 }
