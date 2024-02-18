@@ -15,19 +15,21 @@ public class ArmControls extends Command {
   private final Arm m_arm;
   double m_arm_position;
 
-  public static final double ARM_MOVE_RATE=0.01;
+  public static final double ARM_MOVE_RATE=0.5;
 
   /** Creates a new ArmControlls. */
   public ArmControls(Arm arm, XboxController controller) {
     m_arm = arm;
-      m_controller = controller;
+    m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_arm.enable();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -39,22 +41,29 @@ public class ArmControls extends Command {
     //   m_arm.togglePusher();
     // else if(m_controller.getLeftBumperPressed())
     //   m_arm.toggleShooter();
-    if(m_controller.getAButtonPressed())
-      m_arm.setTargetAngle(Constants.kPickup);   
-    if(m_controller.getBButtonPressed())
+    if(m_controller.getAButtonPressed()) {
+      m_arm.setTargetAngle(Constants.kPickup); 
+    } else if(m_controller.getBButtonPressed()) { 
       m_arm.setTargetAngle(Constants.kSpeaker);
-    if(m_controller.getXButtonPressed())
+    } else if(m_controller.getXButtonPressed()) {
       m_arm.setTargetAngle(Constants.kAmp);
-    else if (left > 0)
+    } else if (left > 0.1) {
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);
-    else if (right > 0)
+    } else if (right > 0.1) {
       m_arm.adjustAngle(right*ARM_MOVE_RATE);
- 
+    }
+
+    if (m_controller.getYButton()) {
+      // TODO: shoot!
+    }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_arm.disable();
+  }
 
   // Returns true when the command should end.
   @Override

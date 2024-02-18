@@ -60,14 +60,15 @@ public final class Constants {
     public static final int kBl_Encoder = 11;
     public static final double kBl_Offset = kBackLeftOffset; 
 
-    public static final int kShoulderMotor = 13;
-    public static final int kIntakeMotor = 14;
-    public static final int kShooterMotor = 15;
+    public static final int kShoulderMotor = 14;
+    public static final int kIntakeMotor = 18;
+    public static final int kShooterMotor1 = 15;
+    public static final int kShooterMotor2 = 16;
 
     public static final int kPigeonCanId = 30;
 
     // arm angle settings
-    public static final double kPickup = 0;
-    public static final double kSpeaker = 10;
+    public static final double kPickup = 10;
+    public static final double kSpeaker = 20;
     public static final double kAmp = 95;
 }

@@ -48,7 +48,7 @@ public class Drivetrain extends SubsystemBase {public static final double kMaxVe
 	boolean m_use_tags=true;
 
   static int count = 0;
-  public DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.BNO55);
+  public DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.PIGEON);
   double last_heading = 0; 
   SwerveModulePosition[] m_positions = {
       new SwerveModulePosition(), new SwerveModulePosition(),
