@@ -95,7 +95,7 @@ public class DriveWithGamepad extends Command {
       return false;
     if (m_controller.getYButtonPressed()) {
       if(!resetting){
-        m_align=new AlignWheels(m_drive,2.0);
+        m_align=new AlignWheels(m_drive,1.0);
         m_align.initialize();
         resetting=true;
       }

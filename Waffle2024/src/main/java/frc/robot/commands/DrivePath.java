@@ -37,7 +37,7 @@ public class DrivePath extends Command {
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
   final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
-      new PIDConstants(3.0, 0.0, 0), new PIDConstants(4, 0.0, 0.0), 0.6*Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
+      new PIDConstants(4.0, 0.0, 0), new PIDConstants(4, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
 
   Timer m_timer = new Timer();
   Drivetrain m_drive;
@@ -56,6 +56,7 @@ public class DrivePath extends Command {
   double rPath = 0;
   boolean m_reversed = false;
   boolean m_autoset = false;
+   double scale=0.4;
 
   int plot_type = frc.robot.utils.PlotUtils.PLOT_NONE;
   //int plot_type = frc.robot.utils.PlotUtils.PLOT_LOCATION;
@@ -98,6 +99,9 @@ public class DrivePath extends Command {
     m_timer.reset();
     elapsed = 0;
 
+    //f(!m_reversed)
+    // m_drive.resetOdometry();
+
     m_pptrajectory = pathplannerProgramPath();
     if (m_pptrajectory == null) {
       System.out.println("DrivePath - path creation failed !");
@@ -118,6 +122,8 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public void execute() {
+    if(m_pptrajectory==null)
+      return;
     elapsed = m_timer.get();
     PathPlannerTrajectory.State pstate = m_pptrajectory.sample(elapsed);
     ChassisSpeeds speeds = m_ppcontroller.calculateRobotRelativeSpeeds(m_drive.getPose(), pstate);
@@ -177,12 +183,13 @@ public class DrivePath extends Command {
       points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));
     }
 
+   
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(points);
     PathConstraints constraints = new PathConstraints(
-        Drivetrain.kMaxVelocity,
-        Drivetrain.kMaxAcceleration,
-        Drivetrain.kMaxAngularVelocity,
-        Drivetrain.kMaxAngularAcceleration);
+        scale*Drivetrain.kMaxVelocity,
+        scale*Drivetrain.kMaxAcceleration,
+        scale*Drivetrain.kMaxAngularVelocity,
+        scale*Drivetrain.kMaxAngularAcceleration);
 
     PathPlannerPath path = new PathPlannerPath(
         bezierPoints, constraints,

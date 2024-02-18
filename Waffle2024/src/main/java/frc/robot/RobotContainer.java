@@ -67,7 +67,7 @@ public class RobotContainer {
   private void configureBindings() {}
 
   public void autonomousInit() {
-    m_drivetrain.reset();
+    //m_drivetrain.reset();
     TargetMgr.update();
     //m_Drivetrain.resetOdometry();
   }

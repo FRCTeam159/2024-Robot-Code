@@ -27,14 +27,14 @@ public class Autonomous extends SubsystemBase {
   static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_alliance_chooser = new SendableChooser<Integer>();
 
-  static double xp=2;
-  static double yp=1;
+  static double xp=1.4;
+  static double yp=-1.5;
   static double rp=-60;
 
   static boolean m_reversed=false;
   static boolean m_autoselect=true;
   static boolean m_usetags=false;
-  static boolean m_plotpath=false;
+  static boolean m_plotpath=true;
 
    /** Creates a new Autonomous. 
    * @param m_arm */

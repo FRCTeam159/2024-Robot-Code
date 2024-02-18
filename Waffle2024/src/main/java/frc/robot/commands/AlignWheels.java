@@ -43,8 +43,9 @@ public class AlignWheels extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //m_drive.reset();
     m_drive.resetOdometry();
-    m_drive.resetPose(new Pose2d());
+    //m_drive.resetPose(new Pose2d());
    if(done) {
        System.out.println(" - Wheels are aligned");
     } else {

@@ -1,16 +1,25 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Arm Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="495" y="109"/>
+		<width>113</width>
+	</widget>
+	<widget field="TweakCenterX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="361" y="108"/>
+		<width>123</width>
+		<height>20</height>
+	</widget>
+	<widget field="Reversed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="431" y="83"/>
+	</widget>
+	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="361" y="82"/>
+	</widget>
 	<widget field="Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="115" y="15"/>
 	</widget>
-	<widget field="ArmAngle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="371" y="111"/>
-	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="16" y="81"/>
-	</widget>
-	<widget field="reversed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="356" y="84"/>
 	</widget>
 	<widget field="Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="62" y="13"/>
@@ -66,7 +75,7 @@
 		<height>20</height>
 	</widget>
 	<widget field="rPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="453" y="57"/>
+		<location x="448" y="60"/>
 		<width>81</width>
 		<height>21</height>
 	</widget>
@@ -89,7 +98,18 @@
 		<height>483</height>
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
+		<property name="Team Number/Host" value="159"/>
+		<property name="Hide Menu" value="true"/>
+		<property name="Automatically Show Widgets" value="false"/>
+		<property name="Grid Cell Width(s)" value="16"/>
+		<property name="Grid Cell Height(s)" value="16"/>
+		<property name="Window X Position" value="1276"/>
+		<property name="Window Y Position" value="73"/>
+		<property name="Window Width" value="652"/>
+		<property name="Window Height" value="659"/>
+		<property name="Save File" value=".\dashboard.xml"/>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Arm Setpoint"/>
 </xml>

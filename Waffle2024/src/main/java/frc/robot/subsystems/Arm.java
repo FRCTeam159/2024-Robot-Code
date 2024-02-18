@@ -82,8 +82,10 @@ public class Arm extends SubsystemBase {
     return m_armGyro.getVector()[1]; // Y angle 
   }
   void log(){
-    SmartDashboard.putNumber("Arm Angle", getAngle());
+    SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
     SmartDashboard.putNumber("Arm Setpoint", armAngle);
     SmartDashboard.putBoolean("Sensor", input.get());
+;
+    //m_armGyro.log();
   }
 }

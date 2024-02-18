@@ -83,7 +83,9 @@ public class TagDetector extends Thread {
       try {
         Thread.sleep(50);
         mat = new Mat();
-        UsbCameraSink.grabFrame(mat);
+        long tm=UsbCameraSink.grabFrame(mat);
+        if(tm==0)
+        continue;
         AprilTag[] tags = null;
  
         boolean autoselect=Autonomous.getAutoset();
