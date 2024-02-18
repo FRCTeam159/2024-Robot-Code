@@ -13,15 +13,21 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TargetMgr {
+    public static final double kCenterX = Units.inchesToMeters(79); // Field geometry
+    public static final double kSideX = Units.inchesToMeters(71);
+    public static final double kSideY = Units.inchesToMeters(70);
+
+    public static double kTweakCenterX = Units.inchesToMeters(5);
+    
     static ArrayList<TagTarget> targets = new ArrayList<>();
 
-    static final public double XC = 1.0; // center forward
-    static final public double YC = 0;
-    static final public double RC = 0;
+    static public double XC = kCenterX+kTweakCenterX-Drivetrain.kRobotLength; // center forward
+    static public double YC = 0;
+    static public double RC = 0;
 
-    static final public double XF = 1.0; // side forward
-    static final public double YF = -1.5;
-    static final public double RF = -60;
+    static public double XF = kSideX-Drivetrain.kRobotLength; // side forward
+    static public double YF = -kSideY;
+    static public double RF = -60;
 
     static final public int UNKNOWN = 0;
     static final public int OUTSIDE = 1;
@@ -53,7 +59,13 @@ public class TargetMgr {
     static public void init() {
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
+        SmartDashboard.putNumber("TweakCenterX", Units.metersToInches(kTweakCenterX));
         setFieldTargets();
+    }
+
+    static public void update() {
+        kTweakCenterX = SmartDashboard.getNumber("TweakCenterX", Units.inchesToMeters(kTweakCenterX));
+        XC = kCenterX+kTweakCenterX-Drivetrain.kRobotLength;
     }
 
     public static String getStartString() {

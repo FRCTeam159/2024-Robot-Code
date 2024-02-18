@@ -277,10 +277,10 @@ public class PlotUtils {
     }
 
    public static void publish(ArrayList<PathData> dataList, int traces, int type) {
-		if (table == null) {
+		//if (table == null) {
             NetworkTableInstance inst = NetworkTableInstance.getDefault();
             table = inst.getTable("plotdata");
-        }
+        //}
 		
 		DoubleArrayPublisher newPlotPub=table.getDoubleArrayTopic("NewPlot").publish();
 		DoubleArrayPublisher plotDataPub=table.getDoubleArrayTopic("PlotData").publish();

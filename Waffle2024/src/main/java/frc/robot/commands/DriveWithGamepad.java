@@ -97,15 +97,16 @@ public class DriveWithGamepad extends Command {
       if(!resetting){
         m_align=new AlignWheels(m_drive,2.0);
         m_align.initialize();
-        m_drive.resetWheels(true);
         resetting=true;
       }
       else
         resetting=false;
     }
     if (resetting) {
-        if(m_align.isFinished())
+        if(m_align.isFinished()) {
+          m_align.end(false);
           resetting=false;
+        }
         else
           m_align.execute();
     }

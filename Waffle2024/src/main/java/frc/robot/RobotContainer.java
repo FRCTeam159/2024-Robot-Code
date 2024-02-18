@@ -18,6 +18,7 @@ import frc.robot.subsystems.Autonomous;
 
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
+import frc.robot.subsystems.TargetMgr;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -54,6 +55,8 @@ public class RobotContainer {
   }
   public void robotInit() {
       m_detector.start();
+      TargetMgr.init();
+      m_drivetrain.resetOdometry();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -65,6 +68,7 @@ public class RobotContainer {
 
   public void autonomousInit() {
     m_drivetrain.reset();
+    TargetMgr.update();
     //m_Drivetrain.resetOdometry();
   }
   /**

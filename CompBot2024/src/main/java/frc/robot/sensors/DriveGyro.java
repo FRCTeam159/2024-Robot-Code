@@ -26,6 +26,7 @@ public class DriveGyro {
   BNO055 bno=null;
   boolean bnoWasInitialized = false;
   Pigeon2 pigeon=null;
+
   
   /** Creates a new Gyro. */
   public DriveGyro(gyros type) {

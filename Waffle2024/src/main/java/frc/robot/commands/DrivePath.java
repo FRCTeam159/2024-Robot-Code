@@ -37,7 +37,7 @@ public class DrivePath extends Command {
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
   final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
-      new PIDConstants(2.0, 0.0, 0), new PIDConstants(4, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
+      new PIDConstants(3.0, 0.0, 0), new PIDConstants(4, 0.0, 0.0), 0.6*Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
 
   Timer m_timer = new Timer();
   Drivetrain m_drive;
@@ -163,13 +163,15 @@ public class DrivePath extends Command {
     double rps = 0;
 
     if (m_reversed) { // go back to 0,0 !
+      if(m_drive.getDistance()<0.2) // probably an error to start too close to 0 ?
+        return null;
       Pose2d pose = m_drive.getPose(); // start at current robot pose
       rpg = 0;
       rps = m_drive.getHeading();
       points.add(pose);
       points.add(new Pose2d());
     } else {
-      if(m_drive.getDistance()>0.2) // probably an error to start too far from 0
+      if(m_drive.getDistance()>0.2) // probably an error to start too far from 0 ?
         return null;
       points.add(new Pose2d()); // start at 0,0
       points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));

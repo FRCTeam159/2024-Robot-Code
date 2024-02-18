@@ -37,7 +37,7 @@ public class SwerveModule extends SubsystemBase {
 
   private final PIDController m_turningPIDController = new PIDController(
       0.5,
-      0,
+      0.001,
       0
   // new TrapezoidProfile.Constraints(
   // kMaxAngularSpeed, kMaxAngularAcceleration)
@@ -84,6 +84,7 @@ public class SwerveModule extends SubsystemBase {
     m_turningEncoder.setPositionConversionFactor(Drivetrain.kRadiansPerRot); // inches to meters
     m_turningEncoder.setVelocityConversionFactor(Drivetrain.kRadiansPerRot / 60); // convert RPM to meters per second
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    m_turningPIDController.setTolerance(Math.toRadians(1.0));
   }
 
   public double getRotations() {
@@ -168,9 +169,8 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor.set(set_turn);
 
     if (debug) {
-      String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n",
-          velocity, state.speedMetersPerSecond, set_drive, Math.toDegrees(turn_angle), state.angle.getDegrees(),
-          set_turn);
+      String s = String.format("Drive p:%-1.3f Angle t:%-3.3f a:%-2.3f c:%-2.3f\n",
+          getDistance(), Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn);
       SmartDashboard.putString(name, s);
     }
   }

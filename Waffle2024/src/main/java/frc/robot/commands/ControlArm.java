@@ -14,6 +14,8 @@ public class ControlArm extends Command {
   Arm m_arm;
   XboxController m_controller;
 
+  public static final double ARM_MOVE_RATE=0.01;
+
   /** Creates a new ControlArm. */
   public ControlArm(Arm arm, XboxController controller) {
     m_arm=arm;
@@ -28,13 +30,19 @@ public class ControlArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double left=m_controller.getLeftTriggerAxis();
+    double right=m_controller.getRightTriggerAxis();
+
     if(m_controller.getAButtonPressed())
-      m_arm_position=Constants.kPickup;   
+      m_arm.setTargetAngle(Constants.kPickup);   
     if(m_controller.getBButtonPressed())
-      m_arm_position=Constants.kSpeaker;
-    if(m_controller.getXButtonPressed())
-      m_arm_position=Constants.kAmp;
-     m_arm.setAngle(m_arm_position);
+      m_arm.setTargetAngle(Constants.kSpeaker);
+    //if(m_controller.getXButtonPressed())
+      //m_arm.setTargetAngle(Constants.kAmp);
+    else if (left > 0)
+      m_arm.adjustAngle(-left*ARM_MOVE_RATE);
+    else if (right > 0)
+      m_arm.adjustAngle(right*ARM_MOVE_RATE);
   }
 
   // Called once the command ends or is interrupted.

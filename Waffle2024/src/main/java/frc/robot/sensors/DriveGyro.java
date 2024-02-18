@@ -9,18 +9,23 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.sensors.BNO055.BNO055OffsetData;
+import static frc.robot.Constants.*;
+
 
 public class DriveGyro {
   static public enum gyros {
     FRC450,
     NAVX,
-    BNO55  
+    BNO55,
+    PIGEON  
   } ;
   gyros gyro_type=gyros.FRC450;
   String gyro_name;
   AHRS navx=null;
   ADXRS450_Gyro adx450=null;
   BNO055 bno=null;
+boolean bnoWasInitialized = false;
   
   /** Creates a new Gyro. */
   public DriveGyro(gyros type) {
@@ -37,13 +42,14 @@ public class DriveGyro {
         break;
       case BNO55:
         {
-          int[] bnoOffsets = {0, -42, -8, -24, -3, 0, 2, 299, -59, -25, 523};
-          bno=BNO055.getInstance(
-            BNO055.opmode_t.OPERATION_MODE_IMUPLUS,
-            BNO055.vector_type_t.VECTOR_EULER,
+          BNO055OffsetData bno1Offsets = new BNO055OffsetData(-14, -27, -12, -24, -2, -1, 0, -139, -122, -475, 805);
+          bno = new BNO055(
             I2C.Port.kMXP,
             BNO055.BNO055_ADDRESS_A,
-            bnoOffsets
+            "BNO055-1",
+            BNO055.opmode_t.OPERATION_MODE_IMUPLUS,
+            BNO055.vector_type_t.VECTOR_EULER,
+            bno1Offsets
             );
         }
         gyro_name="BN055";
@@ -77,8 +83,17 @@ public class DriveGyro {
       case NAVX:
         return -navx.getAngle();
       case BNO55:
-        return bno.getAngle();
+      if(!bnoWasInitialized && bno.isInitialized()) {
+        bnoWasInitialized = true;
+        bno.reset();
+      }
+      return -bno.getRotation2d().getDegrees();
     }
   }
   
+public void printOffsets() {
+    if (gyro_type == gyros.BNO55) {
+      bno.readOffsets();
+    }
+  }
 }
