@@ -21,7 +21,7 @@ public class TargetMgr {
     
     static ArrayList<TagTarget> targets = new ArrayList<>();
 
-    static public double XC = kCenterX+kTweakCenterX-Drivetrain.kRobotLength; // center forward
+    static public double XC = kCenterX-Drivetrain.kRobotLength; // center forward
     static public double YC = 0;
     static public double RC = 0;
 
@@ -59,13 +59,13 @@ public class TargetMgr {
     static public void init() {
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
-        SmartDashboard.putNumber("TweakCenterX", Units.metersToInches(kTweakCenterX));
+        //SmartDashboard.putNumber("TweakCenterX", Units.metersToInches(kTweakCenterX));
         setFieldTargets();
     }
 
     static public void update() {
-        kTweakCenterX = SmartDashboard.getNumber("TweakCenterX", Units.inchesToMeters(kTweakCenterX));
-        XC = kCenterX+kTweakCenterX-Drivetrain.kRobotLength;
+        //kTweakCenterX = SmartDashboard.getNumber("TweakCenterX", Units.inchesToMeters(kTweakCenterX));
+        //XC = kCenterX+kTweakCenterX-Drivetrain.kRobotLength;
     }
 
     public static String getStartString() {

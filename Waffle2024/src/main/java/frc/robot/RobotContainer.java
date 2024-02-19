@@ -9,7 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ControlArm;
+import frc.robot.commands.ArmControls;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.commands.Wait;
 import frc.robot.subsystems.Arm;
@@ -44,7 +44,7 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
     if(m_have_arm){
       m_arm = new Arm();
-      m_arm.setDefaultCommand(new ControlArm(m_arm,m_controller));
+      m_arm.setDefaultCommand(new ArmControls(m_arm,m_controller));
     } 
 
     // Add commands to PathPlanner

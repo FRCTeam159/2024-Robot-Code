@@ -24,7 +24,7 @@ public class Arm extends SubsystemBase {
     BNO055.BNO055_ADDRESS_A,
     "BNO055-2",
     BNO055.opmode_t.OPERATION_MODE_NDOF,
-    BNO055.vector_type_t.VECTOR_EULER,
+    BNO055.vector_type_t.VECTOR_GRAVITY,
     bno2Offsets
   );
   
@@ -37,12 +37,14 @@ public class Arm extends SubsystemBase {
   boolean sensor_state = false;
 
   DigitalInput input = new DigitalInput(1);
+  private boolean m_initialized;
 
   /** Creates a new Arm. */
   public Arm() {
     m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushless);
     m_PID = new PIDController(0.05, 0, 0);
     m_PID.reset();
+    
   }
 
   @Override
@@ -78,14 +80,25 @@ public class Arm extends SubsystemBase {
   public double getTargetAngle(){
     return armAngle;
   }
+
+  private void waitForGyroInit() {
+    if (!m_initialized && m_armGyro.isInitialized() && m_armGyro.isCalibrated()) {
+      // Set the setpoint to the current position when initializing
+      setTargetAngle(getAngleFromGyro());
+      m_initialized=true;
+    }
+  }
   public double getAngleFromGyro() {
-    return m_armGyro.getVector()[1]; // Y angle 
+    if(m_initialized)
+      return m_armGyro.getVector()[1]; // Y angle 
+    else
+      return 0;
   }
   void log(){
+    waitForGyroInit() ;
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
     SmartDashboard.putNumber("Arm Setpoint", armAngle);
     SmartDashboard.putBoolean("Sensor", input.get());
-;
-    //m_armGyro.log();
+    SmartDashboard.putBoolean("Gyro Present", m_armGyro.isSensorPresent());
   }
 }

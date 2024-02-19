@@ -26,8 +26,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TargetMgr;
-import frc.robot.utils.PathData;
-import frc.robot.utils.PlotUtils;
+import utils.PathData;
+import utils.PlotUtils;
 
 // =================================================
 // DrivePath: class constructor (called from RobotContainer)
@@ -56,9 +56,9 @@ public class DrivePath extends Command {
   double rPath = 0;
   boolean m_reversed = false;
   boolean m_autoset = false;
-   double scale=0.4;
+  double scale=0.5;
 
-  int plot_type = frc.robot.utils.PlotUtils.PLOT_NONE;
+  int plot_type = utils.PlotUtils.PLOT_NONE;
   //int plot_type = frc.robot.utils.PlotUtils.PLOT_LOCATION;
 
   public DrivePath(Drivetrain drive, boolean rev) {
@@ -76,7 +76,7 @@ public class DrivePath extends Command {
     m_autoset = Autonomous.getAutoset();
     m_ppcontroller.setEnabled(true);
     if(Autonomous.getPlotpath())
-      plot_type=frc.robot.utils.PlotUtils.PLOT_LOCATION;
+      plot_type=utils.PlotUtils.PLOT_LOCATION;
 
     if (m_autoset) { // use apriltags or smartdashboard buttons
       Pose2d target = TargetMgr.getTarget();
@@ -98,10 +98,6 @@ public class DrivePath extends Command {
     m_timer.start();
     m_timer.reset();
     elapsed = 0;
-
-    //f(!m_reversed)
-    // m_drive.resetOdometry();
-
     m_pptrajectory = pathplannerProgramPath();
     if (m_pptrajectory == null) {
       System.out.println("DrivePath - path creation failed !");
@@ -110,6 +106,9 @@ public class DrivePath extends Command {
     runtime = m_pptrajectory.getTotalTimeSeconds();
     states = m_pptrajectory.getStates().size();
     intervals = (int) (runtime / 0.02);
+
+    PlotUtils.setInitialPose(m_pptrajectory.sample(0).getTargetHolonomicPose(), Drivetrain.kFrontWheelBase);
+
 
     // important ! otherwise get rotation glitch at start or reverse path
     m_ppcontroller.reset(m_drive.getPose(), new ChassisSpeeds());
@@ -147,8 +146,8 @@ public class DrivePath extends Command {
   public void end(boolean interrupted) {
     System.out.println("DRIVEPATH_END");
 
-    if (plot_type != frc.robot.utils.PlotUtils.PLOT_NONE)
-      frc.robot.utils.PlotUtils.publish(pathdata, 6, plot_type);
+    if (plot_type != utils.PlotUtils.PLOT_NONE)
+      utils.PlotUtils.publish(pathdata, 6, plot_type);
   }
 
   // =================================================

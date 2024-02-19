@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-//import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -38,14 +36,15 @@ public class Drivetrain extends SubsystemBase {
   public static final double kRadiansPerRot = Math.PI * 2 / kTurnGearRatio;
 
   public static final double kRobotLength = Units.inchesToMeters(24); // Waffle side length
-  
+
   public static final double kFrontWheelBase = Units.inchesToMeters(19); // distance bewteen front wheels
-  public static final double kSideWheelBase = Units.inchesToMeters(15); // distance beteen side wheels
-  public static final double kTrackRadius = 0.5* Math.sqrt(kFrontWheelBase*kFrontWheelBase+kSideWheelBase*kSideWheelBase);
- 
+  public static final double kSideWheelBase = Units.inchesToMeters(19); // distance beteen side wheels
+  public static final double kTrackRadius = 0.5
+      * Math.sqrt(kFrontWheelBase * kFrontWheelBase + kSideWheelBase * kSideWheelBase);
+
   public static final double kMaxVelocity = 1.0;
   public static final double kMaxAcceleration = 0.5;
-  public static final double kMaxAngularVelocity = Math.toRadians(720);   // radians/s
+  public static final double kMaxAngularVelocity = Math.toRadians(720); // radians/s
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
 
   public static double dely = 0.5 * kSideWheelBase; // 0.2949 metters
@@ -55,8 +54,7 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_frontRightLocation = new Translation2d(delx, -dely);
   private final Translation2d m_backLeftLocation = new Translation2d(-delx, dely);
   private final Translation2d m_backRightLocation = new Translation2d(-delx, -dely);
-
-  public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
+  public static String chnlnames[] = { "FL", "FR", "BR", "BL" };
 
   private final SwerveModule m_frontLeft = new SwerveModule(kFl_Drive, kFl_Turn, 1);
   private final SwerveModule m_frontRight = new SwerveModule(kFr_Drive, kFr_Turn, 2);
@@ -74,8 +72,8 @@ public class Drivetrain extends SubsystemBase {
       new SwerveModulePosition(), new SwerveModulePosition(),
       new SwerveModulePosition(), new SwerveModulePosition() };
 
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics,new Rotation2d(), m_positions,new Pose2d());
-   
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), m_positions, new Pose2d());
+
   DigitalInput input = new DigitalInput(0);
 
   private final Field2d m_Field2d = new Field2d();
@@ -87,15 +85,11 @@ public class Drivetrain extends SubsystemBase {
 
   static int count = 0;
   DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
- //  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  // DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
 
   double last_heading = 0;
-  
-  public Drivetrain() {
-   // SmartDashboard.putData("Field", m_Field2d);
-    //SmartDashboard.putBoolean("Field Oriented", m_field_oriented);
-    //SmartDashboard.putBoolean("Switch", false);
 
+  public Drivetrain() {
     m_frontLeft.setDriveInverted(false);
     m_backLeft.setDriveInverted(false);
 
@@ -134,11 +128,17 @@ public class Drivetrain extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
   }
+  private ChassisSpeeds getRobotRelativeSpeeds() {
+    return m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(),
+        m_backRight.getState());
+  }
+  private void driveRobotRelative(ChassisSpeeds speed) {
+    this.drive(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond, false);
+  }
 
-  public void resetPositions() {
-    for (int i = 0; i < modules.length; i++) {
+  private void resetPositions() {
+    for (int i = 0; i < modules.length; i++) 
       modules[i].reset();
-    }
     updatePositions();
   }
 
@@ -149,11 +149,6 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     m_odometry.resetPosition(getRotation2d(), m_positions, pose);
-  }
-
-  private ChassisSpeeds getRobotRelativeSpeeds() {
-     return m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(),
-        m_backRight.getState());
   }
 
   public Rotation2d getRotation2d() {
@@ -197,11 +192,7 @@ public class Drivetrain extends SubsystemBase {
 
     updateOdometry();
   }
-
-  private void driveRobotRelative(ChassisSpeeds speed) {
-    this.drive(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond, false);
-  }
-
+  
   public static boolean isFieldOriented() {
     return m_field_oriented;
   }
@@ -214,7 +205,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putString("Pose", s);
     m_field_oriented = SmartDashboard.getBoolean("Field Oriented", m_field_oriented);
     SmartDashboard.putBoolean("Switch", input.get());
-   
+
     for (int i = 0; i < modules.length; i++)
       modules[i].log();
   }
@@ -222,21 +213,21 @@ public class Drivetrain extends SubsystemBase {
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     updatePositions();
-    m_pose=m_odometry.update(getRotation2d(), m_positions);
+    m_pose = m_odometry.update(getRotation2d(), m_positions);
     m_Field2d.setRobotPose(getPose());
   }
 
   public void resetOdometry(Pose2d pose) {
     m_gyro.reset();
     // resetPositions();
-    m_odometry.resetPosition(getRotation2d(),m_positions,pose);
+    m_odometry.resetPosition(getRotation2d(), m_positions, pose);
     // last_heading=0;
   }
 
   public void resetOdometry() {
     m_gyro.reset();
     resetPositions();
-    m_odometry.resetPosition(getRotation2d(),m_positions,new Pose2d(0, 0, new Rotation2d()));
+    m_odometry.resetPosition(getRotation2d(), m_positions, new Pose2d(0, 0, new Rotation2d()));
     last_heading = 0;
   }
 
@@ -245,16 +236,16 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getVelocity() {
-    double left=0.5*(m_frontLeft.getVelocity()+m_backLeft.getVelocity());
-    double right=0.5*(m_frontRight.getVelocity()+m_backRight.getVelocity());
-		return 0.5 * (left + right);
-	}
+    double left = 0.5 * (m_frontLeft.getVelocity() + m_backLeft.getVelocity());
+    double right = 0.5 * (m_frontRight.getVelocity() + m_backRight.getVelocity());
+    return 0.5 * (left + right);
+  }
 
   public double getDistance() {
-    double left=0.5*(m_frontLeft.getDistance()+m_backLeft.getDistance());
-    double right=0.5*(m_frontRight.getDistance()+m_backRight.getDistance());
-		return 0.5 * (left + right);
-	}
+    double left = 0.5 * (m_frontLeft.getDistance() + m_backLeft.getDistance());
+    double right = 0.5 * (m_frontRight.getDistance() + m_backRight.getDistance());
+    return 0.5 * (left + right);
+  }
 
   // removes heading discontinuity at 180 degrees
   public static double unwrap(double previous_angle, double new_angle) {
@@ -290,24 +281,6 @@ public class Drivetrain extends SubsystemBase {
       System.out.println("Drivetrain-WHEELS_ALIGNED");
     m_resetting = false;
     return true;
-  }
-
-  // another way to check if wheels are realighned
-  public boolean wheelsAreAligned() {
-    for (int i = 0; i < modules.length; i++) {
-      for (int j = 0; j < modules.length; j++) {
-        double h1 = Math.toDegrees(modules[i].heading());
-        double h2 = Math.toDegrees(modules[j].heading());
-        if (h1 - h2 > 90)
-          return false;
-      }
-    }
-    return true;
-  }
-
-  public void showWheelPositions() {
-    for (int i = 0; i < modules.length; i++)
-      modules[i].showWheelPosition();
   }
 
   @Override

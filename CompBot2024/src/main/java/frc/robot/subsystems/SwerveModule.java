@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,8 +20,6 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-
-import static frc.robot.Constants.*;
 
 public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_driveMotor;
@@ -85,8 +84,8 @@ public class SwerveModule extends SubsystemBase {
     SmartDashboard.putString(name, "Working");
 
     m_driveEncoder = m_driveMotor.getEncoder();
-    m_driveEncoder.setPositionConversionFactor(kDistPerRot); // inches to meters
-    m_driveEncoder.setVelocityConversionFactor(kDistPerRot / 60); // convert RPM to meters per second
+    m_driveEncoder.setPositionConversionFactor(Drivetrain.kDistPerRot); // inches to meters
+    m_driveEncoder.setVelocityConversionFactor(Drivetrain.kDistPerRot / 60); // convert RPM to meters per second
 
     // Set the distance (in this case, angle) in radians per pulse for the turning
     // m_turningEncoder = m_turningMotor.getEncoder();
@@ -185,8 +184,7 @@ public class SwerveModule extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState state;
-    state = SwerveModuleState.optimize(desiredState, getRotation2d());
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, getRotation2d());
     // System.out.println("optimize = " + m_optimize);
     double velocity = getVelocity();
     // Calculate the drive output from the drive PID controller.
@@ -200,28 +198,25 @@ public class SwerveModule extends SubsystemBase {
     double turnFeedforward = 0; // -m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     double set_drive = driveOutput + driveFeedforward;
-    set_drive = set_drive/kMaxVelocity; // Scale our output from 0:maxV to 0:1
-    double set_turn = turnOutput + turnFeedforward;
-
-    // System.out.println(set_drive);
-    // System.out.println(set_turn);
+        double set_turn = turnOutput + turnFeedforward;
 
     driveForward(set_drive);
     m_turningMotor.set(set_turn);
 
     if (debug) {
-      String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n",
-          velocity, state.speedMetersPerSecond, set_drive, Math.toDegrees(turn_angle), state.angle.getDegrees(),
-          set_turn);
-      SmartDashboard.putString(name + "_debug_output", s);
+      String s = String.format("Drive p:%-1.3f Angle t:%-3.3f a:%-2.3f c:%-2.3f\n",
+          getDistance(), Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn);
+      SmartDashboard.putString(name, s);
     }
   }
 
   public void log() {
+if (debug) {
     String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n",
         getDistance(), getRotation2d().getDegrees(), getRotations());
     SmartDashboard.putString(name, s);
-    SmartDashboard.putNumber(name + "_velocity", getVelocity());
+    }
+
   }
 
   public boolean isInverted() {
@@ -246,15 +241,28 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor.setVoltage(dist);
   }
 
-  @Override
-  public void periodic() {
-    if (debug)
-      log();
-    // This method will be called once per scheduler run
+  public void resetWheel() {
+    setAngle(0, 0);
+  }
+
+  public boolean wheelReset() {
+    return m_turningPIDController.atSetpoint();
+  }
+
+  // use a PID controller to set an explicit turn angle
+  public void setAngle(double a, double d) {
+    double r = Math.toRadians(a);
+    m_turningPIDController.setSetpoint(r);
+    double current = getRotation2d().getRadians(); // rotations in radians
+    double turnOutput = m_turningPIDController.calculate(current, r);
+    m_driveMotor.set(d);
+    m_turningMotor.set(turnOutput);
   }
 
   @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+  public void periodic() {
+    if (!debug)
+      log();
+      }
+
 }

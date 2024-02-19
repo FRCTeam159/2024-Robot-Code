@@ -10,6 +10,14 @@ java {
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
+sourceSets {
+    main {
+        java{
+            srcDirs '../Resources/Java'
+        }
+    }
+}
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
