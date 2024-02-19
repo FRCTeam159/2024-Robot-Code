@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArmControls;
 import frc.robot.commands.DriveWithGamepad;
+import frc.robot.commands.IntakeShooterControls;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.IntakeShooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TagDetector;
 import frc.robot.Constants;
@@ -36,6 +38,8 @@ public class RobotContainer {
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
   private final TagDetector m_detector = new TagDetector(m_Drivetrain);
   private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Controller);
+  private final IntakeShooter m_IntakeShooter = new IntakeShooter();
+  private final IntakeShooterControls m_IntakeShooterControls = new IntakeShooterControls(m_IntakeShooter, m_Controller);
   
   //commands
   
@@ -43,6 +47,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm.setDefaultCommand(m_ArmControls);
+    m_IntakeShooter.setDefaultCommand(m_IntakeShooterControls);
     // Configure the button bindings
     configureBindings();
      AutoBuilder.configureHolonomic(

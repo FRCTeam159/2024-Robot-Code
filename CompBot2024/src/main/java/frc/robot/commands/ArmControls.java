@@ -13,7 +13,6 @@ public class ArmControls extends Command {
 
   private final XboxController m_controller;
   private final Arm m_arm;
-  double m_arm_position;
 
   public static final double ARM_MOVE_RATE=0.5;
 

@@ -10,10 +10,9 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,29 +20,25 @@ import frc.robot.sensors.BNO055;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
+  public final double kMaxArmVelocity = 1200; // degrees/s
+  public final double kMaxArmAcceleration = 1200; // degrees/s^2
 
-  private final ArmFeedforward m_shoulderFeedforward = new ArmFeedforward(0.1, 1.0, 0.1);
-  private final SimpleMotorFeedforward m_intakeFeedforward = new SimpleMotorFeedforward(0.01, 1);
-  private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(0.01, 1);
-
-  private final PIDController m_shoulderPIDController = new PIDController(0.02, 0, 0);
-  private final PIDController m_shooterPIDController = new PIDController(0.01, 0, 0);
-
-  private final CANSparkMax m_shoulderMotor;
-  private final CANSparkMax m_intakeMotor;
-  private final CANSparkMax m_shooterMotor1;
-  private final CANSparkMax m_shooterMotor2;
+  private final ArmFeedforward m_shoulderFeedforward = new ArmFeedforward(0.01, 0.05, 0.01);
+  private final TrapezoidProfile.Constraints m_trapezoidConstraints = new TrapezoidProfile.Constraints(kMaxArmVelocity, kMaxArmAcceleration);
+  private final ProfiledPIDController m_shoulderPIDController = new ProfiledPIDController(
+    0.05, 0, 0,
+    m_trapezoidConstraints
+  );
+  private final CANSparkMax m_shoulderMotor1;
+  private final CANSparkMax m_shoulderMotor2;
 
   private double shoulderAngleSetpoint = 0; // degrees
   public final double armMinAngle = 5; // degrees
   public final double armMaxAngle = 110; // degrees
   public boolean initialized = false;
   public boolean enabled = false;
-  public final double kMaxArmVelocity = 1; // degrees/s
   public double currentAngle = 0;  // degrees, updated every periodic
 
-  DigitalInput noteSensor1 = new DigitalInput(1);
-  DigitalInput noteSensor2 = new DigitalInput(2);
   private static final BNO055OffsetData bno2Offsets = new BNO055OffsetData(-19, 52, -13, -24, 0, -2, 2, -8, -53, -66, 591);
   public static BNO055 m_armGyro = new BNO055(
     I2C.Port.kMXP,
@@ -55,16 +50,13 @@ public class Arm extends SubsystemBase {
   );
 
   private String name = "arm";
-  
+
   /** Creates a new Arm. */
   public Arm() {
-    m_shoulderMotor = new CANSparkMax(kShoulderMotor, CANSparkLowLevel.MotorType.kBrushless);
-    m_intakeMotor = new CANSparkMax(kIntakeMotor, CANSparkLowLevel.MotorType.kBrushed);
-    m_intakeMotor.setSmartCurrentLimit(38);
-    m_intakeMotor.setInverted(true);
-    m_shooterMotor1 = new CANSparkMax(kShooterMotor1, CANSparkLowLevel.MotorType.kBrushless);
-    m_shooterMotor1.setInverted(true);
-    m_shooterMotor2 = new CANSparkMax(kShooterMotor2, CANSparkLowLevel.MotorType.kBrushless);
+    m_shoulderMotor1 = new CANSparkMax(kShoulderMotor1, CANSparkLowLevel.MotorType.kBrushless);
+    m_shoulderMotor2 = new CANSparkMax(kShoulderMotor2, CANSparkLowLevel.MotorType.kBrushless);
+    m_shoulderMotor2.setInverted(true);  // technically not necessary since we invert in the follow command, but I'm leaving it in just in case
+    m_shoulderMotor2.follow(m_shoulderMotor1, true);
   }
 
   // This method will be called once per scheduler run
@@ -82,12 +74,11 @@ public class Arm extends SubsystemBase {
     clampSetpoint(); // ensure the setpoint does not go beyond the allowed boundaries
     log();
     runShoulderMotor();
-    runIntake();
   }
 
   public void enable() {
-    m_shoulderPIDController.reset();
     setTargetAngle(getAngleFromGyro());
+    m_shoulderPIDController.reset(new TrapezoidProfile.State(shoulderAngleSetpoint, 0));
     enabled = true;
   }
 
@@ -146,27 +137,13 @@ public class Arm extends SubsystemBase {
   }
 
   private void runShoulderMotor() {
-    double shoulderCommand = m_shoulderFeedforward.calculate(
+    double pidCommand = m_shoulderPIDController.calculate(currentAngle, shoulderAngleSetpoint);
+    double ffCommand = m_shoulderFeedforward.calculate(
       Rotation2d.fromDegrees(shoulderAngleSetpoint).getRadians(),
-      Rotation2d.fromDegrees(kMaxArmVelocity).getRadians()
+      Rotation2d.fromDegrees(m_shoulderPIDController.getSetpoint().velocity).getRadians()
     );
-    shoulderCommand = m_shoulderPIDController.calculate(currentAngle, shoulderAngleSetpoint);
-    SmartDashboard.putNumber(name + " Shoulder command", shoulderCommand);
-    m_shoulderMotor.set(shoulderCommand);
-  }
-
-  private void runIntake() {
-    boolean sensor1State = noteSensor1.get();
-    boolean sensor2State = noteSensor2.get();
-    if (!sensor1State) {
-      // intake should run forward (in) if there is no note
-      //m_intakeMotor.set(1);
-    } else if (sensor1State && sensor2State) {
-      // intake should run backward (out) if note sensor 2 is triggered
-      //m_intakeMotor.set(-0.1);
-    } else if (sensor1State && !sensor2State) {
-      // intake should stop if only note sensor 1 is triggered
-      //m_intakeMotor.set(0);
-    }
+    double totalCommand = ffCommand + pidCommand;
+    SmartDashboard.putNumber(name + " Shoulder command", totalCommand);
+    m_shoulderMotor1.set(totalCommand);
   }
 }
