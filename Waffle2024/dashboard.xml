@@ -1,35 +1,31 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Initialized" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="172" y="15"/>
+	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="19" y="105"/>
+		<width>154</width>
 	</widget>
-	<widget field="Arm Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="495" y="109"/>
-		<width>113</width>
-	</widget>
-	<widget field="TweakCenterX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="361" y="108"/>
-		<width>123</width>
-		<height>20</height>
+	<widget field="Gyro Present" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="165" y="14"/>
 	</widget>
 	<widget field="Reversed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="431" y="83"/>
+		<location x="442" y="83"/>
 	</widget>
 	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="361" y="82"/>
 	</widget>
 	<widget field="Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="115" y="15"/>
+		<location x="114" y="13"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="16" y="81"/>
+		<location x="197" y="53"/>
+		<width>76</width>
 	</widget>
 	<widget field="Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="62" y="13"/>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="14" y="103"/>
-		<width>178</width>
+		<location x="18" y="79"/>
+		<width>156</width>
 	</widget>
 	<widget field="UseTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="203" y="76"/>
@@ -78,8 +74,8 @@
 		<height>20</height>
 	</widget>
 	<widget field="rPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="448" y="60"/>
-		<width>81</width>
+		<location x="449" y="60"/>
+		<width>88</width>
 		<height>21</height>
 	</widget>
 	<widget field="SendableChooser[1]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
@@ -115,4 +111,5 @@
 <live-window>
 </live-window>
 	<hidden field="Arm Setpoint"/>
+	<hidden field="Arm Angle"/>
 </xml>

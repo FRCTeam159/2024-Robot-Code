@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,77 +29,109 @@ public class Arm extends SubsystemBase {
     bno2Offsets
   );
   
-  private static boolean have_arm=false; // test first !
+  
+  private static boolean have_arm=true; // test first !
+  private static boolean move_arm=true; // test first !
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
+
+  boolean newAngle = true;
   
-  private double armAngle = 90;
+  private double armSetAngle = 90;
   static boolean sensor_test = true;
   boolean sensor_state = false;
 
-  DigitalInput input = new DigitalInput(1);
+  static final double MAX_ANGLE=100;
+  static final double MIN_ANGLE=0;
+
+  //DigitalInput input = new DigitalInput(1);
   private boolean m_initialized;
 
   /** Creates a new Arm. */
   public Arm() {
-    m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushless);
-    m_PID = new PIDController(0.05, 0, 0);
-    m_PID.reset();
-    
+   if(have_arm)
+      m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
+
+    m_PID = new PIDController(0.3, 0, 0);
+    m_PID.reset(); 
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    setAngle(armAngle);
-    log();
+ void setAngle() {
+    //if (newAngle) 
+    m_PID.setSetpoint(armSetAngle);
+    double current = getAngle();
+    double output = m_PID.calculate(current);
+    if (move_arm)
+      m_armPosMotor.set(0.1*output);
+    //if (newAngle) 
+    String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+    SmartDashboard.putString("Arm", s);
+    //System.out.println(s);  
+    newAngle=false;
   }
-
-  public void setAngle(double angle) {
-    boolean newangle=angle !=armAngle;
-    armAngle = angle;
-    m_PID.setSetpoint(armAngle);
-    double output = m_PID.calculate(getAngle());
-    if(have_arm)
-       m_armPosMotor.set(output); 
-    if(newangle)
-        System.out.format("Arm.setAngle target:%-1.1f corr:%-1.1f",armAngle,output);
+  void setNewTarget(double angle){
+    angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    newAngle = Math.abs(angle-armSetAngle)>1e-6;
+    armSetAngle=angle;
   }
-
   public double getAngle() {
-    return m_armPosMotor.getEncoder().getPosition() / Constants.kArmGearRatio * 360.0;
+    double angle= -getAngleFromGyro()+180;
+    angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    return angle;
+    //return m_armPosMotor.getEncoder().getPosition() / Constants.kArmGearRatio * 360.0;
   }
 
   public void adjustAngle(double adjustment) {
-    armAngle += adjustment;
+    setNewTarget(armSetAngle+adjustment);
   }
 
   public void setTargetAngle(double a){
-    armAngle=a;
+    setNewTarget(a);
   }
 
   public double getTargetAngle(){
-    return armAngle;
+    return armSetAngle;
   }
 
   private void waitForGyroInit() {
     if (!m_initialized && m_armGyro.isInitialized() && m_armGyro.isCalibrated()) {
       // Set the setpoint to the current position when initializing
-      setTargetAngle(getAngleFromGyro());
+      //setTargetAngle(getAngleFromGyro());
       m_initialized=true;
     }
   }
-  public double getAngleFromGyro() {
-    if(m_initialized)
-      return m_armGyro.getVector()[1]; // Y angle 
-    else
-      return 0;
+ public double getAngleFromGyro() {
+    // gyro is in gravity mode
+    // get X and Z gravity vectors
+    // Convert to angle
+    // when Z == g, angle is 0 degrees (toward front of robot)
+    double xGravity = m_armGyro.getVector()[0];
+    double zGravity = m_armGyro.getVector()[2];
+    //SmartDashboard.putNumber(name + "Shoulder x", xGravity);
+    //SmartDashboard.putNumber(name + "Shoulder Z", zGravity);
+    Rotation2d result = Rotation2d.fromRadians(Math.atan2(zGravity, xGravity));
+    result = result.minus(Rotation2d.fromDegrees(90));
+    double a=result.getDegrees(); 
+   // System.out.println(a);
+    a=a>180?180:a;
+    a=a<0?180:a;
+    return a;
   }
   void log(){
-    waitForGyroInit() ;
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
-    SmartDashboard.putNumber("Arm Setpoint", armAngle);
-    SmartDashboard.putBoolean("Sensor", input.get());
+    SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
+   // SmartDashboard.putBoolean("Sensor", input.get());
     SmartDashboard.putBoolean("Gyro Present", m_armGyro.isSensorPresent());
+  }
+
+  @Override
+  public void periodic() {
+    if (!m_initialized) 
+      waitForGyroInit(); // Make sure the gyro is ready before we move
+    else
+      setAngle();
+    log();
   }
 }

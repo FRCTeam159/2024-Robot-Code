@@ -74,7 +74,7 @@ public class Drivetrain extends SubsystemBase {
 
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), m_positions, new Pose2d());
 
-  DigitalInput input = new DigitalInput(0);
+  //DigitalInput input = new DigitalInput(0);
 
   private final Field2d m_Field2d = new Field2d();
 
@@ -204,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
         pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     SmartDashboard.putString("Pose", s);
     m_field_oriented = SmartDashboard.getBoolean("Field Oriented", m_field_oriented);
-    SmartDashboard.putBoolean("Switch", input.get());
+    //SmartDashboard.putBoolean("Switch", input.get());
 
     for (int i = 0; i < modules.length; i++)
       modules[i].log();

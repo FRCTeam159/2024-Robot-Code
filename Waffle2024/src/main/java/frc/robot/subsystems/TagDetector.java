@@ -25,7 +25,7 @@ import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.UsbCamera;
-import frc.robot.objects.AprilTag;
+import objects.AprilTag;
 
 public class TagDetector extends Thread {
   static {
@@ -85,7 +85,7 @@ public class TagDetector extends Thread {
         mat = new Mat();
         long tm=UsbCameraSink.grabFrame(mat);
         if(tm==0)
-        continue;
+          continue;
         AprilTag[] tags = null;
  
         boolean autoselect=Autonomous.getAutoset();

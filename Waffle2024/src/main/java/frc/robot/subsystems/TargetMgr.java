@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
-import frc.robot.objects.AprilTag;
+import objects.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,9 +16,7 @@ public class TargetMgr {
     public static final double kCenterX = Units.inchesToMeters(79); // Field geometry
     public static final double kSideX = Units.inchesToMeters(71);
     public static final double kSideY = Units.inchesToMeters(70);
-
-    public static double kTweakCenterX = Units.inchesToMeters(5);
-    
+  
     static ArrayList<TagTarget> targets = new ArrayList<>();
 
     static public double XC = kCenterX-Drivetrain.kRobotLength; // center forward
