@@ -40,7 +40,8 @@ public final class Constants {
     public static final int kBl_Encoder = 11;
     public static final double kBl_Offset = kBackLeftOffset; 
 
-    public static final int kShoulderMotor = 14;
+    public static final int kShoulderMotor1 = 13; 
+    public static final int kShoulderMotor2 = 14;
     public static final int kIntakeMotor = 18;
     public static final int kShooterMotor1 = 15;
     public static final int kShooterMotor2 = 16;
