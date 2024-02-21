@@ -71,7 +71,7 @@ public class IntakeShooter extends SubsystemBase {
           intakeCommand = 1;
       } else if (sensor1State && sensor2State) {
         // intake should run backward (out) if note sensor 2 is triggered
-          intakeCommand = -0.1;
+          intakeCommand = -0.2;
       } else if (sensor1State && !sensor2State) {
         // intake should stop if only note sensor 1 is triggered
           intakeCommand = 0;

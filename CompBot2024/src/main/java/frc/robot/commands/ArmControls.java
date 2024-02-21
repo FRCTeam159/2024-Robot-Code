@@ -16,7 +16,7 @@ public class ArmControls extends Command {
 
   public static final double ARM_MOVE_RATE=0.5;
 
-  /** Creates a new ArmControlls. */
+  /** Creates a new ArmControls. */
   public ArmControls(Arm arm, XboxController controller) {
     m_arm = arm;
     m_controller = controller;
@@ -36,10 +36,6 @@ public class ArmControls extends Command {
     double left=m_controller.getLeftTriggerAxis();
     double right=m_controller.getRightTriggerAxis();
 
-    // if(m_controller.getRightBumperPressed())
-    //   m_arm.togglePusher();
-    // else if(m_controller.getLeftBumperPressed())
-    //   m_arm.toggleShooter();
     if(m_controller.getAButtonPressed()) {
       m_arm.setTargetAngle(Constants.kPickup); 
     } else if(m_controller.getBButtonPressed()) { 
@@ -50,10 +46,6 @@ public class ArmControls extends Command {
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);
     } else if (right > 0.1) {
       m_arm.adjustAngle(right*ARM_MOVE_RATE);
-    }
-
-    if (m_controller.getYButton()) {
-      // TODO: shoot!
     }
     
   }
