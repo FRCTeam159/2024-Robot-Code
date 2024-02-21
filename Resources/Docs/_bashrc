@@ -1,0 +1,12 @@
+# this fixes wierd characters in vscode gitbash terminal
+TERM=cygwin
+# fixes library path problem on windows
+
+alias lst='ls -ltr'
+alias swap='pushd +1'
+alias his='history'
+export TEAM_REPOS=${HOME}/git
+export TEAM_BIN=${TEAM_REPOS}/2024-Robot-Code/Resources/bin
+export SMART_DASHBOARD=${TEAM_BIN}/SmartDashboard-winx64.jar
+export PATH=.:$HOME/bin:$TEAM_BIN:$PATH
+
