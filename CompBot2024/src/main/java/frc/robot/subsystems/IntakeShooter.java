@@ -35,6 +35,7 @@ public class IntakeShooter extends SubsystemBase {
   public boolean shoot = false;
   public boolean intake = false;
 
+  double target_speed=20; // ?? TBD
 
   /** Creates a new IntakeShooter. */
   public IntakeShooter() {
@@ -54,8 +55,9 @@ public class IntakeShooter extends SubsystemBase {
   }
 
   public void log() {
-    SmartDashboard.putBoolean(name + "Sensor_1", !noteSensor1.get());
-    SmartDashboard.putBoolean(name + "Sensor_2", !noteSensor2.get());
+    SmartDashboard.putBoolean(name + " Sensor_1", !noteSensor1.get());
+    SmartDashboard.putBoolean(name + " Sensor_2", !noteSensor2.get());
+    SmartDashboard.putNumber(name + " ShooterSpeed", shooterSpeed());
   }
 
   private void runIntake() {
@@ -89,10 +91,6 @@ public class IntakeShooter extends SubsystemBase {
     intake = true;
   }
 
-  public void stopIntake() {
-    intake = false;
-  }
-
   public void shoot() {
     shoot = true;
     m_shooterMotor1.set(1);
@@ -103,5 +101,34 @@ public class IntakeShooter extends SubsystemBase {
     shoot = false;
     m_shooterMotor1.set(0);
     m_shooterMotor2.set(0);
+  }
+
+  public void stopIntake() {
+    intake = false;
+  }
+  public void setShooterOn() {
+    shoot = true;
+  }
+  public void setShooterOFf() {
+    shoot = false;
+  }
+  public void setIntakeOn() {
+    intake = true;
+  }
+  public void setIntakeOff() {
+    intake = false;
+  }
+  public boolean noteAtIntake(){
+    return noteSensor1.get();
+  }
+  public boolean noteAtShooter(){
+    return noteSensor2.get();
+  }
+
+  public double shooterSpeed(){
+    return m_shooterMotor1.getEncoder().getVelocity();
+  }
+  public boolean atTargetSpeed(){
+   return shooterSpeed()>=target_speed?true:false;
   }
 }

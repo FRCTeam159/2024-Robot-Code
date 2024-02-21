@@ -5,11 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArmControls;
@@ -38,7 +33,7 @@ public class RobotContainer {
   private final TagDetector m_detector = new TagDetector(m_Drivetrain);
   private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Controller);
   private final IntakeShooter m_IntakeShooter = new IntakeShooter();
-  private final IntakeShooterControls m_IntakeShooterControls = new IntakeShooterControls(m_IntakeShooter, m_Controller);
+  private final IntakeShooterControls m_IntakeShooterControls = new IntakeShooterControls(m_IntakeShooter, m_Arm, m_Controller);
   
   //commands
   

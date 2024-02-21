@@ -32,21 +32,18 @@ public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   //Subsystems
   private final Drivetrain m_drivetrain = new Drivetrain();
-   private Arm m_arm = null;
-  private final Autonomous m_auto = new Autonomous(m_drivetrain,m_arm);
+  private Arm m_arm = new Arm();
+  private final Autonomous m_auto = new Autonomous(m_drivetrain, m_arm);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_drivetrain, m_controller);
   private final TagDetector m_detector= new TagDetector(m_drivetrain);
 
-  public static boolean m_have_arm=true;
+  public static boolean m_haveArm = true;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
-    if(m_have_arm){
-      m_arm = new Arm();
-      m_arm.setDefaultCommand(new ArmControls(m_arm,m_controller));
-    } 
-
+    m_arm.setDefaultCommand(new ArmControls(m_arm, m_controller));
+    
     // Add commands to PathPlanner
     NamedCommands.registerCommand("Wait", new Wait(m_drivetrain, 2.0));
 

@@ -53,6 +53,7 @@ public class Arm extends SubsystemBase {
       m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
 
     m_PID = new PIDController(0.3, 0, 0);
+    m_PID.setTolerance(1.0);
     m_PID.reset(); 
   }
 
@@ -93,6 +94,10 @@ public class Arm extends SubsystemBase {
 
   public double getTargetAngle(){
     return armSetAngle;
+  }
+
+  public boolean onTarget() {
+    return m_PID.atSetpoint();
   }
 
   private void waitForGyroInit() {
