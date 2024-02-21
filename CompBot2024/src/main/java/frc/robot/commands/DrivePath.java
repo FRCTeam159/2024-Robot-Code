@@ -56,7 +56,7 @@ public class DrivePath extends Command {
   double rPath = 0;
   boolean m_reversed = false;
   boolean m_autoset = false;
-double scale=0.5;
+  double scale=0.5;
 
   int plot_type = utils.PlotUtils.PLOT_NONE;
   //int plot_type = frc.robot.utils.PlotUtils.PLOT_LOCATION;
