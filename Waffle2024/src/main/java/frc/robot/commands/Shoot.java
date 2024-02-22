@@ -8,12 +8,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
-public class Wait extends Command {
+public class Shoot extends Command {
   Drivetrain m_drive;
   double m_timeout;
   Timer m_timer = new Timer();
-  /** Creates a new Wait. */
-  public Wait(Drivetrain drive, double tm) {
+  
+  /** Creates a new Shoot. */
+  public Shoot(Drivetrain drive, double tm) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
     m_timeout = tm;
@@ -25,7 +26,7 @@ public class Wait extends Command {
   public void initialize() {
     // Debug
     System.out.println("-");
-    System.out.println("Waiting started");
+    System.out.println("Shooting started");
     System.out.println("-");
 
     // Reset timer
@@ -35,7 +36,8 @@ public class Wait extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.drive(0, 0, 0, false);
+    // Resets wheels
+    m_drive.drive(0.0, 0, 0, false);
   }
 
   // Called once the command ends or is interrupted.
@@ -43,7 +45,7 @@ public class Wait extends Command {
   public void end(boolean interrupted) {
     // Debug
     System.out.println("-");
-    System.out.println("Waiting done");
+    System.out.println("Shooting done");
     System.out.println("-");
   }
 
@@ -53,3 +55,4 @@ public class Wait extends Command {
     return m_timer.get() > m_timeout;
   }
 }
+

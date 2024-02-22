@@ -57,6 +57,7 @@ public class Arm extends SubsystemBase {
     m_shoulderMotor2 = new CANSparkMax(kShoulderMotor2, CANSparkLowLevel.MotorType.kBrushless);
     m_shoulderMotor2.setInverted(true);  // technically not necessary since we invert in the follow command, but I'm leaving it in just in case
     m_shoulderMotor2.follow(m_shoulderMotor1, true);
+    m_shoulderPIDController.setTolerance(4.0);
   }
 
   // This method will be called once per scheduler run
@@ -145,5 +146,9 @@ public class Arm extends SubsystemBase {
     double totalCommand = ffCommand + pidCommand;
     SmartDashboard.putNumber(name + " Shoulder command", totalCommand);
     m_shoulderMotor1.set(totalCommand);
+  }
+
+  public boolean atTargetAngle(){
+    return m_shoulderPIDController.atSetpoint();
   }
 }

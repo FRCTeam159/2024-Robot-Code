@@ -11,12 +11,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.InitAuto;
+import frc.robot.commands.PickUp;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.Wait;
 
 public class Autonomous extends SubsystemBase {
   public static boolean autoReset = false;
   Drivetrain m_drive;
+  Arm m_arm;
 
   public static final int PROGRAM = 1;
   public static final int PATHPLANNER = 2;
@@ -39,7 +44,7 @@ public class Autonomous extends SubsystemBase {
    * @param m_arm */
   public Autonomous(Drivetrain drive, Arm arm) {
     m_drive = drive;
-    Arm m_arm=arm;
+    m_arm=arm;
 
     SmartDashboard.putNumber("xPath", xp);
     SmartDashboard.putNumber("yPath", yp);
@@ -83,6 +88,9 @@ public class Autonomous extends SubsystemBase {
     return SmartDashboard.getBoolean("Plot",m_plotpath);
   }
   public SequentialCommandGroup getCommand(){
+    return new SequentialCommandGroup(new InitAuto(m_arm), getAutoCommand());
+  }
+  private SequentialCommandGroup getAutoCommand(){
     int selected_path = m_path_chooser.getSelected();
     switch(selected_path){
       default:
@@ -92,12 +100,19 @@ public class Autonomous extends SubsystemBase {
           new DrivePath(m_drive, getReverse())
         );
       case AUTOTEST: /* Uses alliance and position from SmartDashboard to create path */
-         return new SequentialCommandGroup(
+        return new SequentialCommandGroup(
           //new AlignWheels(m_drive,2),
-           new DrivePath(m_drive,false),
-           new Wait(m_drive, 0.5),
-           new DrivePath(m_drive,true)
-         );
+          new Shoot(m_drive, 2.0),
+          new DrivePath(m_drive,false),
+          // Move arm to pickUp pos
+          // new setAngle(Constants.kPickup);
+          new PickUp(m_drive, 2.0),
+          new Wait(m_drive, 0.5),
+          new DrivePath(m_drive,true),
+          // Move arm to shoot pos
+          // new setAngle(Constants.kSpeaker);
+          new Shoot(m_drive, 2.0)
+        );
       case PATHPLANNER: /* Uses a command group from PathPlanner */
         return new SequentialCommandGroup(drivePathplanner());
     }

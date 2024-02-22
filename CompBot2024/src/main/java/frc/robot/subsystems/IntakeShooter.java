@@ -32,9 +32,11 @@ public class IntakeShooter extends SubsystemBase {
   DigitalInput noteSensor1 = new DigitalInput(1);
   DigitalInput noteSensor2 = new DigitalInput(2);
   private static final String name = "IntakeShooter";
-  public boolean shoot = false;
-  public boolean intake = false;
+  public boolean m_shoot = false;
+  public boolean m_intake = false;
+  public boolean m_push = false;
 
+  double m_shoot_speed=30; // ?? TBD
 
   /** Creates a new IntakeShooter. */
   public IntakeShooter() {
@@ -53,9 +55,10 @@ public class IntakeShooter extends SubsystemBase {
     runIntake();
   }
 
-  public void log() {
+  private void log() {
     SmartDashboard.putBoolean(name + "Sensor_1", !noteSensor1.get());
     SmartDashboard.putBoolean(name + "Sensor_2", !noteSensor2.get());
+    SmartDashboard.putNumber(name + "ShooterSpeed", shooterSpeed());
   }
 
   private void runIntake() {
@@ -64,44 +67,63 @@ public class IntakeShooter extends SubsystemBase {
     boolean sensor2State = !noteSensor2.get();
     double intakeCommand = 0;
 
-    if (intake) {
+    if(m_push)
+      intakeCommand = 1; // fire the shot
+    else if (m_intake) { // pickup or carry a note
       // when attempting to intake
       if (!sensor1State) {
         // intake should run forward (in) if there is no note
           intakeCommand = 1;
       } else if (sensor1State && sensor2State) {
         // intake should run backward (out) if note sensor 2 is triggered
-          intakeCommand = -0.1;
+          intakeCommand = -0.2;
       } else if (sensor1State && !sensor2State) {
         // intake should stop if only note sensor 1 is triggered
           intakeCommand = 0;
       }
     }
-
-    // Override these for shooting mode
-    if (shoot) {
-      intakeCommand = 0.5;
-    }
     m_intakeMotor.set(intakeCommand);
+    // Override these for shooting mode
+    if (m_shoot) {
+      //intakeCommand = 0.5;
+      m_shooterMotor1.set(1);
+      m_shooterMotor2.set(1);
+    }
+    else{
+      m_shooterMotor1.set(0);
+      m_shooterMotor2.set(0);
+    }
   }
 
-  public void intake() {
-    intake = true;
+  public void setShooterOn() {
+    m_shoot = true;
+  }
+  public void setShooterOFf() {
+    m_shoot = false;
+  }
+  public void setIntakeOn() {
+    m_intake = true;
+  }
+  public void setIntakeOff() {
+    m_intake = false;
+  }
+  public void setPushOn() {
+    m_push = true;
+  }
+  public void setPushOFf() {
+    m_push = false;
+  }
+  public boolean noteAtIntake(){
+    return noteSensor1.get();
+  }
+  public boolean noteAtShooter(){
+    return noteSensor2.get();
   }
 
-  public void stopIntake() {
-    intake = false;
+  public double shooterSpeed(){
+    return m_shooterMotor1.getEncoder().getVelocity();
   }
-
-  public void shoot() {
-    shoot = true;
-    m_shooterMotor1.set(1);
-    m_shooterMotor2.set(1);
-  }
-  
-  public void stopShoot() {
-    shoot = false;
-    m_shooterMotor1.set(0);
-    m_shooterMotor2.set(0);
+  public boolean atTargetSpeed(){
+   return shooterSpeed()>=m_shoot_speed?true:false;
   }
 }

@@ -27,7 +27,7 @@ public static final double kCenterX = Units.inchesToMeters(79); // Field geometr
     static public double YF = -kSideY;
     static public double RF = -60;
 
-    static final public int UNKNOWN = 0;
+    static final public int UNKNOWN = 0; 
     static final public int OUTSIDE = 1;
     static final public int CENTER = 2;
     static final public int INSIDE = 3;
