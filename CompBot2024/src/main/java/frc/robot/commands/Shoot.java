@@ -29,8 +29,9 @@ public class Shoot extends Command{
     shooting=false;
     noteCaptured=m_shooter.noteAtIntake();
     m_timer.reset();
-    m_shooter.setShooterOn();
-    m_shooter.setIntakeOff();
+    m_shooter.setShooterOn(); // turn shootere on flywheels
+    m_shooter.setIntakeOff(); // turn off intake rollers
+    m_shooter.setPushOFf();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +39,7 @@ public class Shoot extends Command{
   public void execute() {
     if(!shooter_ready && m_shooter.atTargetSpeed()){
       shooter_ready=true;
-      m_shooter.setIntakeOn();
+      m_shooter.setPushOn(); // 
       m_timer.reset();
       shooting=true;
       Robot.status="Shooting";
@@ -50,16 +51,19 @@ public class Shoot extends Command{
   public void end(boolean interrupted) {
     System.out.println("Shoot.end");
     m_shooter.setShooterOFf();
+    m_shooter.setPushOFf();
+   // m_shooter.setIntakeOn();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(shooter_ready && m_timer.get()>2 && !m_shooter.noteAtShooter())
+    // turn on pusher wheels and wait a little to make sure note has cleared the shooter
+    if(shooter_ready && m_timer.get()>2 && !m_shooter.noteAtShooter()) 
       return true;
     if(shooting && m_timer.get()>5) // taking too long - something isn't right
       return true;
-    if(!noteCaptured)
+    if(!noteCaptured) // never had a note to start with
       return true;
     return false;
   }

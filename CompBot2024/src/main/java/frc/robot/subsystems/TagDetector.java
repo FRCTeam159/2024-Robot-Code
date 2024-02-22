@@ -90,21 +90,22 @@ public class TagDetector extends Thread {
  
         boolean autoselect=Autonomous.getAutoset();
         boolean usetags=Autonomous.getUsetags();
-        
-        if (usetags && autoselect){
-          tags = getTags(mat);
-          if(tags!=null){
-            if(tags.length ==2){
-              Arrays.sort(tags, new SortbyDistance());
-              TargetMgr.setStartPose(tags);
+        if (autoselect && !TargetMgr.startPoseSet()){
+          if (usetags){
+            tags = getTags(mat);
+            if(tags!=null){
+              if(tags.length ==2){
+                Arrays.sort(tags, new SortbyDistance());
+                TargetMgr.setStartPose(tags);
+              }
+              showTags(tags, mat);
             }
-            showTags(tags, mat);
           }
-        }
-        else if (autoselect) { 
-          int alliance=Autonomous.getAlliance();
-          int position=Autonomous.getPosition();
-          TargetMgr.setTarget(alliance,position);     
+          else{
+             int alliance=Autonomous.getAlliance();
+             int position=Autonomous.getPosition();
+             TargetMgr.setTarget(alliance,position);     
+          }
         }
         ouputStream.putFrame(mat);
       } catch (Exception ex) {
@@ -139,6 +140,7 @@ public class TagDetector extends Thread {
       );
     }
   }
+
   // return an array of tag info structures from an image
   private AprilTag[] getTags(Mat mat) {
     AprilTag[] atags=null;

@@ -15,8 +15,8 @@ public class IntakeShooterControls extends Command {
   private final IntakeShooter m_intakeShooter;
   private final Arm m_arm;
 
-  boolean shooting=false;
-  boolean grabbing=false;
+  boolean m_shooting=false;
+  boolean m_pickup=false;
 
   Shoot shoot;
   Pickup pickup;
@@ -45,36 +45,36 @@ public class IntakeShooterControls extends Command {
   public void execute() {
     if (testmode) { // manually control shooting
       if (m_controller.getRightBumperPressed()) {
-        m_intakeShooter.intake();
+        m_intakeShooter.setIntakeOn();
       }
       if (m_controller.getRightBumperReleased()) {
-        m_intakeShooter.stopIntake();
+        m_intakeShooter.setIntakeOff();
       }
 
       if (m_controller.getLeftBumperPressed()) {
-        m_intakeShooter.shoot();
+        m_intakeShooter.setShooterOn();
       }
       if (m_controller.getLeftBumperReleased()) {
-        m_intakeShooter.stopShoot();
+        m_intakeShooter.setShooterOFf();
       }
     } 
     else { // use Pickup (left bumper) and Shoot(right bumper)commands
       if (m_controller.getRightBumperPressed()) {
-        if (!shooting) {
+        if (!m_shooting) {
           shoot.initialize();
-          shooting = true;
+          m_shooting = true;
         } else
-          shooting = false;
+          m_shooting = false;
       } else if (m_controller.getLeftBumperPressed()) {
-        if (!grabbing) {
+        if (!m_pickup) {
           pickup.initialize();
-          grabbing = true;
+          m_pickup = true;
         } else
-          grabbing = false;
+          m_pickup = false;
       }
-      if (shooting)
+      if (m_shooting)
         shoot();
-      else if (grabbing)
+      else if (m_pickup)
         pickup();
     }
   }
@@ -82,14 +82,14 @@ public class IntakeShooterControls extends Command {
   void shoot() {
     if (shoot.isFinished()) {
       shoot.end(false);
-      shooting = false;
+      m_shooting = false;
     } else
       shoot.execute();
   }
   void pickup(){
      if(pickup.isFinished()) {
       pickup.end(false);
-      grabbing = false;
+      m_pickup = false;
     } else
       pickup.execute();
   }
