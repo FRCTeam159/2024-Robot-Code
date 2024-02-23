@@ -31,7 +31,7 @@ public class RobotContainer {
   //private final Autonomous m_auto = new Autonomous(m_Drivetrain);
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
   private final TagDetector m_detector = new TagDetector(m_Drivetrain);
-  private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Controller);
+  private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Drivetrain, m_Controller);
   private final IntakeShooter m_IntakeShooter = new IntakeShooter();
   private final IntakeShooterControls m_IntakeShooterControls = new IntakeShooterControls(m_IntakeShooter, m_Arm, m_Controller);
   

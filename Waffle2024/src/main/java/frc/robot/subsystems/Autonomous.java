@@ -107,7 +107,6 @@ public class Autonomous extends SubsystemBase {
           // Move arm to pickUp pos
           // new setAngle(Constants.kPickup);
           new PickUp(m_drive, 2.0),
-          new Wait(m_drive, 0.5),
           new DrivePath(m_drive,true),
           // Move arm to shoot pos
           // new setAngle(Constants.kSpeaker);

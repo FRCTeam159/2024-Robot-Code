@@ -43,6 +43,10 @@ public class TagDetector extends Thread {
 
   Drivetrain m_drivetrain;
 
+  static boolean m_targeting=false;
+
+  static AprilTag[] tags = null;
+
   public static double min_decision_margin=30; // reject tags less than this
 
   static int count = 0;
@@ -86,8 +90,22 @@ public class TagDetector extends Thread {
         long tm=UsbCameraSink.grabFrame(mat);
         if(tm==0)
           continue;
-        AprilTag[] tags = null;
+
+        tags = null;
  
+        // if using tags for targeting
+        if(m_targeting){  
+          tags = getTags(mat);
+          if(tags !=null){
+            if(tags.length ==2)
+              Arrays.sort(tags, new SortbyDistance());
+            showTags(tags, mat);
+          }
+          ouputStream.putFrame(mat);
+          continue;
+        }
+
+        // set initial starting position and alliance
         boolean autoselect=Autonomous.getAutoset();
         boolean usetags=Autonomous.getUsetags();
         if (autoselect && !TargetMgr.startPoseSet()){
@@ -114,6 +132,17 @@ public class TagDetector extends Thread {
     }
   }
 
+// targeting methods
+  public static void setTargeting(boolean state){
+    System.out.println("SET TARGETING "+state);
+    m_targeting=state;
+  }
+  public static AprilTag[] getTags(){
+    return tags;
+  }
+  public static boolean isTargeting(){
+    return m_targeting;
+  }
   void showTags(AprilTag[] tags, Mat mat) {
     for (int i = 0; i < tags.length; i++) {
       AprilTag tag = tags[i];

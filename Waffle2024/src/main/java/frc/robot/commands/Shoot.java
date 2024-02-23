@@ -25,9 +25,7 @@ public class Shoot extends Command {
   @Override
   public void initialize() {
     // Debug
-    System.out.println("-");
     System.out.println("Shooting started");
-    System.out.println("-");
 
     // Reset timer
     m_timer.reset();
@@ -44,9 +42,7 @@ public class Shoot extends Command {
   @Override
   public void end(boolean interrupted) {
     // Debug
-    System.out.println("-");
     System.out.println("Shooting done");
-    System.out.println("-");
   }
 
   // Returns true when the command should end.

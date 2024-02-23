@@ -75,7 +75,7 @@ public class DrivePath extends Command {
     System.out.println("DRIVEPATH_INIT");
     m_autoset = Autonomous.getAutoset();
     m_ppcontroller.setEnabled(true);
-if(Autonomous.getPlotpath())
+    if(Autonomous.getPlotpath())
       plot_type=utils.PlotUtils.PLOT_LOCATION;
 
     if (m_autoset) { // use apriltags or smartdashboard buttons
@@ -168,7 +168,7 @@ if(m_pptrajectory==null)
     double rps = 0;
 
     if (m_reversed) { // go back to 0,0 !
-    if(m_drive.getDistance()<0.2) // probably an error to start too close to 0 ?
+      if (m_drive.getDistance() < 0.2) // probably an error to start too close to 0 ?
         return null;
       Pose2d pose = m_drive.getPose(); // start at current robot pose
       rpg = 0;
@@ -176,19 +176,18 @@ if(m_pptrajectory==null)
       points.add(pose);
       points.add(new Pose2d());
     } else {
-if(m_drive.getDistance()>0.2) // probably an error to start too far from 0 ?
+      if (m_drive.getDistance() > 0.2) // probably an error to start too far from 0 ?
         return null;
       points.add(new Pose2d()); // start at 0,0
       points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));
     }
 
-
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(points);
     PathConstraints constraints = new PathConstraints(
-        scale*Drivetrain.kMaxVelocity,
-        scale*Drivetrain.kMaxAcceleration,
-        scale*Drivetrain.kMaxAngularVelocity,
-        scale*Drivetrain.kMaxAngularAcceleration);
+        scale * Drivetrain.kMaxVelocity,
+        scale * Drivetrain.kMaxAcceleration,
+        scale * Drivetrain.kMaxAngularVelocity,
+        scale * Drivetrain.kMaxAngularAcceleration);
 
     PathPlannerPath path = new PathPlannerPath(
         bezierPoints, constraints,

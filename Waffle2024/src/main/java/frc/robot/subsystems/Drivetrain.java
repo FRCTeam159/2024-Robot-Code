@@ -214,7 +214,7 @@ public class Drivetrain extends SubsystemBase {
   public void updateOdometry() {
     updatePositions();
     m_pose = m_odometry.update(getRotation2d(), m_positions);
-    m_Field2d.setRobotPose(getPose());
+    //m_Field2d.setRobotPose(getPose());
   }
 
   public void resetOdometry(Pose2d pose) {

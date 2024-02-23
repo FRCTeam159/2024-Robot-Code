@@ -21,6 +21,7 @@ public class InitAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("InitAuto started");
     // Fix to be setAngle() command
     m_arm.setTargetAngle(Constants.kSpeaker);
   }
@@ -31,7 +32,9 @@ public class InitAuto extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("InitAuto end");
+  }
 
   // Returns true when the command should end.
   @Override

@@ -31,7 +31,6 @@ public class Arm extends SubsystemBase {
   
   
   private static boolean have_arm=true; // test first !
-  private static boolean move_arm=true; // test first !
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
 
@@ -52,7 +51,7 @@ public class Arm extends SubsystemBase {
    if(have_arm)
       m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
 
-    m_PID = new PIDController(0.3, 0, 0);
+    m_PID = new PIDController(0.03, 0, 0);
     m_PID.setTolerance(1.0);
     m_PID.reset(); 
   }
@@ -62,11 +61,11 @@ public class Arm extends SubsystemBase {
     m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
     double output = m_PID.calculate(current);
-    if (move_arm)
-      m_armPosMotor.set(0.1*output);
-    //if (newAngle) 
-    String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
-    SmartDashboard.putString("Arm", s);
+    m_armPosMotor.set(output);
+    if (newAngle){
+      String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+      SmartDashboard.putString("Arm", s);
+    }
     //System.out.println(s);  
     newAngle=false;
   }
@@ -127,7 +126,6 @@ public class Arm extends SubsystemBase {
   void log(){
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
     SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
-   // SmartDashboard.putBoolean("Sensor", input.get());
     SmartDashboard.putBoolean("Gyro Present", m_armGyro.isSensorPresent());
   }
 
