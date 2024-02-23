@@ -40,6 +40,7 @@ public class AutoTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("AutoTarget.start");
     TagDetector.setTargeting(true);
     tags=TagDetector.getTags();
     m_timer.reset();
@@ -56,7 +57,6 @@ public class AutoTarget extends Command {
       have_tags=false;
       return;
     }
-    m_timer.reset();
     have_tags=true;
     AprilTag target=tags[0];
     if(tags.length==2){
@@ -84,8 +84,14 @@ public class AutoTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(!have_tags && m_timer.get()>2)
+    if(!have_tags && m_timer.get()>2){
+      System.out.println("Autotarget.end - timeout expired");
       return true;
-    return (anglePID.atSetpoint() && turnPID.atSetpoint());
+    }
+    if(anglePID.atSetpoint() && turnPID.atSetpoint()){
+      System.out.println("Autotarget.end - on target");
+      return true;
+    }
+    return false;
   }
 }

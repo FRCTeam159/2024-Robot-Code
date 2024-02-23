@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.TagDetector;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.math.MathUtil;
@@ -22,9 +23,7 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(1);
 
-  boolean resetting=false;
-  static boolean alignment_test=true;
-
+  boolean m_aligning=false;
   AlignWheels m_align=null;
   /**
    * Creates a new ExampleCommand.
@@ -34,7 +33,7 @@ public class DriveWithGamepad extends Command {
   public DriveWithGamepad(Drivetrain drive, XboxController controller) {
     m_drive = drive;
     m_controller = controller;
-    // Use addRequirements() here to declare subsystem dependencies.
+    m_align = new AlignWheels(m_drive, 2.0);
     addRequirements(drive);
   }
 
@@ -45,7 +44,6 @@ public class DriveWithGamepad extends Command {
     m_xspeedLimiter.reset(now);
     m_yspeedLimiter.reset(now);
     m_rotLimiter.reset(now);
-
     System.out.println("DriveWithGampad started");
   }
 
@@ -82,34 +80,27 @@ public class DriveWithGamepad extends Command {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
 
-    if (!testAlign()) {
-     // final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(m_controller.getRightX(), 0.2), 3))
-     //     * Drivetrain.kMaxAngularAcceleration;
+    if (m_controller.getRightStickButtonPressed()) {
+      System.out.println("Aligning");
+      if (!m_aligning) {
+        m_align.initialize();
+        m_aligning = true;
+      } else
+        m_aligning = false;
+    }
+    if (m_aligning)
+      align();
+    if (!m_aligning) {
       final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2))*Drivetrain.kMaxAngularAcceleration;
       m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
     } 
   }
 
-  boolean testAlign() {
-    if (!alignment_test)
-      return false;
-    if (m_controller.getYButtonPressed()) {
-      if(!resetting){
-        m_align=new AlignWheels(m_drive,1.0);
-        m_align.initialize();
-        resetting=true;
-      }
-      else
-        resetting=false;
-    }
-    if (resetting) {
-        if(m_align.isFinished()) {
-          m_align.end(false);
-          resetting=false;
-        }
-        else
-          m_align.execute();
-    }
-    return resetting;
-  } 
+  void align() {
+    if (m_align.isFinished()) {
+      m_align.end(false);
+      m_aligning = false;
+    } else
+      m_align.execute();
+  }
 }
