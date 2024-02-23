@@ -19,11 +19,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class IntakeShooter extends SubsystemBase {
+  double m_shoot_max_speed = 4800;
+  double m_shoot_target_speed = 2300;  // units: RPM
 
   private final SimpleMotorFeedforward m_intakeFeedforward = new SimpleMotorFeedforward(0.01, 1);
-  private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(0.01, 1);
+  private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(0.01, 1/m_shoot_max_speed);
 
-  private final PIDController m_shooterPIDController = new PIDController(0.01, 0, 0);
+  private final PIDController m_shooterPIDController = new PIDController(0.2/m_shoot_max_speed, 0, 0);
 
   private final CANSparkMax m_intakeMotor;
   private final CANSparkMax m_shooterMotor1;
@@ -35,8 +37,8 @@ public class IntakeShooter extends SubsystemBase {
   public boolean m_shoot = false;
   public boolean m_intake = false;
   public boolean m_push = false;
-
-  double m_shoot_speed=30; // ?? TBD
+  boolean m_noteHasReachedShooter = false;
+  public boolean m_hasNote = false;
 
   /** Creates a new IntakeShooter. */
   public IntakeShooter() {
@@ -56,38 +58,39 @@ public class IntakeShooter extends SubsystemBase {
   }
 
   private void log() {
-    SmartDashboard.putBoolean(name + "Sensor_1", !noteSensor1.get());
-    SmartDashboard.putBoolean(name + "Sensor_2", !noteSensor2.get());
+    SmartDashboard.putBoolean(name + "Sensor_1", noteAtIntake());
+    SmartDashboard.putBoolean(name + "Sensor_2", noteAtShooter());
     SmartDashboard.putNumber(name + "ShooterSpeed", shooterSpeed());
   }
 
   private void runIntake() {
     // These are "normally closed" so we invert them to see if they're sensing something
-    boolean sensor1State = !noteSensor1.get(); 
-    boolean sensor2State = !noteSensor2.get();
     double intakeCommand = 0;
 
     if(m_push)
       intakeCommand = 1; // fire the shot
     else if (m_intake) { // pickup or carry a note
       // when attempting to intake
-      if (!sensor1State) {
+      if (!noteAtIntake()) {
         // intake should run forward (in) if there is no note
           intakeCommand = 1;
-      } else if (sensor1State && sensor2State) {
+      } else if (noteAtIntake() && noteAtShooter()) {
         // intake should run backward (out) if note sensor 2 is triggered
           intakeCommand = -0.2;
-      } else if (sensor1State && !sensor2State) {
+          m_noteHasReachedShooter = true;
+      } else if (noteAtIntake() && !noteAtShooter() && m_noteHasReachedShooter) {
         // intake should stop if only note sensor 1 is triggered
           intakeCommand = 0;
+          m_hasNote = true;
       }
     }
     m_intakeMotor.set(intakeCommand);
     // Override these for shooting mode
     if (m_shoot) {
-      //intakeCommand = 0.5;
-      m_shooterMotor1.set(1);
-      m_shooterMotor2.set(1);
+      double command = m_shooterFeedforward.calculate(m_shoot_target_speed) + 
+      m_shooterPIDController.calculate(shooterSpeed(), m_shoot_target_speed);
+      m_shooterMotor1.set(command);
+      m_shooterMotor2.set(command);
     }
     else{
       m_shooterMotor1.set(0);
@@ -103,9 +106,13 @@ public class IntakeShooter extends SubsystemBase {
   }
   public void setIntakeOn() {
     m_intake = true;
+    m_noteHasReachedShooter = false;
+    m_hasNote = false;
   }
   public void setIntakeOff() {
     m_intake = false;
+    m_noteHasReachedShooter = false;
+    m_hasNote = false;
   }
   public void setPushOn() {
     m_push = true;
@@ -114,16 +121,16 @@ public class IntakeShooter extends SubsystemBase {
     m_push = false;
   }
   public boolean noteAtIntake(){
-    return noteSensor1.get();
+    return !noteSensor1.get();
   }
   public boolean noteAtShooter(){
-    return noteSensor2.get();
+    return !noteSensor2.get();
   }
 
   public double shooterSpeed(){
     return m_shooterMotor1.getEncoder().getVelocity();
   }
   public boolean atTargetSpeed(){
-   return shooterSpeed()>=m_shoot_speed?true:false;
+   return shooterSpeed() >= m_shoot_target_speed;
   }
 }

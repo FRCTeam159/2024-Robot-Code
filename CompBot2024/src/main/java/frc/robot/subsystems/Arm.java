@@ -79,7 +79,7 @@ public class Arm extends SubsystemBase {
 
   public void enable() {
     setTargetAngle(getAngleFromGyro());
-    m_shoulderPIDController.reset(new TrapezoidProfile.State(shoulderAngleSetpoint, 0));
+    m_shoulderPIDController.reset(new TrapezoidProfile.State(getTargetAngle(), 0));
     enabled = true;
   }
 
@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase {
 
   // Use this to move the setpoint by the given amount
   public void adjustAngle(double adjustment) {
-    setTargetAngle(shoulderAngleSetpoint + adjustment);
+    setTargetAngle(getTargetAngle() + adjustment);
   }
 
   // Use this to set the setpoint to the given angle
@@ -98,10 +98,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void clampSetpoint() {
-    if (shoulderAngleSetpoint < armMinAngle) {
+    if (getTargetAngle() < armMinAngle) {
       setTargetAngle(armMinAngle);
     }
-    if (shoulderAngleSetpoint > armMaxAngle) {
+    if (getTargetAngle() > armMaxAngle) {
       setTargetAngle(armMaxAngle);
     }
   }
@@ -134,13 +134,13 @@ public class Arm extends SubsystemBase {
   void log() {
     //m_armGyro.log();
     SmartDashboard.putNumber(name + " Shoulder angle", currentAngle);
-    SmartDashboard.putNumber(name + " Shoulder setpoint", shoulderAngleSetpoint);
+    SmartDashboard.putNumber(name + " Shoulder setpoint", getTargetAngle());
   }
 
   private void runShoulderMotor() {
-    double pidCommand = m_shoulderPIDController.calculate(currentAngle, shoulderAngleSetpoint);
+    double pidCommand = m_shoulderPIDController.calculate(currentAngle, getTargetAngle());
     double ffCommand = m_shoulderFeedforward.calculate(
-      Rotation2d.fromDegrees(shoulderAngleSetpoint).getRadians(),
+      Rotation2d.fromDegrees(getTargetAngle()).getRadians(),
       Rotation2d.fromDegrees(m_shoulderPIDController.getSetpoint().velocity).getRadians()
     );
     double totalCommand = ffCommand + pidCommand;

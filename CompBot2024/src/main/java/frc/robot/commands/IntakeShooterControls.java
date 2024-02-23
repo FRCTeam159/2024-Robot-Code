@@ -21,7 +21,7 @@ public class IntakeShooterControls extends Command {
   Shoot shoot;
   Pickup pickup;
 
-  boolean testmode=true;
+  boolean testmode=false;
 
   /** Creates a new IntakeControls. */
   public IntakeShooterControls(IntakeShooter intakeShooter, Arm arm, XboxController controller) {
@@ -37,7 +37,7 @@ public class IntakeShooterControls extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    m_arm.enable();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -95,7 +95,9 @@ public class IntakeShooterControls extends Command {
   }
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_arm.disable();
+  }
 
   // Returns true when the command should end.
   @Override

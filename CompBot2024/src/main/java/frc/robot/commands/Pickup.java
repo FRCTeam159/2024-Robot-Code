@@ -32,8 +32,9 @@ public class Pickup extends Command{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_shooter.noteAtIntake())
+    if(m_shooter.m_hasNote) {
       note_captured=true;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -47,7 +48,7 @@ public class Pickup extends Command{
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {   
-    if(note_captured && m_shooter.noteAtShooter()){
+    if(note_captured){
       return true;
     }
     return false;
