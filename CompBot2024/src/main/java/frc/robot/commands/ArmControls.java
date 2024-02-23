@@ -52,8 +52,10 @@ public class ArmControls extends Command {
           target.initialize();
           m_targeting=true;
         }
-        else
-          m_targeting=true;
+        else {
+          target.end(true);
+          m_targeting=false;
+        }
     } 
     else if (left > 0.1) {
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);

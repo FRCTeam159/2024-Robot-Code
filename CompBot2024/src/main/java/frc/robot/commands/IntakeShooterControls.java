@@ -63,14 +63,18 @@ public class IntakeShooterControls extends Command {
         if (!m_shooting) {
           shoot.initialize();
           m_shooting = true;
-        } else
+        } else{
+          shoot.end(true);
           m_shooting = false;
+        }
       } else if (m_controller.getLeftBumperPressed()) {
         if (!m_pickup) {
           pickup.initialize();
           m_pickup = true;
-        } else
+        } else{
+          pickup.end(true);
           m_pickup = false;
+        }
       }
       if (m_shooting)
         shoot();
