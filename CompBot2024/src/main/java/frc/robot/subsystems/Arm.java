@@ -8,6 +8,7 @@ import static frc.robot.Constants.*;
 
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -32,32 +33,43 @@ public class Arm extends SubsystemBase {
   private final CANSparkMax m_shoulderMotor1;
   private final CANSparkMax m_shoulderMotor2;
 
+  private double kGearboxReduction = 1/48;
+  private double kChainReduction = 12/46;
+  private RelativeEncoder m_shoulderEncoder;
+
   private double shoulderAngleSetpoint = 0; // degrees
-  public final double armMinAngle = 5; // degrees
-  public final double armMaxAngle = 110; // degrees
+  public final double armMinAngle = 9; // degrees
+  public final double armMaxAngle = 100; // degrees
   public boolean initialized = false;
   public boolean enabled = false;
   public double currentAngle = 0;  // degrees, updated every periodic
 
-  private static final BNO055OffsetData bno2Offsets = new BNO055OffsetData(-19, 52, -13, -24, 0, -2, 2, -8, -53, -66, 591);
-  public static BNO055 m_armGyro = new BNO055(
-    I2C.Port.kMXP,
-    BNO055.BNO055_ADDRESS_B,
-    "BNO055-2",
-    BNO055.opmode_t.OPERATION_MODE_NDOF,
-    BNO055.vector_type_t.VECTOR_GRAVITY,
-    bno2Offsets
-  );
+  private BNO055 m_armGyro;
 
   private String name = "arm";
 
   /** Creates a new Arm. */
   public Arm() {
+    initializeBNO();
     m_shoulderMotor1 = new CANSparkMax(kShoulderMotor1, CANSparkLowLevel.MotorType.kBrushless);
     m_shoulderMotor2 = new CANSparkMax(kShoulderMotor2, CANSparkLowLevel.MotorType.kBrushless);
     m_shoulderMotor2.setInverted(true);  // technically not necessary since we invert in the follow command, but I'm leaving it in just in case
     m_shoulderMotor2.follow(m_shoulderMotor1, true);
     m_shoulderPIDController.setTolerance(4.0);
+    m_shoulderEncoder = m_shoulderMotor1.getEncoder();
+    m_shoulderEncoder.setPositionConversionFactor(Rotation2d.fromRotations(kGearboxReduction * kChainReduction).getDegrees());
+  }
+
+  private void initializeBNO() {
+    BNO055OffsetData bno2Offsets = new BNO055OffsetData(-19, 52, -13, -24, 0, -2, 2, -8, -53, -66, 591);
+    m_armGyro = new BNO055(
+      I2C.Port.kMXP,
+      BNO055.BNO055_ADDRESS_B,
+      "BNO055-2",
+      BNO055.opmode_t.OPERATION_MODE_NDOF,
+      BNO055.vector_type_t.VECTOR_GRAVITY,
+      bno2Offsets
+    );
   }
 
   // This method will be called once per scheduler run
@@ -67,7 +79,7 @@ public class Arm extends SubsystemBase {
       waitForGyroInit(); // Make sure the gyro is ready before we move
       return;
     }
-    currentAngle = getAngleFromGyro();
+    currentAngle = getAngleFromEncoder();
     if (!enabled) {
       // set the setpoint to the current angle to prevent control windup
       setTargetAngle(currentAngle);
@@ -78,7 +90,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void enable() {
-    setTargetAngle(getAngleFromGyro());
+    setTargetAngle(getAngleFromEncoder());
     m_shoulderPIDController.reset(new TrapezoidProfile.State(getTargetAngle(), 0));
     enabled = true;
   }
@@ -123,10 +135,19 @@ public class Arm extends SubsystemBase {
     return result.getDegrees(); 
   }
 
+  public double getAngleFromEncoder() {
+    return m_shoulderEncoder.getPosition();
+  }
+
   private void waitForGyroInit() {
     if (!initialized && m_armGyro.isInitialized() && m_armGyro.isCalibrated()) {
+      if (getAngleFromGyro() == -90) {
+        // there was an error initializing the BNO055. Try again.
+        initializeBNO();
+      }
       // Set the setpoint to the current position when initializing
-      setTargetAngle(getAngleFromGyro());
+      m_shoulderEncoder.setPosition(getAngleFromGyro());
+      setTargetAngle(getAngleFromEncoder());
       initialized = true;
     }
   }

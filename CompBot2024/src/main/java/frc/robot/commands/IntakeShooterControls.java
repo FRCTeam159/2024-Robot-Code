@@ -38,23 +38,24 @@ public class IntakeShooterControls extends Command {
   @Override
   public void initialize() {
     m_arm.enable();
+    m_intakeShooter.setIntakeOff();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (testmode) { // manually control shooting
-      if (m_controller.getRightBumperPressed()) {
+      if (m_controller.getLeftBumperPressed()) {
         m_intakeShooter.setIntakeOn();
       }
-      if (m_controller.getRightBumperReleased()) {
+      if (m_controller.getLeftBumperReleased()) {
         m_intakeShooter.setIntakeOff();
       }
 
-      if (m_controller.getLeftBumperPressed()) {
+      if (m_controller.getRightBumperPressed()) {
         m_intakeShooter.setShooterOn();
       }
-      if (m_controller.getLeftBumperReleased()) {
+      if (m_controller.getRightBumperReleased()) {
         m_intakeShooter.setShooterOFf();
       }
     } 

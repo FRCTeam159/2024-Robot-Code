@@ -32,7 +32,11 @@ public class Pickup extends Command{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(m_shooter.noteAtIntake()) {
+      m_arm.setTargetAngle(Constants.kSpeaker); // lift note off the ground
+    }
     if(m_shooter.m_hasNote) {
+      System.out.println("Intake.captured");
       note_captured=true;
     }
   }
@@ -42,7 +46,6 @@ public class Pickup extends Command{
   public void end(boolean interrupted) {
     System.out.println("Intake.end");
     m_shooter.setIntakeOff();
-    m_arm.setTargetAngle(Constants.kSpeaker); // lift note off the ground
   }
 
   // Returns true when the command should end.
