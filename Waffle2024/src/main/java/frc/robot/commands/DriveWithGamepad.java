@@ -99,6 +99,7 @@ public class DriveWithGamepad extends Command {
   void align() {
     if (m_align.isFinished()) {
       m_align.end(false);
+      m_drive.resetOdometry();
       m_aligning = false;
     } else
       m_align.execute();

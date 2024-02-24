@@ -6,19 +6,23 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 
 public class PickUp extends Command {
   Drivetrain m_drive;
   double m_timeout;
   Timer m_timer = new Timer();
+  Arm m_arm;
   
   /** Creates a new PickUp. */
-  public PickUp(Drivetrain drive, double tm) {
+  public PickUp(Arm arm, double tm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_drive = drive;
     m_timeout = tm;
     m_timer.start();
+    m_arm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +32,7 @@ public class PickUp extends Command {
     System.out.println("-");
     System.out.println("Picking up started");
     System.out.println("-");
-
+    m_arm.setTargetAngle(Constants.kPickup);
     // Reset timer
     m_timer.reset();
   }
@@ -37,7 +41,7 @@ public class PickUp extends Command {
   @Override
   public void execute() {
     // Resets wheels
-    m_drive.drive(0.0, 0, 0, false);
+    //m_drive.drive(0.0, 0, 0, false);
   }
 
   // Called once the command ends or is interrupted.
@@ -45,13 +49,13 @@ public class PickUp extends Command {
   public void end(boolean interrupted) {
     // Debug
     System.out.println("-");
-    System.out.println("Picking up done");
+    System.out.println("Picking up done"+m_timer.get());
     System.out.println("-");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.get() > m_timeout;
+    return m_arm.onTarget();
   }
 }

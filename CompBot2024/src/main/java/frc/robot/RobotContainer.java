@@ -47,6 +47,7 @@ public class RobotContainer {
   }
   public void robotInit() {
     m_detector.start();
+    m_Drivetrain.resetOdometry();
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -58,6 +59,8 @@ public class RobotContainer {
 
   public void autonomousInit() {
     m_Drivetrain.reset();
+     m_Drivetrain.resetWheels(true);
+     m_Drivetrain.resetOdometry();
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -30,7 +30,7 @@ public class Arm extends SubsystemBase {
   );
   
   
-  private static boolean have_arm=true; // test first !
+  private static boolean have_arm=false; // test first !
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
 
@@ -48,19 +48,21 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-   if(have_arm)
+   if(have_arm){
       m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
-
-    m_PID = new PIDController(0.03, 0, 0);
-    m_PID.setTolerance(1.0);
-    m_PID.reset(); 
+      m_PID = new PIDController(0.03, 0, 0);
+      m_PID.setTolerance(1.0);
+      m_PID.reset(); 
+   }
   }
 
  void setAngle() {
-    //if (newAngle) 
+    if(!have_arm)
+      return;
     m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
     double output = m_PID.calculate(current);
+    
     m_armPosMotor.set(output);
     if (newAngle){
       String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
@@ -96,7 +98,9 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean onTarget() {
-    return m_PID.atSetpoint();
+    if(have_arm)
+      return m_PID.atSetpoint();
+    return true;
   }
 
   private void waitForGyroInit() {

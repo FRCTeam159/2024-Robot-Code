@@ -9,12 +9,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.AlignWheels;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.InitAuto;
 import frc.robot.commands.PickUp;
+import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Wait;
 
@@ -31,9 +34,9 @@ public class Autonomous extends SubsystemBase {
   static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_alliance_chooser = new SendableChooser<Integer>();
 
-  static double xp=1.4;
-  static double yp=-1.5;
-  static double rp=-60;
+  static double xp=TargetMgr.XF;
+  static double yp=TargetMgr.YF;
+  static double rp=TargetMgr.RF;
 
   static boolean m_reversed=false;
   static boolean m_autoselect=true;
@@ -103,11 +106,17 @@ public class Autonomous extends SubsystemBase {
         return new SequentialCommandGroup(
           //new AlignWheels(m_drive,2),
           new Shoot(m_drive, 2.0),
-          new DrivePath(m_drive,false),
-          // Move arm to pickUp pos
-          // new setAngle(Constants.kPickup);
-          new PickUp(m_drive, 2.0),
-          new DrivePath(m_drive,true),
+          new ParallelCommandGroup(
+            new DrivePath(m_drive,false),
+            // Move arm to pickUp pos
+            // new setAngle(Constants.kPickup);
+            new PickUp(m_arm, 2.0)
+          ),
+          new AlignWheels(m_drive, 2.0),
+          new ParallelCommandGroup(
+            new SetArmAngle(m_arm, Constants.kSpeaker),
+            new DrivePath(m_drive,true)
+          ),
           // Move arm to shoot pos
           // new setAngle(Constants.kSpeaker);
           new Shoot(m_drive, 2.0)

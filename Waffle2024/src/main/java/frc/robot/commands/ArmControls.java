@@ -35,9 +35,9 @@ public class ArmControls extends Command {
 
     if(m_controller.getAButtonPressed())
       m_arm.setTargetAngle(Constants.kPickup);   
-    if(m_controller.getBButtonPressed())
+    if(m_controller.getYButtonPressed())
       m_arm.setTargetAngle(Constants.kSpeaker);
-    if(m_controller.getXButtonPressed())
+    if(m_controller.getBButtonPressed())
       m_arm.setTargetAngle(Constants.kAmp);
     else if (left > 0)
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);

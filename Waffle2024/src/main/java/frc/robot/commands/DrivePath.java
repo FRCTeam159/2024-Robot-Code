@@ -37,7 +37,7 @@ public class DrivePath extends Command {
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
   final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
-      new PIDConstants(4.0, 0.0, 0), new PIDConstants(4, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
+      new PIDConstants(6.0, 0.0, 0), new PIDConstants(6, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
 
   Timer m_timer = new Timer();
   Drivetrain m_drive;
