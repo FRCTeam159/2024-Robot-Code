@@ -21,8 +21,8 @@ import frc.robot.sensors.BNO055;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
-  public final double kMaxArmVelocity = 1200; // degrees/s
-  public final double kMaxArmAcceleration = 1200; // degrees/s^2
+  public final double kMaxArmVelocity = 1200.0; // degrees/s
+  public final double kMaxArmAcceleration = 1200.0; // degrees/s^2
 
   private final ArmFeedforward m_shoulderFeedforward = new ArmFeedforward(0.01, 0.05, 0.01);
   private final TrapezoidProfile.Constraints m_trapezoidConstraints = new TrapezoidProfile.Constraints(kMaxArmVelocity, kMaxArmAcceleration);
@@ -33,20 +33,21 @@ public class Arm extends SubsystemBase {
   private final CANSparkMax m_shoulderMotor1;
   private final CANSparkMax m_shoulderMotor2;
 
-  private double kGearboxReduction = 1/48;
-  private double kChainReduction = 12/46;
+  private double kGearboxReduction = 1.0/48.0;
+  private double kChainReduction = 12.0/46.0;
   private RelativeEncoder m_shoulderEncoder;
 
-  private double shoulderAngleSetpoint = 0; // degrees
-  public final double armMinAngle = 9; // degrees
-  public final double armMaxAngle = 100; // degrees
+  private double shoulderAngleSetpoint = 0.0; // degrees
+  public final double armMinAngle = 9.0; // degrees
+  public final double armMaxAngle = 110.0; // degrees
   public boolean initialized = false;
   public boolean enabled = false;
-  public double currentAngle = 0;  // degrees, updated every periodic
+  public double currentAngle = 0.0;  // degrees, updated every periodic
 
   private BNO055 m_armGyro;
-
   private String name = "arm";
+
+  private int bnoResetCounter = 0;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -57,10 +58,12 @@ public class Arm extends SubsystemBase {
     m_shoulderMotor2.follow(m_shoulderMotor1, true);
     m_shoulderPIDController.setTolerance(4.0);
     m_shoulderEncoder = m_shoulderMotor1.getEncoder();
-    m_shoulderEncoder.setPositionConversionFactor(Rotation2d.fromRotations(kGearboxReduction * kChainReduction).getDegrees());
+    m_shoulderEncoder.setPositionConversionFactor(kGearboxReduction * kChainReduction * 360.0);
+    System.out.println(String.format("ARM POSITION SCALING %1.7f", m_shoulderEncoder.getPositionConversionFactor()));
   }
 
   private void initializeBNO() {
+    bnoResetCounter = 0;
     BNO055OffsetData bno2Offsets = new BNO055OffsetData(-19, 52, -13, -24, 0, -2, 2, -8, -53, -66, 591);
     m_armGyro = new BNO055(
       I2C.Port.kMXP,
@@ -140,15 +143,19 @@ public class Arm extends SubsystemBase {
   }
 
   private void waitForGyroInit() {
-    if (!initialized && m_armGyro.isInitialized() && m_armGyro.isCalibrated()) {
-      if (getAngleFromGyro() == -90) {
-        // there was an error initializing the BNO055. Try again.
-        initializeBNO();
+    if (!initialized && m_armGyro.isInitialized()) {
+      if (getAngleFromGyro() <= 0) {
+        bnoResetCounter += 1;
+        if (bnoResetCounter > 10) {
+          initializeBNO();
+        }
+      } else {
+        // Set the setpoint to the current position when initializing
+        m_shoulderEncoder.setPosition(getAngleFromGyro());
+        setTargetAngle(getAngleFromEncoder());
+        initialized = true;
       }
-      // Set the setpoint to the current position when initializing
-      m_shoulderEncoder.setPosition(getAngleFromGyro());
-      setTargetAngle(getAngleFromEncoder());
-      initialized = true;
+      
     }
   }
 

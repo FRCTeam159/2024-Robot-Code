@@ -47,7 +47,7 @@ public final class Constants {
     public static final int kPigeonCanId = 30;
 
     // arm angle settings
-    public static final double kPickup = 10;
-    public static final double kSpeaker = 20;
-    public static final double kAmp = 95;
+    public static final double kPickup = 10.0;
+    public static final double kSpeaker = 30.0;
+    public static final double kAmp = 105.0;
 }
