@@ -20,12 +20,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeShooter extends SubsystemBase {
   double m_shoot_max_speed = 4800;
-  double m_shoot_target_speed = 2300;  // units: RPM
+  double m_shoot_target_speed = 3500;  // units: RPM
 
   private final SimpleMotorFeedforward m_intakeFeedforward = new SimpleMotorFeedforward(0.01, 1);
   private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(0.01, 1/m_shoot_max_speed);
 
-  private final PIDController m_shooterPIDController = new PIDController(0.2/m_shoot_max_speed, 0, 0);
+  private final PIDController m_shooter1PIDController = new PIDController(0.4/m_shoot_max_speed, 0, 0);
+  private final PIDController m_shooter2PIDController = new PIDController(0.4/m_shoot_max_speed, 0, 0);
 
   private final CANSparkMax m_intakeMotor;
   private final CANSparkMax m_shooterMotor1;
@@ -60,7 +61,8 @@ public class IntakeShooter extends SubsystemBase {
   private void log() {
     SmartDashboard.putBoolean(name + "Sensor_1", noteAtIntake());
     SmartDashboard.putBoolean(name + "Sensor_2", noteAtShooter());
-    SmartDashboard.putNumber(name + "ShooterSpeed", shooterSpeed());
+    SmartDashboard.putNumber(name + "Shooter1Speed", shooter1Speed());
+    SmartDashboard.putNumber(name + "Shooter2Speed", shooter2Speed());
   }
 
   private void runIntake() {
@@ -71,10 +73,7 @@ public class IntakeShooter extends SubsystemBase {
       intakeCommand = 1; // fire the shot
     else if (m_intake) { // pickup or carry a note
       // when attempting to intake
-      if (!noteAtIntake()) {
-        // intake should run forward (in) if there is no note
-          intakeCommand = 1;
-      } else if (noteAtIntake() && noteAtShooter()) {
+      if (noteAtIntake() && noteAtShooter()) {
         // intake should run backward (out) if note sensor 2 is triggered
           intakeCommand = -0.2;
           m_noteHasReachedShooter = true;
@@ -82,14 +81,21 @@ public class IntakeShooter extends SubsystemBase {
         // intake should stop if only note sensor 1 is triggered
           intakeCommand = 0;
           m_hasNote = true;
+      } else {
+        // intake should run forward (in) if there is no note
+          intakeCommand = 1;
       }
     }
     m_intakeMotor.set(intakeCommand);
     // Override these for shooting mode
     if (m_shoot) {
+      // motor 1
       double command = m_shooterFeedforward.calculate(m_shoot_target_speed) + 
-      m_shooterPIDController.calculate(shooterSpeed(), m_shoot_target_speed);
+      m_shooter1PIDController.calculate(shooter1Speed(), m_shoot_target_speed);
       m_shooterMotor1.set(command);
+      // motor 2
+      command = m_shooterFeedforward.calculate(m_shoot_target_speed) + 
+      m_shooter2PIDController.calculate(shooter2Speed(), m_shoot_target_speed);
       m_shooterMotor2.set(command);
     }
     else{
@@ -127,10 +133,16 @@ public class IntakeShooter extends SubsystemBase {
     return !noteSensor2.get();
   }
 
-  public double shooterSpeed(){
+  public double shooter1Speed(){
     return m_shooterMotor1.getEncoder().getVelocity();
   }
+
+  public double shooter2Speed(){
+    return m_shooterMotor2.getEncoder().getVelocity();
+  }
   public boolean atTargetSpeed(){
-   return shooterSpeed() >= m_shoot_target_speed;
+    // Check if we're at 95% of our target
+    double speedTargetMargin = m_shoot_target_speed * 0.95;
+    return shooter1Speed() >= speedTargetMargin && shooter2Speed() >= speedTargetMargin;
   }
 }
