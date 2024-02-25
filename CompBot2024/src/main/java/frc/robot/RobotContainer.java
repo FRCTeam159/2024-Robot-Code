@@ -11,6 +11,7 @@ import frc.robot.commands.ArmControls;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.commands.IntakeShooterControls;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeShooter;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,13 +29,13 @@ public class RobotContainer {
   //Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Arm m_Arm = new Arm();
-  //private final Autonomous m_auto = new Autonomous(m_Drivetrain);
-  private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
+   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_Drivetrain, m_Controller);
   private final TagDetector m_detector = new TagDetector(m_Drivetrain);
   private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Drivetrain, m_Controller);
   private final IntakeShooter m_IntakeShooter = new IntakeShooter();
   private final IntakeShooterControls m_IntakeShooterControls = new IntakeShooterControls(m_IntakeShooter, m_Arm, m_Controller);
-  
+   private final Autonomous m_auto = new Autonomous(m_Drivetrain, m_Arm, m_IntakeShooter);
+
   //commands
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -42,23 +43,14 @@ public class RobotContainer {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm.setDefaultCommand(m_ArmControls);
     m_IntakeShooter.setDefaultCommand(m_IntakeShooterControls);
-    // Configure the button bindings
-    configureBindings();
   }
   public void robotInit() {
     m_detector.start();
     m_Drivetrain.resetOdometry();
   }
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureBindings() {}
-
+  
   public void autonomousInit() {
-    m_Drivetrain.reset();
+     m_Drivetrain.reset();
      m_Drivetrain.resetWheels(true);
      m_Drivetrain.resetOdometry();
   }
@@ -68,7 +60,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //m_Drivetrain.resetPose(new Pose2d());
-    return AutoBuilder.buildAuto("CircleAuto");
+   //return AutoBuilder.buildAuto("CircleAuto");
+    return m_auto.getCommand();
   }
 }

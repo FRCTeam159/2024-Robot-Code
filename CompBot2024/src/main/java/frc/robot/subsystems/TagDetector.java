@@ -43,61 +43,59 @@ public class TagDetector extends Thread {
 
   Drivetrain m_drivetrain;
 
-  static boolean m_targeting=false;
+  static boolean m_targeting = false;
 
   static AprilTag[] tags = null;
 
-  public static double min_decision_margin=30; // reject tags less than this
+  public static double min_decision_margin = 30; // reject tags less than this
 
   static int count = 0;
   private CvSink UsbCameraSink;
   private Mat mat;
   static int IMAGE_WIDTH = 640;
-  static int IMAGE_HEIGHT= 480;
-  public double hFOV=40.107;
-  public double aspect=((double)IMAGE_WIDTH)/IMAGE_HEIGHT;
-  public double vFOV=hFOV/aspect;
-  public double cx=IMAGE_WIDTH/2.0;
-  public double cy=IMAGE_HEIGHT/2.0;
-  public double fx=cx/Math.tan(0.5*Math.toRadians(hFOV));
-  public double fy=cy/Math.tan(0.5*Math.toRadians(vFOV));
+  static int IMAGE_HEIGHT = 480;
+  public double hFOV = 40.107;
+  public double aspect = ((double) IMAGE_WIDTH) / IMAGE_HEIGHT;
+  public double vFOV = hFOV / aspect;
+  public double cx = IMAGE_WIDTH / 2.0;
+  public double cy = IMAGE_HEIGHT / 2.0;
+  public double fx = cx / Math.tan(0.5 * Math.toRadians(hFOV));
+  public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
 
   public TagDetector(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
+  }
 
+  @Override
+  public void run() {
     intakeCamera = CameraServer.startAutomaticCapture(0); // specs for Gazebo camera
     intakeCamera.setResolution(IMAGE_WIDTH, IMAGE_HEIGHT);
     intakeCamera.setFPS(25);
     UsbCameraSink = CameraServer.getVideo(intakeCamera);
 
     wpi_detector = new AprilTagDetector();
-    wpi_detector.addFamily("tag16h5",0);
+    wpi_detector.addFamily("tag16h5", 0);
 
     wpi_poseEstConfig = new AprilTagPoseEstimator.Config(TargetMgr.targetSize, fx, fy, cx, cy);
     wpi_pose_estimator = new AprilTagPoseEstimator(wpi_poseEstConfig);
 
     ouputStream = CameraServer.putVideo("RobotCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
 
-  }
-
-  @Override
-  public void run() {
-    
     while (!Thread.interrupted()) {
       try {
         Thread.sleep(50);
         mat = new Mat();
-        long tm=UsbCameraSink.grabFrame(mat);
-        if(tm==0)
+        long tm = UsbCameraSink.grabFrame(mat);
+        if (tm == 0) // bad frame
           continue;
 
         tags = null;
- 
+
         // if using tags for targeting
-        if(m_targeting){  
+        if (m_targeting) {
           tags = getTags(mat);
-          if(tags !=null){
-            if(tags.length ==2)
+          if (tags != null) {
+            if (tags.length == 2)
               Arrays.sort(tags, new SortbyDistance());
             showTags(tags, mat);
           }
@@ -106,23 +104,22 @@ public class TagDetector extends Thread {
         }
 
         // set initial starting position and alliance
-        boolean autoselect=Autonomous.getAutoset();
-        boolean usetags=Autonomous.getUsetags();
-        if (autoselect && !TargetMgr.startPoseSet()){
-          if (usetags){
+        boolean autoselect = Autonomous.getAutoset();
+        boolean usetags = Autonomous.getUsetags();
+        if (autoselect && !TargetMgr.startPoseSet()) {
+          if (usetags) {
             tags = getTags(mat);
-            if(tags!=null){
-              if(tags.length ==2){
+            if (tags != null) {
+              if (tags.length == 2) {
                 Arrays.sort(tags, new SortbyDistance());
                 TargetMgr.setStartPose(tags);
               }
               showTags(tags, mat);
             }
-          }
-          else{
-             int alliance=Autonomous.getAlliance();
-             int position=Autonomous.getPosition();
-             TargetMgr.setTarget(alliance,position);     
+          } else {
+            int alliance = Autonomous.getAlliance();
+            int position = Autonomous.getPosition();
+            TargetMgr.setTarget(alliance, position);
           }
         }
         ouputStream.putFrame(mat);
@@ -132,17 +129,20 @@ public class TagDetector extends Thread {
     }
   }
 
-// targeting methods
-  public static void setTargeting(boolean state){
-    System.out.println("SET TARGETING "+state);
-    m_targeting=state;
+  // targeting methods
+  public static void setTargeting(boolean state) {
+    System.out.println("SET TARGETING " + state);
+    m_targeting = state;
   }
-  public static AprilTag[] getTags(){
+
+  public static AprilTag[] getTags() {
     return tags;
   }
-  public static boolean isTargeting(){
+
+  public static boolean isTargeting() {
     return m_targeting;
   }
+
   void showTags(AprilTag[] tags, Mat mat) {
     for (int i = 0; i < tags.length; i++) {
       AprilTag tag = tags[i];
@@ -172,26 +172,26 @@ public class TagDetector extends Thread {
 
   // return an array of tag info structures from an image
   private AprilTag[] getTags(Mat mat) {
-    AprilTag[] atags=null;
+    AprilTag[] atags = null;
     Mat graymat = new Mat();
     Imgproc.cvtColor(mat, graymat, Imgproc.COLOR_RGB2GRAY);
     AprilTagDetection[] detections = wpi_detector.detect(graymat);
 
     // reject tags with a poor decision margin or out of expected index range
-    List<AprilTagDetection> list=new ArrayList<AprilTagDetection>();
+    List<AprilTagDetection> list = new ArrayList<AprilTagDetection>();
     for (int i = 0; i < detections.length; i++) {
-      AprilTagDetection dect=detections[i];
-      int id=dect.getId();
-      if(id<TargetMgr.minTargetId() || id>TargetMgr.maxTargetId())
+      AprilTagDetection dect = detections[i];
+      int id = dect.getId();
+      if (id < TargetMgr.minTargetId() || id > TargetMgr.maxTargetId())
         continue;
-      if(dect.getDecisionMargin()>min_decision_margin)
+      if (dect.getDecisionMargin() > min_decision_margin)
         list.add(dect);
     }
 
     int num_tags = list.size();
-    if(num_tags==0)
+    if (num_tags == 0)
       return null;
-  
+
     atags = new AprilTag[num_tags];
     for (int i = 0; i < num_tags; i++) {
       AprilTagDetection detection = list.get(i);
@@ -201,8 +201,8 @@ public class TagDetector extends Thread {
     return atags;
   }
 
- // Helper class extending Comparator interface
- // sort by distance (closest on top)
+  // Helper class extending Comparator interface
+  // sort by distance (closest on top)
   class SortbyDistance implements Comparator<AprilTag> {
     public int compare(AprilTag p1, AprilTag p2) {
       double d1 = p1.getDistance();

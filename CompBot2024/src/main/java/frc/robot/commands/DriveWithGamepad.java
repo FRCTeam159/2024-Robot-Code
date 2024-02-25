@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** An example command that uses an example subsystem. */
 public class DriveWithGamepad extends Command {
-  
+
   private final XboxController m_controller;
   private final Drivetrain m_drive;
 
@@ -22,7 +22,11 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
- 
+  boolean m_aligning = false;
+  AlignWheels m_align = null;
+
+  boolean m_autotest=false;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -31,6 +35,7 @@ public class DriveWithGamepad extends Command {
   public DriveWithGamepad(Drivetrain drive, XboxController controller) {
     m_drive = drive;
     m_controller = controller;
+    m_align = new AlignWheels(m_drive, 2.0);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
   }
@@ -38,18 +43,19 @@ public class DriveWithGamepad extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //m_drive.reset();
+    // m_drive.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     driveWithJoystick(Drivetrain.isFieldOriented());
-     }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
@@ -61,31 +67,47 @@ public class DriveWithGamepad extends Command {
     double yAxisValue = m_controller.getLeftX();
     double xAxisValue = m_controller.getLeftY();
     double twistAxisValue = m_controller.getRightX();
-    SmartDashboard.putString("controller", String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward. 
+    SmartDashboard.putString("controller",
+        String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
     final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xAxisValue, 0.2)) * Drivetrain.kMaxVelocity;
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
     final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yAxisValue, 0.2)) * Drivetrain.kMaxVelocity;
 
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, 0.2), 5)) * Drivetrain.kMaxAngularVelocity;
-    /*if (DriveToTarget.currentMode != DriveToTarget.targetFound)*/ {
-      m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
+    // for testing auto routines we need to realign wheels at autonomous start or redeploy the code
+    // - this is because the optimizer may have switched some of the wheels 180 
+    // this mode may be disabled for competition by setting m_autotest to false
+    if (m_autotest && m_controller.getRightStickButtonPressed()) { 
+      System.out.println("Aligning");
+      if (!m_aligning) {
+        m_align.initialize();
+        m_aligning = true;
+      } else {
+        m_aligning = false;
+        m_align.end(true);
+      }
     }
-    // m_drive.driveForwardAll(xSpeed/10);
-    // m_drive.turnAroundAll(rot/50);
+    if (m_aligning)
+      align();
+    if (!m_aligning) {
+      final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, 0.2), 5))
+          * Drivetrain.kMaxAngularVelocity;
+      /* if (DriveToTarget.currentMode != DriveToTarget.targetFound) */ {
+        m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
+      }
+      // m_drive.driveForwardAll(xSpeed/10);
+      // m_drive.turnAroundAll(rot/50);
+    }
+  }
+
+  void align() {
+    if (m_align.isFinished()) {
+      m_align.end(false);
+      m_aligning = false;
+    } else
+      m_align.execute();
   }
 
   public void logJoystick() {
-    
-  }
-  
-}
 
+  }
+
+}

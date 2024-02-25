@@ -17,6 +17,7 @@ public class IntakeShooterControls extends Command {
 
   boolean m_shooting=false;
   boolean m_pickup=false;
+  
 
   Shoot shoot;
   Pickup pickup;

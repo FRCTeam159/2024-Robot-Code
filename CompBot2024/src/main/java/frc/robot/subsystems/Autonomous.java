@@ -37,10 +37,14 @@ public class Autonomous extends SubsystemBase {
   static double yp=TargetMgr.YF;
   static double rp=TargetMgr.RF;
 
+  public static boolean ok2run=false;
+
   static boolean m_reversed=false;
   static boolean m_autoselect=true;
   static boolean m_usetags=false;
-  static boolean m_plotpath=false;
+  static boolean m_plotpath=true;
+  static boolean m_pathplanner=false;
+
 
    /** Creates a new Autonomous. 
    * @param m_arm */
@@ -72,6 +76,7 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putBoolean("Autoset",m_autoselect);
     SmartDashboard.putBoolean("UseTags",m_usetags);
     SmartDashboard.putBoolean("Plot",m_plotpath);
+    SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
   }
   static public int getAlliance(){
     return m_alliance_chooser.getSelected();
@@ -90,6 +95,9 @@ public class Autonomous extends SubsystemBase {
   }
   static public boolean getPlotpath(){
     return SmartDashboard.getBoolean("Plot",m_plotpath);
+  }
+  static public boolean getUsePathplanner(){
+    return SmartDashboard.getBoolean("Pathplanner",m_pathplanner);
   }
 
   public SequentialCommandGroup getCommand(){

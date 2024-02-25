@@ -57,13 +57,7 @@ public class TargetMgr {
     static public void init() {
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
-        //SmartDashboard.putNumber("TweakCenterX", Units.metersToInches(kTweakCenterX));
         setFieldTargets();
-    }
-
-    static public void update() {
-        //kTweakCenterX = SmartDashboard.getNumber("TweakCenterX", Units.inchesToMeters(kTweakCenterX));
-        //XC = kCenterX+kTweakCenterX-Drivetrain.kRobotLength;
     }
 
     public static String getStartString() {
@@ -129,6 +123,8 @@ public class TargetMgr {
 
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
+
+        start_pose_set=true;
     }
 
     public static Pose2d getTarget() {

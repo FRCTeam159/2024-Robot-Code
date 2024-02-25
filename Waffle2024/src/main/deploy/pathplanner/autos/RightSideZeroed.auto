@@ -18,12 +18,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Wait"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "RightSideReverseZeroed"

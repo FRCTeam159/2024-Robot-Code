@@ -1,0 +1,115 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="19" y="105"/>
+		<width>154</width>
+	</widget>
+	<widget field="Gyro Present" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="165" y="14"/>
+	</widget>
+	<widget field="Reversed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="442" y="83"/>
+	</widget>
+	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="361" y="82"/>
+	</widget>
+	<widget field="Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="114" y="13"/>
+	</widget>
+	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="197" y="53"/>
+		<width>76</width>
+	</widget>
+	<widget field="Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="62" y="13"/>
+	</widget>
+	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="18" y="79"/>
+		<width>156</width>
+	</widget>
+	<widget field="UseTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="203" y="76"/>
+	</widget>
+	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="340" y="-1"/>
+	</widget>
+	<widget field="Autoset" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="207" y="103"/>
+	</widget>
+	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="310" y="565"/>
+		<width>289</width>
+	</widget>
+	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="15" y="565"/>
+		<width>286</width>
+	</widget>
+	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="310" y="541"/>
+		<width>293</width>
+	</widget>
+	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="16" y="540"/>
+		<width>285</width>
+	</widget>
+	<widget field="Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="97" y="53"/>
+		<width>93</width>
+	</widget>
+	<widget field="Alliance" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="14" y="54"/>
+		<width>72</width>
+	</widget>
+	<widget field="SendableChooser[2]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="275" y="1"/>
+	</widget>
+	<widget field="yPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="450" y="34"/>
+		<width>85</width>
+		<height>20</height>
+	</widget>
+	<widget field="xPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="449" y="13"/>
+		<width>86</width>
+		<height>20</height>
+	</widget>
+	<widget field="rPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="449" y="60"/>
+		<width>88</width>
+		<height>21</height>
+	</widget>
+	<widget field="SendableChooser[1]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="274" y="53"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="12" y="8"/>
+		<width>23</width>
+		<height>23</height>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="12" y="8"/>
+		<width>23</width>
+		<height>23</height>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="6" y="133"/>
+		<width>610</width>
+		<height>483</height>
+		<property name="Camera Choice" value="RobotCamera"/>
+	</static-widget>
+		<property name="Team Number/Host" value="159"/>
+		<property name="Hide Menu" value="true"/>
+		<property name="Automatically Show Widgets" value="false"/>
+		<property name="Grid Cell Width(s)" value="16"/>
+		<property name="Grid Cell Height(s)" value="16"/>
+		<property name="Window X Position" value="1276"/>
+		<property name="Window Y Position" value="73"/>
+		<property name="Window Width" value="652"/>
+		<property name="Window Height" value="659"/>
+		<property name="Save File" value=".\dashboard.xml"/>
+</dashboard>
+<live-window>
+</live-window>
+	<hidden field="Arm Setpoint"/>
+	<hidden field="Arm Angle"/>
+</xml>

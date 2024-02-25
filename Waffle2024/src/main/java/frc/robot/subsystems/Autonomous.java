@@ -38,10 +38,14 @@ public class Autonomous extends SubsystemBase {
   static double yp=TargetMgr.YF;
   static double rp=TargetMgr.RF;
 
+  public static boolean ok2run=false;
+
   static boolean m_reversed=false;
   static boolean m_autoselect=true;
   static boolean m_usetags=false;
   static boolean m_plotpath=true;
+  static boolean m_pathplanner=false;
+ 
 
    /** Creates a new Autonomous. 
    * @param m_arm */
@@ -55,7 +59,7 @@ public class Autonomous extends SubsystemBase {
 
 	  m_path_chooser.setDefaultOption("AutoTest", AUTOTEST);
     m_path_chooser.addOption("Program", PROGRAM);
-    m_path_chooser.addOption("Pathplanner", PATHPLANNER);
+    m_path_chooser.addOption("Path", PATHPLANNER);
     SmartDashboard.putData(m_path_chooser);
   
     m_alliance_chooser.setDefaultOption("Blue", TargetMgr.BLUE);
@@ -71,6 +75,7 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putBoolean("Autoset",m_autoselect);
     SmartDashboard.putBoolean("UseTags",m_usetags);
     SmartDashboard.putBoolean("Plot",m_plotpath);
+    SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
   }
   static public int getAlliance(){
     return m_alliance_chooser.getSelected();
@@ -90,8 +95,14 @@ public class Autonomous extends SubsystemBase {
   static public boolean getPlotpath(){
     return SmartDashboard.getBoolean("Plot",m_plotpath);
   }
+  static public boolean getUsePathplanner(){
+    return SmartDashboard.getBoolean("Pathplanner",m_pathplanner);
+  }
+  
   public SequentialCommandGroup getCommand(){
-    return new SequentialCommandGroup(new InitAuto(m_arm), getAutoCommand());
+    return new SequentialCommandGroup(
+      new InitAuto(m_arm), 
+      getAutoCommand());
   }
   private SequentialCommandGroup getAutoCommand(){
     int selected_path = m_path_chooser.getSelected();
@@ -112,13 +123,11 @@ public class Autonomous extends SubsystemBase {
             // new setAngle(Constants.kPickup);
             new PickUp(m_arm, 2.0)
           ),
-          new AlignWheels(m_drive, 2.0),
+         //new AlignWheels(m_drive, 2.0),
           new ParallelCommandGroup(
             new SetArmAngle(m_arm, Constants.kSpeaker),
             new DrivePath(m_drive,true)
           ),
-          // Move arm to shoot pos
-          // new setAngle(Constants.kSpeaker);
           new Shoot(m_drive, 2.0)
         );
       case PATHPLANNER: /* Uses a command group from PathPlanner */
@@ -129,17 +138,6 @@ public class Autonomous extends SubsystemBase {
   public Command drivePathplanner() {
     // An example command will be run in autonomous
     m_drive.resetPose(new Pose2d());
-    // Load the path you want to follow using its name in the GUI
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-
-    // Commands
-    //NamedCommands.registerCommand("shootNote", m_shootNote);
-
-    //return AutoBuilder.buildAuto("BlueCenter");
-
-    // Paths
-    // Load the path you want to follow using its name in the GUI
-
     String pathname="RightSideZeroed";
       return AutoBuilder.buildAuto(pathname);
     
