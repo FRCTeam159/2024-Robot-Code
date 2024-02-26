@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.GetStartPose;
 import frc.robot.commands.Pickup;
 import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
@@ -124,11 +125,13 @@ public class Autonomous extends SubsystemBase {
 
   private SequentialCommandGroup oneNoteAuto() {
     return new SequentialCommandGroup(
+        new GetStartPose(m_arm),
         new Shoot(m_shooter),
         new DrivePath(m_drive, false));
   }
   private SequentialCommandGroup twoNoteAuto() {
     return new SequentialCommandGroup(
+        new GetStartPose(m_arm),
         new Shoot(m_shooter),
         new SetArmAngle(m_arm, Constants.kPickup),
         new ParallelCommandGroup(
