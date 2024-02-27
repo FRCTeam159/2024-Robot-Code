@@ -31,7 +31,7 @@ public class Drivetrain extends SubsystemBase {
   public static double dely = Units.inchesToMeters(0.5 * kSideWheelBase);
   public static double delx = Units.inchesToMeters(0.5 * kFrontWheelBase);
 
-  public static final double kRobotLength = Units.inchesToMeters(31); //side length
+  public static final double kRobotLength = Units.inchesToMeters(35.5); //external length with bumpers
 
   public static final double kMaxAcceleration = 1.0; // m/s/s
   public static final double kMaxVelocity = 4; // m/s
