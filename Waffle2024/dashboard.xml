@@ -1,5 +1,8 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Pathplanner" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="430" y="102"/>
+	</widget>
 	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="19" y="105"/>
 		<width>154</width>
@@ -98,18 +101,18 @@
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 		<property name="Team Number/Host" value="159"/>
-		<property name="Hide Menu" value="true"/>
 		<property name="Automatically Show Widgets" value="false"/>
 		<property name="Grid Cell Width(s)" value="16"/>
 		<property name="Grid Cell Height(s)" value="16"/>
-		<property name="Window X Position" value="1276"/>
-		<property name="Window Y Position" value="73"/>
+		<property name="Window X Position" value="465"/>
+		<property name="Window Y Position" value="176"/>
 		<property name="Window Width" value="652"/>
 		<property name="Window Height" value="659"/>
 		<property name="Save File" value=".\dashboard.xml"/>
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Arm Setpoint"/>
+	<hidden field="Placement"/>
 	<hidden field="Arm Angle"/>
+	<hidden field="Arm Setpoint"/>
 </xml>

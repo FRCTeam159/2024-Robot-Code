@@ -199,7 +199,7 @@ if(using_pathplanner)
   public boolean isFinished() {
     if (!Autonomous.ok2run)
       return true;
-    return elapsed >= 1.3 * runtime || m_pptrajectory == null;
+    return elapsed >= 1.0 * runtime;
   }
 
   // *********************** trajectory functions *******************/

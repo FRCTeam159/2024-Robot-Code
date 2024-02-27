@@ -59,7 +59,7 @@ public class Autonomous extends SubsystemBase {
 
 	  m_path_chooser.setDefaultOption("AutoTest", AUTOTEST);
     m_path_chooser.addOption("Program", PROGRAM);
-    m_path_chooser.addOption("Path", PATHPLANNER);
+    //m_path_chooser.addOption("Path", PATHPLANNER);
     SmartDashboard.putData(m_path_chooser);
   
     m_alliance_chooser.setDefaultOption("Blue", TargetMgr.BLUE);
@@ -101,7 +101,7 @@ public class Autonomous extends SubsystemBase {
   
   public SequentialCommandGroup getCommand(){
     return new SequentialCommandGroup(
-      new InitAuto(m_arm), 
+      // new InitAuto(m_arm), 
       getAutoCommand());
   }
   private SequentialCommandGroup getAutoCommand(){
@@ -115,23 +115,24 @@ public class Autonomous extends SubsystemBase {
         );
       case AUTOTEST: /* Uses alliance and position from SmartDashboard to create path */
         return new SequentialCommandGroup(
-          //new AlignWheels(m_drive,2),
-          new Shoot(m_drive, 2.0),
+          new AlignWheels(m_drive,2),
+          //new Shoot(m_drive, 2.0),
           new ParallelCommandGroup(
-            new DrivePath(m_drive,false),
+            new DrivePath(m_drive,false)
             // Move arm to pickUp pos
             // new setAngle(Constants.kPickup);
-            new PickUp(m_arm, 2.0)
+            //new PickUp(m_arm, 2.0)
           ),
          //new AlignWheels(m_drive, 2.0),
           new ParallelCommandGroup(
-            new SetArmAngle(m_arm, Constants.kSpeaker),
+            //new SetArmAngle(m_arm, Constants.kSpeaker),
             new DrivePath(m_drive,true)
           ),
-          new Shoot(m_drive, 2.0)
+          new DrivePath(m_drive,false)
+          //new Shoot(m_drive, 2.0)
         );
-      case PATHPLANNER: /* Uses a command group from PathPlanner */
-        return new SequentialCommandGroup(drivePathplanner());
+      //case PATHPLANNER: /* Uses a command group from PathPlanner */
+      //  return new SequentialCommandGroup(drivePathplanner());
     }
   }
   

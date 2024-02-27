@@ -43,7 +43,7 @@ public class AlignWheels extends Command {
   @Override
   public void end(boolean interrupted) {
     //m_drive.reset();
-    //m_drive.resetOdometry();
+    m_drive.resetOdometry();
     m_drive.drive(-0.001,0,0,false);
     if(done) {
        System.out.println(" - Wheels are aligned");

@@ -24,8 +24,8 @@ public class TargetMgr {
     static final public double YC = 0;
     static final public double RC = 0;
 
-    static final public double XF = 0.9;//kSideX-Drivetrain.kRobotLength;
-    static final public double YF = -1.2;//-kSideY;
+    static final public double XF = 1.6;//kSideX-Drivetrain.kRobotLength;
+    static final public double YF = -1.3;//-kSideY;
     static final public double RF = -60;
 
     static final public int OUTSIDE = 0;

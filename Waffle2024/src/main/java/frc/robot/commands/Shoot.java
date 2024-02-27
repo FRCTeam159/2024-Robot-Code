@@ -35,7 +35,7 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     // Resets wheels
-    m_drive.drive(0.0, 0, 0, false);
+    m_drive.drive(-0.003, 0, 0, false);
   }
 
   // Called once the command ends or is interrupted.
