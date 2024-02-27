@@ -48,8 +48,8 @@ public class DrivePath extends Command {
   final PPHolonomicDriveController m_ppcontroller = new PPHolonomicDriveController(
       new PIDConstants(6.0, 0.0, 0), new PIDConstants(6, 0.0, 0.0), Drivetrain.kMaxVelocity, Drivetrain.kTrackRadius);
 
-  final HolonomicDriveController m_hcontroller=new HolonomicDriveController(new PIDController(2, 0, 0), new PIDController(2, 0, 0),
-  new ProfiledPIDController(7, 0, 0,
+  final HolonomicDriveController m_hcontroller=new HolonomicDriveController(new PIDController(0.5, 0, 0), new PIDController(0.5, 0, 0),
+  new ProfiledPIDController(2, 0, 0,
     new TrapezoidProfile.Constraints(Math.toRadians(720), Math.toRadians(360))));
 
   Timer m_timer = new Timer();
@@ -57,7 +57,7 @@ public class DrivePath extends Command {
   static public boolean plot_trajectory_motion = false;
   static public boolean plot_trajectory_dynamics = false;
 
-  static boolean debug = false;
+  static boolean debug = true;
 
   PathPlannerTrajectory m_pptrajectory;
 Trajectory m_trajectory;
@@ -197,8 +197,8 @@ if(using_pathplanner)
   // =================================================
   @Override
   public boolean isFinished() {
-    if (!Autonomous.ok2run)
-      return true;
+    //if (!Autonomous.ok2run)
+    //  return true;
     return elapsed >= 1.0 * runtime;
   }
 

@@ -68,6 +68,7 @@ public class TagDetector extends Thread {
 
   @Override
   public void run() {
+    mat = new Mat();
     intakeCamera = CameraServer.startAutomaticCapture(0); // specs for Gazebo camera
     intakeCamera.setResolution(IMAGE_WIDTH, IMAGE_HEIGHT);
     intakeCamera.setFPS(25);
@@ -84,11 +85,11 @@ public class TagDetector extends Thread {
     while (!Thread.interrupted()) {
       try {
         Thread.sleep(50);
-        mat = new Mat();
+        //mat = new Mat();
         long tm = UsbCameraSink.grabFrame(mat);
-        if (tm == 0) // bad frame
+        if (tm == 0) { // bad frame
           continue;
-
+}
         tags = null;
 
         // if using tags for targeting

@@ -103,7 +103,7 @@ public class Autonomous extends SubsystemBase {
 
   public SequentialCommandGroup getCommand(){
     return new SequentialCommandGroup(
-      new SetArmAngle(m_arm,Constants.kSpeaker),
+      //new SetArmAngle(m_arm,Constants.kSpeaker),
       getAutoSequence());
   }
   private SequentialCommandGroup getAutoSequence(){

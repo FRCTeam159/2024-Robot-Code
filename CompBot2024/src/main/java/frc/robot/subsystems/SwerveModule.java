@@ -81,7 +81,6 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
 
     name = Drivetrain.chnlnames[m_id - 1];
-    SmartDashboard.putString(name, "Working");
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPositionConversionFactor(Drivetrain.kDistPerRot); // inches to meters
