@@ -169,7 +169,7 @@ Trajectory.State reference = null;
     
     m_drive.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
 
-        if (plot_type == PlotUtils.PLOT_LOCATION)
+    if (plot_type == PlotUtils.PLOT_LOCATION)
       plotLocation(reference);
     else if (plot_type == PlotUtils.PLOT_DYNAMICS)
       plotDynamics(reference);
@@ -183,7 +183,7 @@ Trajectory.State reference = null;
   @Override
   public void end(boolean interrupted) {
     System.out.println("DRIVEPATH_END");
-if(using_pathplanner)
+    if(using_pathplanner)
       m_ppcontroller.setEnabled(false);
     else
       m_hcontroller.setEnabled(false);

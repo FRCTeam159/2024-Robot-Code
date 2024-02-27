@@ -40,9 +40,10 @@ public class Autonomous extends SubsystemBase {
 
   public static boolean ok2run=false;
 
-  static boolean m_reversed=false;
-  static boolean m_autoselect=true;
+   static boolean m_autoselect=true;
   static boolean m_usetags=false;
+  static boolean m_showtags = false;
+  static boolean m_reverse=false;
   static boolean m_plotpath=true;
   static boolean m_pathplanner=false;
 
@@ -73,9 +74,10 @@ public class Autonomous extends SubsystemBase {
     m_position_chooser.addOption("Inside", TargetMgr.INSIDE);
     SmartDashboard.putData(m_position_chooser);
 
-    SmartDashboard.putBoolean("Reversed",m_reversed);
+    SmartDashboard.putBoolean("Reverse",m_reverse);
     SmartDashboard.putBoolean("Autoset",m_autoselect);
     SmartDashboard.putBoolean("UseTags",m_usetags);
+    SmartDashboard.putBoolean("ShowTags",m_showtags);
     SmartDashboard.putBoolean("Plot",m_plotpath);
     SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
   }
@@ -86,13 +88,16 @@ public class Autonomous extends SubsystemBase {
     return m_position_chooser.getSelected();
   }
   static public boolean getReverse(){
-    return SmartDashboard.getBoolean("Reversed",m_reversed);
+    return SmartDashboard.getBoolean("Reverse",m_reverse);
   }
   static public boolean getAutoset(){
     return SmartDashboard.getBoolean("Autoset",m_autoselect);
   }
   static public boolean getUsetags(){
     return SmartDashboard.getBoolean("UseTags",m_usetags);
+  }
+  static public boolean getShowtags(){
+    return SmartDashboard.getBoolean("ShowTags",m_showtags);
   }
   static public boolean getPlotpath(){
     return SmartDashboard.getBoolean("Plot",m_plotpath);
