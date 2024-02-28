@@ -24,32 +24,32 @@ public class AlignWheels extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drive.resetWheels(true);
+    //m_drive.resetWheels(true);
     m_timer.reset();
-    done=false;
+    done=true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!m_drive.wheelsReset())
-      m_drive.resetWheels(false);
-    else{
-      done=true; 
-    }     
+    // if(!m_drive.wheelsReset())
+    //   m_drive.resetWheels(false);
+    // else{
+    //   done=true; 
+    // }     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     //m_drive.reset();
-    //m_drive.resetOdometry();
-    m_drive.drive(-0.001,0,0,false);
-    if(done) {
-       System.out.println(" - Wheels are aligned");
-    } else {
-      System.out.println(" - Timeout expired");
-    }
+    m_drive.resetOdometry();
+    // m_drive.drive(-0.001,0,0,false);
+    // if(done) {
+    //    System.out.println(" - Wheels are aligned");
+    // } else {
+    //   System.out.println(" - Timeout expired");
+    // }
   }
 
   // Returns true when the command should end.

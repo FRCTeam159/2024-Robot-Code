@@ -25,7 +25,7 @@ public class DriveWithGamepad extends Command {
   boolean m_aligning = false;
   AlignWheels m_align = null;
 
-  boolean m_autotest=false;
+  boolean m_autotest=true;
 
   /**
    * Creates a new ExampleCommand.

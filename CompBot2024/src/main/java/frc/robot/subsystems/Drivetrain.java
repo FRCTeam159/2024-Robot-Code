@@ -35,7 +35,7 @@ public class Drivetrain extends SubsystemBase {
 
   public static final double kMaxAcceleration = 1.0; // m/s/s
   public static final double kMaxVelocity = 4; // m/s
-  public static final double kMaxAngularAcceleration = 2 * Math.PI; // 1 rotations/s/s
+  public static final double kMaxAngularAcceleration = 52; // radians/s/s
   public static final double kTrackRadius = Math.sqrt(Math.pow(delx, 2) + Math.pow(dely, 2));
   public static final double kMaxAngularVelocity = 28; // kMaxVelocity/kRadius; // radians/s
 

@@ -21,8 +21,8 @@ import frc.robot.sensors.BNO055;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
-  public final double kMaxArmVelocity = 1200.0; // degrees/s
-  public final double kMaxArmAcceleration = 1200.0; // degrees/s^2
+  public final double kMaxArmVelocity = 120.0; // degrees/s
+  public final double kMaxArmAcceleration = 60.0; // degrees/s^2
 
   private final ArmFeedforward m_shoulderFeedforward = new ArmFeedforward(0.01, 0.05, 0.01);
   private final TrapezoidProfile.Constraints m_trapezoidConstraints = new TrapezoidProfile.Constraints(kMaxArmVelocity, kMaxArmAcceleration);
@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
     m_shoulderMotor2 = new CANSparkMax(kShoulderMotor2, CANSparkLowLevel.MotorType.kBrushless);
     m_shoulderMotor2.setInverted(true);  // technically not necessary since we invert in the follow command, but I'm leaving it in just in case
     m_shoulderMotor2.follow(m_shoulderMotor1, true);
-    m_shoulderPIDController.setTolerance(4.0);
+    m_shoulderPIDController.setTolerance(Math.toRadians(4.0));
     m_shoulderEncoder = m_shoulderMotor1.getEncoder();
     m_shoulderEncoder.setPositionConversionFactor(kGearboxReduction * kChainReduction * 360.0);
     System.out.println(String.format("ARM POSITION SCALING %1.7f", m_shoulderEncoder.getPositionConversionFactor()));
@@ -177,6 +177,6 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean atTargetAngle(){
-    return m_shoulderPIDController.atSetpoint();
+    return Math.abs(getAngleFromEncoder() - shoulderAngleSetpoint) < 2;
   }
 }
