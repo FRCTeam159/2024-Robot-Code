@@ -26,7 +26,7 @@ public class TargetMgr {
 
     static final public double XF = 1.0; //Old = 0.9;//kSideX-Drivetrain.kRobotLength;
     static final public double YF = -1.4; //Old = -1.2;//-kSideY;
-    static final public double RF = -60;
+    static final public double RF = -50;
 
     static final public int OUTSIDE = 0; 
     static final public int CENTER = 1;

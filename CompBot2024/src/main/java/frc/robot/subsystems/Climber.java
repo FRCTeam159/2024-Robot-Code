@@ -14,19 +14,30 @@ public class Climber extends SubsystemBase {
   private final CANSparkMax m_climberMotor;
   boolean m_up=true;
   boolean m_climbing=false;
+  boolean m_climber_enabled=false; // Enable this to start climber
   double m_climb_value=0.1;
   /** Creates a new Climber. */
   public Climber() {
-    m_climberMotor= new CANSparkMax(Constants.kClimber, CANSparkLowLevel.MotorType.kBrushed);
+    if (m_climber_enabled) {
+      m_climberMotor = new CANSparkMax(Constants.kClimber, CANSparkLowLevel.MotorType.kBrushed);
+    } else {
+      m_climberMotor = null;
+    }
   }
 
   @Override
   public void periodic() {
+    if (!m_climber_enabled) {
+      return;
+    }
     if (m_climbing) {
-      if (m_up)
+      if (m_up) {
         m_climberMotor.set(m_climb_value);
-      else
+        System.out.println("Climbing up");
+      } else {
         m_climberMotor.set(-m_climb_value);
+        System.out.println("Climbing up");
+      }
     } else
       m_climberMotor.set(0);
   }
@@ -38,11 +49,11 @@ public class Climber extends SubsystemBase {
     m_climbing=false;
   }
   public void climbUp(){
-      enable();
-      m_up=true;
+    enable();
+    m_up=true;
   }
   public void climbDown(){
-    disable();
+    enable();
     m_up=false;
   }
 }
