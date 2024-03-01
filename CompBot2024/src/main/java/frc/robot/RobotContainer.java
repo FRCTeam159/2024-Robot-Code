@@ -8,10 +8,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArmControls;
+import frc.robot.commands.ClimberControls;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.commands.IntakeShooterControls;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeShooter;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,7 +36,8 @@ public class RobotContainer {
   private final ArmControls m_ArmControls = new ArmControls(m_Arm, m_Drivetrain, m_Controller);
   private final IntakeShooter m_IntakeShooter = new IntakeShooter();
   private final IntakeShooterControls m_IntakeShooterControls = new IntakeShooterControls(m_IntakeShooter, m_Arm, m_Controller);
-   private final Autonomous m_auto = new Autonomous(m_Drivetrain, m_Arm, m_IntakeShooter);
+  private final Autonomous m_auto = new Autonomous(m_Drivetrain, m_Arm, m_IntakeShooter);
+  private final Climber m_climber = new Climber();
 
   //commands
   
@@ -43,6 +46,7 @@ public class RobotContainer {
     m_Drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm.setDefaultCommand(m_ArmControls);
     m_IntakeShooter.setDefaultCommand(m_IntakeShooterControls);
+    m_climber.setDefaultCommand(new ClimberControls(m_climber,m_Controller));
   }
   public void robotInit() {
     m_detector.start();

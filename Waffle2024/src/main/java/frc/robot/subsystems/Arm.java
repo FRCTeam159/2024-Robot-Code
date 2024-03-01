@@ -30,7 +30,7 @@ public class Arm extends SubsystemBase {
   );
   
   
-  private static boolean have_arm=false; // test first !
+  private static boolean have_arm=true; // test first !
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
 
@@ -63,7 +63,7 @@ public class Arm extends SubsystemBase {
     double current = getAngle();
     double output = m_PID.calculate(current);
     
-    m_armPosMotor.set(output);
+   // m_armPosMotor.set(output);
     if (newAngle){
       String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
       SmartDashboard.putString("Arm", s);

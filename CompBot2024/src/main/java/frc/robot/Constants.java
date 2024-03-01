@@ -44,6 +44,8 @@ public final class Constants {
     public static final int kShooterMotor1 = 15;
     public static final int kShooterMotor2 = 16;
 
+    public static final int kClimber = 17;
+
     public static final int kPigeonCanId = 30;
 
     // arm angle settings
