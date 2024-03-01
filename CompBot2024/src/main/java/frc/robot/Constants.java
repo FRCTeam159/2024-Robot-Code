@@ -48,6 +48,6 @@ public final class Constants {
 
     // arm angle settings
     public static final double kPickup = 10.0;
-    public static final double kSpeaker = 30.0;
+    public static final double kSpeaker = 35.0; // Old = 30.0
     public static final double kAmp = 105.0;
 }

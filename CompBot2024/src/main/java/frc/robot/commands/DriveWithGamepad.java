@@ -67,10 +67,15 @@ public class DriveWithGamepad extends Command {
     double yAxisValue = m_controller.getLeftX();
     double xAxisValue = m_controller.getLeftY();
     double twistAxisValue = m_controller.getRightX();
+    double driveSpeed = 0.75;
+    double rotSpeed = 0.1;
+    double driveDeadband = 0.4;
+    double rotDeadband = 0.2;
+
     SmartDashboard.putString("controller",
         String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
-    final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(xAxisValue, 0.2)) * Drivetrain.kMaxVelocity;
-    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(yAxisValue, 0.2)) * Drivetrain.kMaxVelocity;
+    final var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(MathUtil.applyDeadband(xAxisValue, driveDeadband)) * Drivetrain.kMaxVelocity;
+    final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(MathUtil.applyDeadband(yAxisValue, driveDeadband)) * Drivetrain.kMaxVelocity;
 
     // for testing auto routines we need to realign wheels at autonomous start or redeploy the code
     // - this is because the optimizer may have switched some of the wheels 180 
@@ -88,7 +93,7 @@ public class DriveWithGamepad extends Command {
     if (m_aligning)
       align();
     if (!m_aligning) {
-      final var rot = -m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, 0.2), 5))
+      final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
           * Drivetrain.kMaxAngularVelocity;
       /* if (DriveToTarget.currentMode != DriveToTarget.targetFound) */ {
         m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);

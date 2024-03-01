@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class IntakeShooter extends SubsystemBase {
-  double m_shoot_max_speed = 4800;
-  double m_shoot_target_speed = 3500;  // units: RPM
+  double m_shoot_max_speed = 4000; // Old: 4800;
+  double m_shoot_target_speed = 3000; // Old: 3500;  // units: RPM
 
   private final SimpleMotorFeedforward m_intakeFeedforward = new SimpleMotorFeedforward(0.01, 1);
   private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(0.01, 1/m_shoot_max_speed);
@@ -44,7 +44,7 @@ public class IntakeShooter extends SubsystemBase {
   /** Creates a new IntakeShooter. */
   public IntakeShooter() {
     m_intakeMotor = new CANSparkMax(kIntakeMotor, CANSparkLowLevel.MotorType.kBrushed);
-    m_intakeMotor.setSmartCurrentLimit(38);
+    m_intakeMotor.setSmartCurrentLimit(45/*Old: 38*/);
     m_intakeMotor.setInverted(true);
     m_shooterMotor1 = new CANSparkMax(kShooterMotor1, CANSparkLowLevel.MotorType.kBrushless);
     m_shooterMotor1.setInverted(true);

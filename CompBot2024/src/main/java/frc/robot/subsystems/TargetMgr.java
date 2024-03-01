@@ -20,12 +20,12 @@ public class TargetMgr {
 
     static ArrayList<TagTarget> targets = new ArrayList<>();
 
-    static final public double XC = 0.9;//kCenterX-Drivetrain.kRobotLength; // center forward
+    static final public double XC = 1.0; //Old = 0.9;//kCenterX-Drivetrain.kRobotLength; // center forward
     static final public double YC = 0;
     static final public double RC = 0;
 
-    static final public double XF = 0.9;//kSideX-Drivetrain.kRobotLength;
-    static final public double YF = -1.2;//-kSideY;
+    static final public double XF = 1.0; //Old = 0.9;//kSideX-Drivetrain.kRobotLength;
+    static final public double YF = -1.4; //Old = -1.2;//-kSideY;
     static final public double RF = -60;
 
     static final public int OUTSIDE = 0; 
@@ -62,7 +62,7 @@ public class TargetMgr {
     static public void init() {
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
-SmartDashboard.putString("Placement", bStrings[placement]);
+        SmartDashboard.putString("Placement", bStrings[placement]);
         setFieldTargets();
     }
 
