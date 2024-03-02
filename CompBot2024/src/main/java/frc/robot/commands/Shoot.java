@@ -31,7 +31,7 @@ public class Shoot extends Command{
     m_timer.reset();
     m_shooter.setShooterOn(); // turn shootere on flywheels
     m_shooter.setIntakeOff(); // turn off intake rollers
-    m_shooter.setPushOFf();
+    m_shooter.setPushOff();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,8 +50,8 @@ public class Shoot extends Command{
   @Override
   public void end(boolean interrupted) {
     System.out.println("Shoot.end");
-    m_shooter.setShooterOFf();
-    m_shooter.setPushOFf();
+    m_shooter.setShooterOff();
+    m_shooter.setPushOff();
    // m_shooter.setIntakeOn();
   }
 

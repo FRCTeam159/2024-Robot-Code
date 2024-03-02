@@ -16,11 +16,14 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import utils.Averager;
 
 
 public class IntakeShooter extends SubsystemBase {
   double m_shoot_max_speed = 4800; // Old: 4800;
-  double m_shoot_target_speed = 3500; // Old: 3500;  // units: RPM
+  double m_shoot_initial_speed = 3500; // Old: 3500;  // units: RPM
+  double m_shoot_amp_speed = 3000;
+  double m_shoot_target_speed = m_shoot_initial_speed;
 
   private final SimpleMotorFeedforward m_intakeFeedforward = new SimpleMotorFeedforward(0.01, 1);
   private final SimpleMotorFeedforward m_shooterFeedforward = new SimpleMotorFeedforward(0.01, 1/m_shoot_max_speed);
@@ -40,11 +43,15 @@ public class IntakeShooter extends SubsystemBase {
   public boolean m_push = false;
   boolean m_noteHasReachedShooter = false;
   public boolean m_hasNote = false;
+  Averager sensor1_averager=new Averager(5);
+  Averager sensor2_averager=new Averager(5);
+  double m_notAtIntakeAve=0;
+  double m_notAtShooterAve=0;
 
   /** Creates a new IntakeShooter. */
   public IntakeShooter() {
     m_intakeMotor = new CANSparkMax(kIntakeMotor, CANSparkLowLevel.MotorType.kBrushed);
-    m_intakeMotor.setSmartCurrentLimit(45/*Old: 38*/);
+    m_intakeMotor.setSmartCurrentLimit(38);
     m_intakeMotor.setInverted(true);
     m_shooterMotor1 = new CANSparkMax(kShooterMotor1, CANSparkLowLevel.MotorType.kBrushless);
     m_shooterMotor1.setInverted(true);
@@ -68,6 +75,10 @@ public class IntakeShooter extends SubsystemBase {
   private void runIntake() {
     // These are "normally closed" so we invert them to see if they're sensing something
     double intakeCommand = 0;
+    double val=noteSensor1.get()?0:1;
+    m_notAtIntakeAve=sensor1_averager.getAve(val);
+    val=noteSensor2.get()?0:1;
+    m_notAtIntakeAve=sensor2_averager.getAve(val);
 
     if(m_push)
       intakeCommand = 1; // fire the shot
@@ -89,6 +100,13 @@ public class IntakeShooter extends SubsystemBase {
     m_intakeMotor.set(intakeCommand);
     // Override these for shooting mode
     if (m_shoot) {
+      // Lower shooting speed if arm is at amp angle
+      if (Arm.lowSpeed) {
+        m_shoot_target_speed = m_shoot_amp_speed;
+      } else {
+        m_shoot_target_speed = m_shoot_initial_speed;
+      } 
+
       // motor 1
       double command = m_shooterFeedforward.calculate(m_shoot_target_speed) + 
       m_shooter1PIDController.calculate(shooter1Speed(), m_shoot_target_speed);
@@ -107,7 +125,7 @@ public class IntakeShooter extends SubsystemBase {
   public void setShooterOn() {
     m_shoot = true;
   }
-  public void setShooterOFf() {
+  public void setShooterOff() {
     m_shoot = false;
   }
   public void setIntakeOn() {
@@ -123,14 +141,16 @@ public class IntakeShooter extends SubsystemBase {
   public void setPushOn() {
     m_push = true;
   }
-  public void setPushOFf() {
+  public void setPushOff() {
     m_push = false;
   }
   public boolean noteAtIntake(){
-    return !noteSensor1.get();
+    //return !noteSensor1.get();
+    return m_notAtIntakeAve>=0.5?true:false;
   }
   public boolean noteAtShooter(){
-    return !noteSensor2.get();
+    //return !noteSensor2.get();
+    return m_notAtShooterAve>=0.5?true:false;
   }
 
   public double shooter1Speed(){

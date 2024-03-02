@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.sensors.BNO055;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
@@ -43,6 +44,7 @@ public class Arm extends SubsystemBase {
   public boolean initialized = false;
   public boolean enabled = false;
   public double currentAngle = 0.0;  // degrees, updated every periodic
+  static public boolean lowSpeed = false;
 
   private BNO055 m_armGyro;
   private String name = "arm";
@@ -110,6 +112,11 @@ public class Arm extends SubsystemBase {
   // Use this to set the setpoint to the given angle
   public void setTargetAngle(double a){
     shoulderAngleSetpoint = a;
+    if (shoulderAngleSetpoint == Constants.kAmp) {
+      lowSpeed = true;
+    } else {
+      lowSpeed = false;
+    }
   }
 
   public void clampSetpoint() {

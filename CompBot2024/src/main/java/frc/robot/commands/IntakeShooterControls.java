@@ -17,6 +17,7 @@ public class IntakeShooterControls extends Command {
 
   boolean m_shooting=false;
   boolean m_pickup=false;
+  boolean m_eject=false;
   
 
   Shoot shoot;
@@ -57,7 +58,7 @@ public class IntakeShooterControls extends Command {
         m_intakeShooter.setShooterOn();
       }
       if (m_controller.getRightBumperReleased()) {
-        m_intakeShooter.setShooterOFf();
+        m_intakeShooter.setShooterOff();
       }
     } 
     else { // use Pickup (left bumper) and Shoot(right bumper)commands
@@ -65,7 +66,7 @@ public class IntakeShooterControls extends Command {
         if (!m_shooting) {
           shoot.initialize();
           m_shooting = true;
-        } else{
+        } else {
           shoot.end(true);
           m_shooting = false;
         }
@@ -76,6 +77,16 @@ public class IntakeShooterControls extends Command {
         } else{
           pickup.end(true);
           m_pickup = false;
+        }
+      } else if (m_controller.getLeftStickButtonPressed()) {
+        if (!m_eject) {
+          m_eject = true;
+          m_intakeShooter.setShooterOn();
+          m_intakeShooter.setPushOn();
+        } else {
+          m_eject = false;
+          m_intakeShooter.setShooterOff();
+          m_intakeShooter.setPushOff();
         }
       }
       if (m_shooting)

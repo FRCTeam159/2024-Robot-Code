@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Timer;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -140,6 +142,7 @@ public class Autonomous extends SubsystemBase {
         new Shoot(m_shooter),
         new SetArmAngle(m_arm, Constants.kPickup),
         new ParallelCommandGroup(
+            // At DrivePath.end set timer, if !hasNote, end auto
             new DrivePath(m_drive, false),
             new Pickup(m_shooter, m_arm)
         ),

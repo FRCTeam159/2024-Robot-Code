@@ -15,7 +15,7 @@ public class Climber extends SubsystemBase {
   boolean m_up=true;
   boolean m_climbing=false;
   boolean m_climber_enabled=false; // Enable this to start climber
-  double m_climb_value=0.1;
+  double m_climb_value=0.5;
   /** Creates a new Climber. */
   public Climber() {
     if (m_climber_enabled) {
