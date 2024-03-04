@@ -167,6 +167,11 @@ public class TagDetector extends Thread {
           new Scalar(255, 0, 0), // Scalar object for color
           2 // Thickness
       );
+      if(i==TargetMgr.kBestTarget && m_targeting){
+        c.y+=TargetMgr.kVertOffset*IMAGE_HEIGHT;
+        c.x+=TargetMgr.kHorizOffset*IMAGE_WIDTH;
+        Imgproc.drawMarker(mat, c, new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 35, 2, 8);
+      }
     }
   }
 

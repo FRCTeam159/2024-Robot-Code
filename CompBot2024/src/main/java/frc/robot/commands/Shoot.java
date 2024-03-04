@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.IntakeShooter;
 
 public class Shoot extends Command{
@@ -24,7 +25,7 @@ public class Shoot extends Command{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Shoot.init");
+    Autonomous.log("Shoot.init");
     shooter_ready=false;
     shooting=false;
     noteCaptured=m_shooter.noteAtIntake();
@@ -49,7 +50,7 @@ public class Shoot extends Command{
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Shoot.end");
+    Autonomous.log("Shoot.end");
     m_shooter.setShooterOff();
     m_shooter.setPushOff();
    // m_shooter.setIntakeOn();
@@ -58,6 +59,8 @@ public class Shoot extends Command{
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (!Autonomous.okToRun())
+      return true;
     // turn on pusher wheels and wait a little to make sure note has cleared the shooter
     if(shooter_ready && m_timer.get()>2 && !m_shooter.noteAtShooter()) 
       return true;

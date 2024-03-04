@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.TargetMgr;
 
 public class SetStartPose extends Command {
@@ -26,6 +27,7 @@ public class SetStartPose extends Command {
   @Override
   public void initialize() {
     Robot.status="Auto Start";
+    Autonomous.log("SetStartPose.init");
     m_arm.enable();
     TargetMgr.clearStartPose();
     m_timer.reset();
@@ -40,6 +42,7 @@ public class SetStartPose extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Autonomous.log("SetStartPose.end");
   }
 
   // Returns true when the command should end.
@@ -47,7 +50,8 @@ public class SetStartPose extends Command {
   public boolean isFinished() {
     if(m_timer.get()>3) {
       // taking too long
-      System.out.println("SetStartPose timeout expired");
+      Autonomous.log("SetStartPose - timeout expired");
+      Autonomous.stop();
       return true;
     }
     return m_arm.atTargetAngle()&&TargetMgr.startPoseSet();

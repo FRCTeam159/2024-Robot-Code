@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.sensors.DriveGyro;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -175,6 +176,8 @@ public class Drivetrain extends SubsystemBase {
 
     for (int i = 0; i < modules.length; i++)
       modules[i].log();
+
+    SmartDashboard.putString("Status", Robot.status);
   }
 
   /** Updates the field relative position of the robot. */

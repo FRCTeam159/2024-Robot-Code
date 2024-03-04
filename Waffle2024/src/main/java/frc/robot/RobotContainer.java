@@ -58,19 +58,19 @@ public class RobotContainer {
 
   public void teleopInit() {
     Robot.status = "Teleop";
-    //m_Drivetrain.resetOdometry();
+    Autonomous.end(); 
   }
 
   public void autonomousInit() {
-    Autonomous.ok2run = true;
     TargetMgr.reset();
     Robot.status = "Autonomous";
-    //m_drivetrain.reset();
+    Autonomous.start();
     //m_Drivetrain.resetOdometry();
   }
 
   public void disabledInit() {
     Robot.status = "Disabled";
+     Autonomous.end(); 
   }
  
 }

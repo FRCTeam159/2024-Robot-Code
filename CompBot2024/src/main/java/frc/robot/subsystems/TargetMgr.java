@@ -18,6 +18,9 @@ public class TargetMgr {
     public static final double kSideX = Units.inchesToMeters(71);
     public static final double kSideY = Units.inchesToMeters(70);
 
+    public static final double kVertOffset = -0.4;
+    public static final double kHorizOffset = 0.0;
+    
     static ArrayList<TagTarget> targets = new ArrayList<>();
 
     static final public double XC = 1.0; //Old = 0.9;//kCenterX-Drivetrain.kRobotLength; // center forward
@@ -58,6 +61,8 @@ public class TargetMgr {
     static boolean start_pose_set = false;
     public static boolean show_tag_info = false;
     static boolean field_relative = true;
+
+    public static int kBestTarget=0;
 
     static public void init() {
         SmartDashboard.putString("Alliance", aStrings[alliance]);
@@ -160,6 +165,15 @@ public class TargetMgr {
             rf = RF;
         }
         return new Pose2d(xf, yf, new Rotation2d(rf));
+    }
+
+    public static void setBestTarget(AprilTag[] tags){
+        kBestTarget=0;
+        if (tags.length==1)
+            return;
+        int id2=tags[1].getTagId();
+        if(id2==4||id2==7)
+           kBestTarget=1; 
     }
 
     public static void setStartPose(AprilTag[] tags) {

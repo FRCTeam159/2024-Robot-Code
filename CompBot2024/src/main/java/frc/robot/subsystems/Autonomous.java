@@ -4,8 +4,7 @@
 
 package frc.robot.subsystems;
 
-import java.util.Timer;
-
+import edu.wpi.first.wpilibj.Timer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -40,15 +39,18 @@ public class Autonomous extends SubsystemBase {
   static double yp=TargetMgr.YF;
   static double rp=TargetMgr.RF;
 
-  public static boolean ok2run=false;
-
-   static boolean m_autoselect=true;
+  static boolean m_autoselect=true;
   static boolean m_usetags=false;
   static boolean m_showtags = false;
   static boolean m_reverse=false;
   static boolean m_plotpath=true;
   static boolean m_pathplanner=false;
 
+  static boolean m_ok2run = false;
+  static boolean m_inAuto = false;
+  static double last_time = 0;
+
+  static Timer m_timer=new Timer();
 
    /** Creates a new Autonomous. 
    * @param m_arm */
@@ -82,7 +84,45 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putBoolean("ShowTags",m_showtags);
     SmartDashboard.putBoolean("Plot",m_plotpath);
     SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
+    SmartDashboard.putBoolean("OkToRun", okToRun());
+
+    m_timer.start();
   }
+
+  public static double autoTime(){
+		return m_timer.get();
+	}
+  public static void log(String msg){
+    double tm=autoTime();
+    System.out.format("%-2.3f (%-2.3f) %s\n",tm,tm-last_time,msg);
+    last_time=tm;
+    SmartDashboard.putBoolean("OkToRun", okToRun());
+  }
+
+  // These methods are used to terminate auto if any command fails
+  public static void start(){ // set at start of autonomous
+    last_time=0;
+    m_ok2run=true;
+    m_inAuto=true;
+    m_timer.reset();
+    log("Auto Start");
+  }
+   public static void end(){ // set at end of autonomous
+    last_time=0;
+    m_inAuto=false;
+    m_ok2run=true;
+    log("Auto End");
+  }
+  public static boolean okToRun(){ // each auto command should test this in isFinished
+    if(!m_inAuto)
+      return true;
+    return m_ok2run;
+  }
+  public static void stop(){ // called by failing command
+    log("Auto error - aborting !!");
+    m_ok2run=false;
+  }
+
   static public int getAlliance(){
     return m_alliance_chooser.getSelected();
   }

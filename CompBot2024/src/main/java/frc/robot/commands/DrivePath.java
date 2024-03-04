@@ -88,7 +88,7 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public void initialize() {
-    System.out.println("DRIVEPATH_INIT");
+    Autonomous.log("Drivepath.init");
     m_autoset = Autonomous.getAutoset();
 
     if (Autonomous.getPlotpath())
@@ -115,7 +115,7 @@ public class DrivePath extends Command {
 
     if (!getTrajectory()) {
       System.out.println("failed to create Trajectory");
-      Autonomous.ok2run = false;
+      Autonomous.stop();
       return;
     }
     m_timer.start();
@@ -181,7 +181,7 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public void end(boolean interrupted) {
-    System.out.println("DRIVEPATH_END");
+    Autonomous.log("Drivepath.end");
     if (using_pathplanner)
       m_ppcontroller.setEnabled(false);
     else
@@ -196,8 +196,8 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public boolean isFinished() {
-    // if (!Autonomous.ok2run)
-    // return true;
+    if (!Autonomous.okToRun())
+      return true;
     return elapsed >= 1.0 * runtime;
   }
 

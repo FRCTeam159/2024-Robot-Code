@@ -51,11 +51,23 @@ public class RobotContainer {
   public void robotInit() {
     m_detector.start();
     m_Drivetrain.resetOdometry();
+    Robot.status = "Init";
   }
   
+  public void teleopInit() {
+    Autonomous.end(); 
+    Robot.status = "Teleop";
+  }
   public void autonomousInit() {
+     Robot.status = "Autonomous";
      m_Drivetrain.reset();
      m_Drivetrain.resetOdometry();
+     Autonomous.start(); 
+  }
+
+  public void disabledInit() {
+    Robot.status = "Disabled";
+    Autonomous.end(); 
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

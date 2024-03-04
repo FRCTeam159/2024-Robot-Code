@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.IntakeShooter;
 
 public class Pickup extends Command{
@@ -24,7 +25,7 @@ public class Pickup extends Command{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Intake.init");
+    Autonomous.log("Pickup.init");
     m_shooter.setIntakeOn();
     Robot.status="Intake";
     note_captured=false;
@@ -35,8 +36,8 @@ public class Pickup extends Command{
     if(m_shooter.noteAtIntake()) {
       m_arm.setTargetAngle(Constants.kSpeaker); // lift note off the ground
     }
-    if(m_shooter.m_hasNote) {
-      System.out.println("Intake.captured");
+    if(!note_captured && m_shooter.m_hasNote) {
+      Autonomous.log("Pickup - note captured");
       note_captured=true;
     }
   }
@@ -44,13 +45,15 @@ public class Pickup extends Command{
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake.end");
+    Autonomous.log("Pickup.end");
     m_shooter.setIntakeOff();
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {   
+  public boolean isFinished() {  
+    if (!Autonomous.okToRun())
+      return true; 
     if(note_captured){
       return true;
     }
