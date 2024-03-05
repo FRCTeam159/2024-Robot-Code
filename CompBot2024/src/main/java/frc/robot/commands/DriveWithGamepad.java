@@ -74,8 +74,8 @@ public class DriveWithGamepad extends Command {
 
     SmartDashboard.putString("controller",
         String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
-    final var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(MathUtil.applyDeadband(xAxisValue, driveDeadband)) * Drivetrain.kMaxVelocity;
-    final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(MathUtil.applyDeadband(yAxisValue, driveDeadband)) * Drivetrain.kMaxVelocity;
+    final var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
+    final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
 
     // for testing auto routines we need to realign wheels at autonomous start or redeploy the code
     // - this is because the optimizer may have switched some of the wheels 180 
