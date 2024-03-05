@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.TagDetector;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -92,7 +93,8 @@ public class DriveWithGamepad extends Command {
     }
     if (m_aligning)
       align();
-    if (!m_aligning) {
+    boolean do_targeting = TagDetector.isTargeting();
+    if (!m_aligning && !do_targeting) {
       final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
           * Drivetrain.kMaxAngularVelocity;
       /* if (DriveToTarget.currentMode != DriveToTarget.targetFound) */ {

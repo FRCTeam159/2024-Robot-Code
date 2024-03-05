@@ -51,7 +51,7 @@ public class TagDetector extends Thread {
 
   static int count = 0;
   private CvSink UsbCameraSink;
-  private Mat mat;
+  private Mat mat= new Mat();
   static int IMAGE_WIDTH = 640;
   static int IMAGE_HEIGHT = 480;
   public double hFOV = 40.107;
@@ -84,44 +84,38 @@ public class TagDetector extends Thread {
     while (!Thread.interrupted()) {
       try {
         Thread.sleep(50);
-        mat = new Mat();
+       // mat = new Mat();
         long tm = UsbCameraSink.grabFrame(mat);
         if (tm == 0) // bad frame
           continue;
 
-        tags = null;
-
-        // if using tags for targeting
-        if (m_targeting) {
-          tags = getTags(mat);
-          if (tags != null) {
-            if (tags.length == 2)
-              Arrays.sort(tags, new SortbyDistance());
-            showTags(tags, mat);
-          }
-          ouputStream.putFrame(mat);
-          continue;
-        }
-
-        // set initial starting position and alliance
         boolean autoselect = Autonomous.getAutoset();
         boolean usetags = Autonomous.getUsetags();
+        boolean showtags = Autonomous.getShowtags();
+
+        tags = null;
+
+        if (m_targeting || showtags ||(autoselect && !TargetMgr.startPoseSet()&&usetags)){
+          tags = getTags(mat);
+          if(tags !=null && tags.length>1){
+              Arrays.sort(tags, new SortbyDistance());
+                      }
+                  }
+
+        // set initial starting position and alliance
+        
         if (autoselect && !TargetMgr.startPoseSet()) {
           if (usetags) {
-            tags = getTags(mat);
-            if (tags != null) {
-              if (tags.length == 2) {
-                Arrays.sort(tags, new SortbyDistance());
+            if (tags != null && tags.length == 2)
                 TargetMgr.setStartPose(tags);
-              }
-              showTags(tags, mat);
-            }
           } else {
             int alliance = Autonomous.getAlliance();
             int position = Autonomous.getPosition();
             TargetMgr.setTarget(alliance, position);
           }
         }
+        if(tags != null)
+          showTags(tags, mat);
         ouputStream.putFrame(mat);
       } catch (Exception ex) {
         System.out.println("TagDetector exception:" + ex);
@@ -156,7 +150,7 @@ public class TagDetector extends Thread {
       Imgproc.line(mat, tag.bl(), tag.tl(), lns, 2);
 
       // Imgproc.rectangle(mat, tl, br, new Scalar(255.0, 255.0, 0.0), 2);
-      Imgproc.drawMarker(mat, c, new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 35, 2, 8);
+      //Imgproc.drawMarker(mat, c, new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 35, 2, 8);
       Point p = new Point(tag.bl().x - 10, tag.bl().y - 10);
       Imgproc.putText(
           mat, // Matrix obj of the image
