@@ -44,7 +44,12 @@ public class DriveWithGamepad extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_drive.reset();
+    double now = 0;// WPIUtilJNI.now() * 1e-6;
+    m_xspeedLimiter.reset(now);
+    m_yspeedLimiter.reset(now);
+    m_rotLimiter.reset(now);
+
+    System.out.println("DriveWithGampad started");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -97,11 +102,7 @@ public class DriveWithGamepad extends Command {
     if (!m_aligning && !do_targeting) {
       final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
           * Drivetrain.kMaxAngularVelocity;
-      /* if (DriveToTarget.currentMode != DriveToTarget.targetFound) */ {
         m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
-      }
-      // m_drive.driveForwardAll(xSpeed/10);
-      // m_drive.turnAroundAll(rot/50);
     }
   }
 
@@ -112,9 +113,4 @@ public class DriveWithGamepad extends Command {
     } else
       m_align.execute();
   }
-
-  public void logJoystick() {
-
-  }
-
 }

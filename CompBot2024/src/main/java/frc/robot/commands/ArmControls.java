@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.TagDetector;
 
 public class ArmControls extends Command {
   private final XboxController m_controller;
@@ -47,29 +48,26 @@ public class ArmControls extends Command {
       m_arm.setTargetAngle(Constants.kSpeaker);
     } else if(m_controller.getBButtonPressed())
       m_arm.setTargetAngle(Constants.kAmp);
-    else if(m_controller.getXButtonPressed()){
-        if(!m_targeting){
-          target.initialize();
-          m_targeting=true;
+    else if (m_controller.getXButtonPressed()) {
+        if (!TagDetector.isTargeting()) {
+          target.initialize();//enables targeting
+      }
         }
-        else {
-          target.end(true);
-          m_targeting=false;
-        }
+        else if (m_controller.getXButtonReleased()) {
+          target.end(true);//disables targeting
     } 
     else if (left > 0.1) {
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);
     } else if (right > 0.1) {
       m_arm.adjustAngle(right*ARM_MOVE_RATE);
     }
-    if(m_targeting)
+    if (TagDetector.isTargeting())
       target();
   }
 
   void target() {
-    if(target.isFinished()) {
-     target.end(m_controller.getXButtonReleased());
-     m_targeting = false;
+    if (target.isFinished()) {
+     target.end(true); //disables targeting
    } else
      target.execute();
   }

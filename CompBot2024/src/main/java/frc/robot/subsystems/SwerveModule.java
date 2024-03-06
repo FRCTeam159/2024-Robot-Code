@@ -27,7 +27,7 @@ public class SwerveModule extends SubsystemBase {
   private final CANcoder m_turningEncoder;
   private final RelativeEncoder m_driveEncoder;
 
-  public static boolean debug = true;
+  public static boolean debug = false;
   String name;
 
   int cnt = 0;
@@ -210,10 +210,10 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void log() {
-if (debug) {
-    /*String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n",
+    if (!debug) {
+      String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n",
         getDistance(), getRotation2d().getDegrees(), getRotations());
-    SmartDashboard.putString(name, s);*/
+      SmartDashboard.putString(name, s);
     }
 
   }
@@ -260,8 +260,8 @@ if (debug) {
 
   @Override
   public void periodic() {
-    if (!debug)
-      log();
-      }
+    // if (!debug)
+      //   log();
+  }
 
 }

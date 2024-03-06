@@ -76,7 +76,6 @@ public class DriveWithGamepad extends Command {
     if (!m_aligning && !do_targeting) {
       final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
           * Drivetrain.kMaxAngularVelocity;
-          //System.out.print("+");
       m_drive.drive(xSpeed, ySpeed, rot, Drivetrain.isFieldOriented());
     }
   }

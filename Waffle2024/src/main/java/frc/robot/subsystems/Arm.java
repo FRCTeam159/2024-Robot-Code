@@ -107,6 +107,7 @@ public class Arm extends SubsystemBase {
     if (!m_initialized && m_armGyro.isInitialized() && m_armGyro.isCalibrated()) {
       // Set the setpoint to the current position when initializing
       //setTargetAngle(getAngleFromGyro());
+      System.out.println("Gyro initialized");
       m_initialized=true;
     }
   }
@@ -117,8 +118,7 @@ public class Arm extends SubsystemBase {
     // when Z == g, angle is 0 degrees (toward front of robot)
     double xGravity = m_armGyro.getVector()[0];
     double zGravity = m_armGyro.getVector()[2];
-    //SmartDashboard.putNumber(name + "Shoulder x", xGravity);
-    //SmartDashboard.putNumber(name + "Shoulder Z", zGravity);
+   
     Rotation2d result = Rotation2d.fromRadians(Math.atan2(zGravity, xGravity));
     result = result.minus(Rotation2d.fromDegrees(90));
     double a=result.getDegrees(); 
@@ -130,7 +130,7 @@ public class Arm extends SubsystemBase {
   void log(){
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
     SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
-    SmartDashboard.putBoolean("Gyro Present", m_armGyro.isSensorPresent());
+    SmartDashboard.putBoolean("Gyro Initialized", m_initialized);
   }
 
   @Override

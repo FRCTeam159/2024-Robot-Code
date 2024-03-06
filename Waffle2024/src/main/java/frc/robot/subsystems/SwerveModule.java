@@ -173,7 +173,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void log() {
-    if (debug) {
+    if (!debug) {
       String s = String.format("Drive:%-1.3f m Angle:%-4.1f Rotations:%-4.2f\n",
           getDistance(), getRotation2d().getDegrees(), getRotations());
       SmartDashboard.putString(name, s);
