@@ -1,43 +1,40 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Status" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="225" y="12"/>
+	</widget>
+	<widget field="Reverse" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="531" y="92"/>
+	</widget>
 	<widget field="Pathplanner" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="430" y="102"/>
+		<location x="517" y="118"/>
 	</widget>
 	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="19" y="105"/>
 		<width>154</width>
 	</widget>
 	<widget field="Gyro Present" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="165" y="14"/>
-	</widget>
-	<widget field="Reversed" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="442" y="83"/>
+		<location x="49" y="15"/>
 	</widget>
 	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="361" y="82"/>
-	</widget>
-	<widget field="Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="114" y="13"/>
+		<location x="436" y="67"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="197" y="53"/>
+		<location x="135" y="12"/>
 		<width>76</width>
-	</widget>
-	<widget field="Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="62" y="13"/>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="18" y="79"/>
 		<width>156</width>
 	</widget>
 	<widget field="UseTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="203" y="76"/>
+		<location x="287" y="110"/>
 	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="340" y="-1"/>
+		<location x="425" y="1"/>
 	</widget>
 	<widget field="Autoset" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="207" y="103"/>
+		<location x="291" y="83"/>
 	</widget>
 	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="310" y="565"/>
@@ -56,33 +53,33 @@
 		<width>285</width>
 	</widget>
 	<widget field="Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="97" y="53"/>
+		<location x="88" y="49"/>
 		<width>93</width>
 	</widget>
 	<widget field="Alliance" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="14" y="54"/>
+		<location x="9" y="50"/>
 		<width>72</width>
 	</widget>
 	<widget field="SendableChooser[2]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="275" y="1"/>
+		<location x="346" y="2"/>
 	</widget>
 	<widget field="yPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="450" y="34"/>
+		<location x="523" y="37"/>
 		<width>85</width>
 		<height>20</height>
 	</widget>
 	<widget field="xPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="449" y="13"/>
+		<location x="523" y="11"/>
 		<width>86</width>
 		<height>20</height>
 	</widget>
 	<widget field="rPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="449" y="60"/>
+		<location x="524" y="62"/>
 		<width>88</width>
 		<height>21</height>
 	</widget>
 	<widget field="SendableChooser[1]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="274" y="53"/>
+		<location x="345" y="53"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="12" y="8"/>
@@ -112,6 +109,7 @@
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="OkToRun"/>
 	<hidden field="Placement"/>
 	<hidden field="Arm Angle"/>
 	<hidden field="Arm Setpoint"/>

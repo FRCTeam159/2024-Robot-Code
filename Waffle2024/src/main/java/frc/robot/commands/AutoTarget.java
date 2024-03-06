@@ -17,8 +17,8 @@ import objects.AprilTag;
 public class AutoTarget extends Command {
   Arm m_arm;
   Drivetrain m_drive;
-  PIDController turnPID = new PIDController(0.5, 0, 0);
-  PIDController anglePID = new PIDController(0.5, 0, 0);
+  PIDController turnPID = new PIDController(1, 0, 0);
+  PIDController anglePID = new PIDController(1, 0, 0);
   AprilTag[] tags;
   Timer m_timer=new Timer();
   boolean have_tags=false;
