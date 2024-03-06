@@ -67,8 +67,8 @@ public class DriveWithGamepad extends Command {
     double yAxisValue = m_controller.getLeftX();
     double xAxisValue = m_controller.getLeftY();
     double twistAxisValue = m_controller.getRightX();
-    double driveSpeed = 0.75;
-    double rotSpeed = 0.1;
+    double driveSpeed = 0.75; // Driving speed
+    double rotSpeed = 0.2; // Old: 0.1 // Rotation speed
     double driveDeadband = 0.4;
     double rotDeadband = 0.2;
 
