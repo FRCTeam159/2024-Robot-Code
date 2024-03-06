@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.TagDetector;
 
 public class ArmControls extends Command {
   double m_arm_position;
@@ -48,24 +49,25 @@ public class ArmControls extends Command {
     if (m_controller.getBButtonPressed())
       m_arm.setTargetAngle(Constants.kAmp);
     else if (m_controller.getXButtonPressed()) {
-      if (!m_targeting) {
-        target.initialize();
-        m_targeting = true;
-      } else
-        m_targeting = true;
-    } else if (left > 0)
+      if (!TagDetector.isTargeting()) {
+        target.initialize();//enables targeting
+      }
+    } 
+    else if (m_controller.getXButtonReleased()) {
+        target.end(true);//disables targeting
+    } 
+    else if (left > 0)
       m_arm.adjustAngle(-left * ARM_MOVE_RATE);
     else if (right > 0)
       m_arm.adjustAngle(right * ARM_MOVE_RATE);
 
-    if (m_targeting)
+    if (TagDetector.isTargeting())
       target();
   }
 
   void target() {
     if (target.isFinished()) {
-      target.end(m_controller.getXButtonReleased());
-      m_targeting = false;
+      target.end(true); //disables targeting
     } else
       target.execute();
   }

@@ -16,9 +16,9 @@ public class DriveWithGamepad extends Command {
   private final Drivetrain m_drive;
   private final XboxController m_controller;
 
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0.2);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(4);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(4);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
   boolean m_aligning = false;
   AlignWheels m_align = null;
 
@@ -52,10 +52,10 @@ public class DriveWithGamepad extends Command {
     double yAxisValue = m_controller.getLeftX();
     double xAxisValue = m_controller.getLeftY();
     double twistAxisValue = m_controller.getRightX();
-    double driveSpeed = 0.75;
-    double rotSpeed = 0.1;
-    double driveDeadband = 0.4;
-    double rotDeadband = 0.2;   
+    double driveSpeed = 1;
+    double rotSpeed = 1;
+    double driveDeadband = 0.1;
+    double rotDeadband = 0.1;   
     final var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
     final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
     // Get the rate of angular rotation.
@@ -76,6 +76,7 @@ public class DriveWithGamepad extends Command {
     if (!m_aligning && !do_targeting) {
       final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
           * Drivetrain.kMaxAngularVelocity;
+          //System.out.print("+");
       m_drive.drive(xSpeed, ySpeed, rot, Drivetrain.isFieldOriented());
     }
   }

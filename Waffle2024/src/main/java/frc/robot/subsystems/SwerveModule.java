@@ -24,7 +24,7 @@ public class SwerveModule extends SubsystemBase {
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningEncoder;
 
-  public static boolean debug = true;
+  public static boolean debug = false;
   String name;
 
   int cnt = 0;
@@ -70,7 +70,7 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
 
     name = Drivetrain.chnlnames[m_id - 1];
-    SmartDashboard.putString(name, "Working");
+    //SmartDashboard.putString(name, "Working");
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPositionConversionFactor(Drivetrain.kDistPerRot); // inches to meters
@@ -219,8 +219,8 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!debug)
-      log();
+   // if (!debug)
+   //   log();
   }
 
 }

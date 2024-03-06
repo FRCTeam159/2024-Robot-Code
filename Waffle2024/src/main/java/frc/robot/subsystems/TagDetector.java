@@ -52,8 +52,8 @@ public class TagDetector extends Thread {
   static int count = 0;
   private CvSink UsbCameraSink;
   private Mat mat= new Mat();
-  static int IMAGE_WIDTH = 640;
-  static int IMAGE_HEIGHT = 480;
+  static int IMAGE_WIDTH = 320;
+  static int IMAGE_HEIGHT = 240;
   public double hFOV = 40.107;
   public double aspect = ((double) IMAGE_WIDTH) / IMAGE_HEIGHT;
   public double vFOV = hFOV / aspect;
@@ -70,7 +70,7 @@ public class TagDetector extends Thread {
   public void run() {
     intakeCamera = CameraServer.startAutomaticCapture(0); // specs for Gazebo camera
     intakeCamera.setResolution(IMAGE_WIDTH, IMAGE_HEIGHT);
-    intakeCamera.setFPS(25);
+    intakeCamera.setFPS(50);
     UsbCameraSink = CameraServer.getVideo(intakeCamera);
 
     wpi_detector = new AprilTagDetector();
