@@ -34,7 +34,7 @@ public class Pickup extends Command{
   @Override
   public void execute() {
     if(m_shooter.noteAtIntake()) {
-      m_arm.setTargetAngle(Constants.kSpeaker); // lift note off the ground
+      m_arm.setTargetAngle(Constants.kSpeaker); // Lift note off the ground
     }
     if(!note_captured && m_shooter.m_hasNote) {
       Autonomous.log("Pickup - note captured");

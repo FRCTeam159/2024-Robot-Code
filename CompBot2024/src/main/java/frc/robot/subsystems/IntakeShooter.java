@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import utils.Averager;
 
 
-public class IntakeShooter extends SubsystemBase {
+public class IntakeShooter extends SubsystemBase { // Shooting speeds
   double m_shoot_max_speed = 4800; // Old: 4800;
   double m_shoot_initial_speed = 3500; // Old: 3500;  // units: RPM
-  double m_shoot_amp_speed = 3000;
+  double m_shoot_amp_speed = 3000; // Speed for amp
   double m_shoot_target_speed = m_shoot_initial_speed;
 
   private final SimpleMotorFeedforward m_intakeFeedforward = new SimpleMotorFeedforward(0.01, 1);
