@@ -45,8 +45,8 @@ public class IntakeShooter extends SubsystemBase { // Shooting speeds
   public boolean m_hasNote = false;
   Averager sensor1_averager=new Averager(5);
   Averager sensor2_averager=new Averager(5);
-  double m_notAtIntakeAve=0;
-  double m_notAtShooterAve=0;
+  double m_noteAtIntakeAve=0;
+  double m_noteAtShooterAve=0;
 
   /** Creates a new IntakeShooter. */
   public IntakeShooter() {
@@ -76,9 +76,9 @@ public class IntakeShooter extends SubsystemBase { // Shooting speeds
     // These are "normally closed" so we invert them to see if they're sensing something
     double intakeCommand = 0;
     double val=noteSensor1.get()?0:1;
-    m_notAtIntakeAve=sensor1_averager.getAve(val);
+    m_noteAtIntakeAve=sensor1_averager.getAve(val);
     val=noteSensor2.get()?0:1;
-    m_notAtIntakeAve=sensor2_averager.getAve(val);
+    m_noteAtShooterAve=sensor2_averager.getAve(val);
 
     if(m_push)
       intakeCommand = 1; // fire the shot
@@ -146,11 +146,11 @@ public class IntakeShooter extends SubsystemBase { // Shooting speeds
   }
   public boolean noteAtIntake(){
     //return !noteSensor1.get();
-    return m_notAtIntakeAve>=0.5?true:false;
+    return m_noteAtIntakeAve>=0.5?true:false;
   }
   public boolean noteAtShooter(){
     //return !noteSensor2.get();
-    return m_notAtShooterAve>=0.5?true:false;
+    return m_noteAtShooterAve>=0.5?true:false;
   }
 
   public double shooter1Speed(){
