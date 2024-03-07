@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -18,13 +17,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.BNO055;
-import frc.robot.sensors.DriveGyro;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
+  static boolean m_navx=true;
+  static double m_navx_offset=26.0; // observed gyro value when arm is horizontal
 
-  private static final BNO055OffsetData bno2Offsets = new BNO055OffsetData(-19, 52, -13, -24, 0, -2, 2, -8, -53, -66, 591);
-  public static BNO055 m_armGyro = new BNO055(
+  static AHRS m_NAVXgyro=new AHRS(SerialPort.Port.kUSB);
+
+  static final BNO055OffsetData bno2Offsets = new BNO055OffsetData(-19, 52, -13, -24, 0, -2, 2, -8, -53, -66, 591);
+  static final BNO055 m_armGyro = new BNO055(
     I2C.Port.kMXP,
     BNO055.BNO055_ADDRESS_A,
     "BNO055-2",
@@ -32,8 +34,7 @@ public class Arm extends SubsystemBase {
     BNO055.vector_type_t.VECTOR_GRAVITY,
     bno2Offsets
   );
-  
-  //DriveGyro m_gyro=new DriveGyro(DriveGyro.gyros.FRC450);
+
   private static boolean have_arm=true; // test first !
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
@@ -50,7 +51,7 @@ public class Arm extends SubsystemBase {
   //DigitalInput input = new DigitalInput(1);
   private boolean m_initialized;
 
-  AHRS m_gyro=new AHRS(SerialPort.Port.kUSB);
+  
 
   /** Creates a new Arm. */
   public Arm() {
@@ -59,7 +60,7 @@ public class Arm extends SubsystemBase {
       m_PID = new PIDController(0.02, 0, 0);
       m_PID.setTolerance(1.0);
       m_PID.reset(); 
-   }
+    }
   }
 
  void setAngle() {
@@ -89,7 +90,6 @@ public class Arm extends SubsystemBase {
     angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
     angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
     return angle;
-    //return m_armPosMotor.getEncoder().getPosition() / Constants.kArmGearRatio * 360.0;
   }
 
   public void adjustAngle(double adjustment) {
@@ -104,7 +104,7 @@ public class Arm extends SubsystemBase {
     return armSetAngle;
   }
 
-  public boolean onTarget() {
+  public boolean atTargetAngle() {
     if(have_arm)
       return m_PID.atSetpoint();
     return true;
@@ -119,35 +119,38 @@ public class Arm extends SubsystemBase {
     }
   }
  public double getAngleFromGyro() {
-    // gyro is in gravity mode
-    // get X and Z gravity vectors
-    // Convert to angle
-    // when Z == g, angle is 0 degrees (toward front of robot)
-    // double xGravity = m_armGyro.getVector()[0];
-    // double zGravity = m_armGyro.getVector()[2];
-   
-    // Rotation2d result = Rotation2d.fromRadians(Math.atan2(zGravity, xGravity));
-    // result = result.minus(Rotation2d.fromDegrees(90));
-    // double a=result.getDegrees(); 
+    
+    if(m_navx){
+      return m_navx_offset-m_NAVXgyro.getRoll(); // returned values are negative
+    }
+    else{ //BN0 
+      // gyro is in gravity mode
+      // get X and Z gravity vectors
+      // Convert to angle
+      // when Z == g, angle is 0 degrees (toward front of robot)
+      double xGravity = m_armGyro.getVector()[0];
+      double zGravity = m_armGyro.getVector()[2];
+    
+      Rotation2d result = Rotation2d.fromRadians(Math.atan2(zGravity, xGravity));
+      result = result.minus(Rotation2d.fromDegrees(90));
+      double a=result.getDegrees(); 
 
-    // a=a>180?180:a;
-    // a=a<0?180:a;
-    // return a;
-    double val=m_gyro.getRoll();
-    return 26-val;
+      a=a>180?180:a;
+      a=a<0?180:a;
+      return a;
+    }
+    
   }
   void log(){
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
     SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
-    SmartDashboard.putBoolean("Gyro Initialized", m_initialized);
-    //SmartDashboard.putNumber("FRCGyro", m_gyro.getAngle());
   }
 
   @Override
   public void periodic() {
-    // if (!m_initialized) 
-    //   waitForGyroInit(); // Make sure the gyro is ready before we move
-    // else
+    if (!m_navx && !m_initialized) 
+      waitForGyroInit(); // Make sure the gyro is ready before we move
+    else
       setAngle();
     log();
   }

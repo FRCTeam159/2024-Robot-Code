@@ -27,8 +27,13 @@ public class TargetMgr {
     static final public double YC = 0;
     static final public double RC = 0;
 
-    static final public double XF = 1.6; //kSideX-Drivetrain.kRobotLength;
+    static final public double XF = 1.1; //kSideX-Drivetrain.kRobotLength;
     static final public double YF = -1.3; // Position from arm to note: 0.8, Position from bumper to note: -1.3;//-kSideY;
+    
+    static final public double XF2 = 1.2;  // optimized for center second pickup
+    static final public double YF2 = -1.0;
+
+    
     static final public double RF = -60;
 
     static final public int OUTSIDE = 0;
@@ -125,28 +130,50 @@ public class TargetMgr {
     }
 
     public static Translation2d getTagTranslation(int id) {
-        TagTarget target = getTarget(id);
+        TagTarget target = getTagTarget(id);
         Translation2d tag_trans = target.getPose().getTranslation().toTranslation2d();
         if (start_pose_set)
             tag_trans = tag_trans.minus(start_pose.getTranslation());
         return tag_trans;
     }
 
-    public static void setTarget(int side, int pos) {
-        alliance = side;
-        position = pos;
-
-        placement=CENTER;
+    public static Pose2d getTarget(int p){    
+        SmartDashboard.putString("Placement", bStrings[p]);
+        switch(p){
+            default:
+            case CENTER:
+                return new Pose2d(XC, 0, new Rotation2d(0));
+            case LEFT:
+                return new Pose2d(XF2, -YF2, new Rotation2d(-RF));
+            case RIGHT:
+                return new Pose2d(XF2, YF2, new Rotation2d(RF));
+        }
+    }
+    public static int getPlacement(int side, int pos){
+        int alliance = side;
+        int position = pos;
+        int placement=CENTER;
         if ((alliance == RED && position == OUTSIDE) ||(alliance == BLUE && position == INSIDE)) 
             placement=LEFT;
         else if ((alliance == BLUE && position == OUTSIDE) || (alliance == RED && position == INSIDE))
             placement=RIGHT;
+        return placement;
+    }
+
+    public static void setTarget(int side, int pos) {
+        alliance = side;
+        position = pos;
+
+        alliance = side;
+        position = pos;
+
+        placement=getPlacement(side,pos);
         start_pose_set=true;
         SmartDashboard.putString("Alliance", aStrings[alliance]);
         SmartDashboard.putString("Position", pStrings[position]);
         SmartDashboard.putString("Placement", bStrings[placement]);
     }
-
+    
     public static Pose2d getTarget() {
         double xf = XC; // center
         double yf = 0;
@@ -216,7 +243,6 @@ public class TargetMgr {
             }
         }
         setTarget(alliance,position);
-
     }
 
     static void setFieldTargets() {
@@ -282,7 +308,7 @@ public class TargetMgr {
         return 16;
     }
 
-    static public TagTarget getTarget(int i) {
+    static public TagTarget getTagTarget(int i) {
         int id = i - 1;
         if (id < 0 || id > targets.size())
             return null;

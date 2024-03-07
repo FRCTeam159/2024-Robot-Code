@@ -80,30 +80,44 @@ public class DriveWithGamepad extends Command {
 
     SmartDashboard.putString("controller",
         String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
-    final var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
-    final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
+    var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
+    var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
+    var rot = -Drivetrain.kMaxAngularVelocity;
+
+    boolean m_dervish_mode=false; // set this to try and spin off a stuck note
 
     // for testing auto routines we need to realign wheels at autonomous start or redeploy the code
     // - this is because the optimizer may have switched some of the wheels 180 
-    // this mode may be disabled for competition by setting m_autotest to false
+    // note: this mode may be disabled by setting m_enable_align to false above (default case for compbot)
     
-    if (m_enable_align && m_controller.getRightStickButtonPressed()) { 
-      System.out.println("Aligning");
-      if (!m_aligning) {
-        m_align.initialize();
-        m_aligning = true;
-      } else {
-        m_aligning = false;
-        m_align.end(true);
+    if (m_controller.getRightStickButtonPressed()) {
+      if (m_enable_align) {
+        System.out.println("Aligning");
+        if (!m_aligning) {
+          m_align.initialize();
+          m_aligning = true;
+        } else {
+          m_aligning = false;
+          m_align.end(true);
+        }
+      }
+      else{
+        System.out.println("Spinning");
+        m_dervish_mode=true;
       }
     }
+    if(m_dervish_mode && m_controller.getRightStickButtonReleased())
+      m_dervish_mode=false;
+    
     if (m_aligning)
       align();
     boolean do_targeting = TagDetector.isTargeting();
     if (!m_aligning && !do_targeting) {
-      final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
-          * Drivetrain.kMaxAngularVelocity;
-        m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
+      if(m_dervish_mode)
+        rot*= twistAxisValue;
+      else
+        rot*= rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 3));
+      m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
     }
   }
 

@@ -40,6 +40,6 @@ public class InitAuto extends Command {
   @Override
   public boolean isFinished() {
     // If the arm is in the correct position, finish
-    return m_arm.onTarget();
+    return m_arm.atTargetAngle();
   }
 }

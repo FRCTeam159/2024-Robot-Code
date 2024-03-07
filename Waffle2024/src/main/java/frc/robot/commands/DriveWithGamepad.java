@@ -11,20 +11,17 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/** An example command that uses an example subsystem. */
 public class DriveWithGamepad extends Command {
   private final Drivetrain m_drive;
   private final XboxController m_controller;
 
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(4);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(4);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(2);
   boolean m_aligning = false;
   AlignWheels m_align = null;
 
   /**
-   * Creates a new ExampleCommand.
-   *
    * @param drive      The subsystem used by this command.
    * @param controller
    */
@@ -58,7 +55,6 @@ public class DriveWithGamepad extends Command {
     double rotDeadband = 0.1;   
     final var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
     final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
-    // Get the rate of angular rotation.
 
     if (m_controller.getRightStickButtonPressed()) {
       System.out.println("Aligning");

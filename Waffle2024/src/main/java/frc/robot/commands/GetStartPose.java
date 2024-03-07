@@ -4,31 +4,30 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
+import frc.robot.subsystems.TargetMgr;
 
-public class Pickup extends Command {
-  double m_timeout=2.0; // pickup emulation
-  Timer m_timer = new Timer();
+public class GetStartPose extends Command{
+  /** Creates a new InitArm. */
+
   Arm m_arm;
-  
-  /** Creates a new PickUp. */
-  public Pickup(Arm arm) {
-    m_timer.start();
-    m_arm = arm;
+  public GetStartPose(Arm arm) {
+    m_arm=arm;
     addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Autonomous.log("Pickup.init");
-    m_arm.setTargetAngle(Constants.kPickup);
-    // Reset timer
-    m_timer.reset();
+    Autonomous.log("GetStartPose.init");
+    if(Autonomous.getAutoset())
+      TargetMgr.clearStartPose();
+    //m_arm.setShooterOn(); // preset shooter to on (test this)
+   // m_arm.setPickupOff();
+    m_arm.setTargetAngle(Constants.kSpeaker);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,16 +38,15 @@ public class Pickup extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Autonomous.log("Pickup.end");
+     Autonomous.log("GetStartPose.end");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!Autonomous.okToRun())
-      return true;
-    if(m_timer.get()>m_timeout)
-      return true;
-    return m_arm.atTargetAngle();
+    if(Autonomous.getAutoset())
+      return m_arm.atTargetAngle()&&TargetMgr.startPoseSet();
+    else
+      return m_arm.atTargetAngle();
   }
 }

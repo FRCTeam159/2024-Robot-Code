@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -86,9 +85,8 @@ public class Drivetrain extends SubsystemBase {
   boolean m_resetting = false;
 
   static int count = 0;
-  //DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
-  DriveGyro m_gyro=new DriveGyro(DriveGyro.gyros.FRC450);
-  // DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  //DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX); // moved to arm
+  DriveGyro m_gyro=new DriveGyro(DriveGyro.gyros.FRC450);   // seems to work now (?)
 
   double last_heading = 0;
 

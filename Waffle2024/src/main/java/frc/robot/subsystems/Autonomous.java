@@ -16,8 +16,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.AlignWheels;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.GetStartPose;
 import frc.robot.commands.InitAuto;
-import frc.robot.commands.PickUp;
+import frc.robot.commands.Pickup;
 import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Wait;
@@ -27,9 +28,14 @@ public class Autonomous extends SubsystemBase {
   Drivetrain m_drive;
   Arm m_arm;
 
+  public static final int CALIBRATE = 0;
   public static final int PROGRAM = 1;
-  public static final int PATHPLANNER = 2;
-  public static final int AUTOTEST = 3;
+  public static final int PROGRAMPP = 2;
+  public static final int PATH = 3;
+  public static final int ONE_NOTE = 4;
+  public static final int TWO_NOTE = 5;
+  public static final int THREE_NOTE = 6;
+  public static final int FOUR_NOTE = 7;
 
   static SendableChooser<Integer> m_path_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
@@ -62,9 +68,13 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putNumber("yPath", yp);
     SmartDashboard.putNumber("rPath", rp);
 
-	  m_path_chooser.setDefaultOption("AutoTest", AUTOTEST);
-    m_path_chooser.addOption("Program", PROGRAM);
-    //m_path_chooser.addOption("Path", PATHPLANNER);
+	  m_path_chooser.addOption("Program", PROGRAM);
+    //m_path_chooser.addOption("Path", PATH);
+    m_path_chooser.addOption("OneNote", ONE_NOTE);
+    m_path_chooser.addOption("TwoNote", TWO_NOTE);
+    m_path_chooser.addOption("ThreeNote(Ctr)", THREE_NOTE);
+    m_path_chooser.setDefaultOption("FourNote(Ctr)", FOUR_NOTE);
+
     SmartDashboard.putData(m_path_chooser);
   
     m_alliance_chooser.setDefaultOption("Blue", TargetMgr.BLUE);
@@ -145,40 +155,63 @@ public class Autonomous extends SubsystemBase {
   static public boolean getUsePathplanner(){
     return SmartDashboard.getBoolean("Pathplanner",m_pathplanner);
   }
-  
-  
+   
   public SequentialCommandGroup getCommand(){
-    return new SequentialCommandGroup(
-      // new InitAuto(m_arm), 
-      getAutoCommand());
+    int auto_select= m_path_chooser.getSelected();
+    SequentialCommandGroup acmnd=getAutoCommand(auto_select);
+    if(acmnd==null){
+      System.out.println("failed to create Auto sequence !");
+      return null;
+    }
+    return acmnd;
   }
-  private SequentialCommandGroup getAutoCommand(){
-    int selected_path = m_path_chooser.getSelected();
-    switch(selected_path){
+  private SequentialCommandGroup startSequence() {
+    return new SequentialCommandGroup(
+        new GetStartPose(m_arm),
+        new Shoot(m_arm, m_drive));
+  }
+
+  private SequentialCommandGroup twoNoteSequence(int pos) {
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new DrivePath(m_drive, pos, false),
+            new Pickup(m_arm)),
+        new DrivePath(m_drive, pos, true),
+        //new AutoTarget(m_arm, m_drive),
+        new Shoot(m_arm, m_drive));
+  }
+  private SequentialCommandGroup getAutoCommand(int auto_select){
+    switch(auto_select){
       default:
       case PROGRAM: /* Uses values from SmartDashboard and can be reversed */
         return new SequentialCommandGroup(
-          //new AlignWheels(m_drive,2),
           new DrivePath(m_drive, getReverse())
         );
-      case AUTOTEST: /* Uses alliance and position from SmartDashboard to create path */
+        case ONE_NOTE: 
+          return new SequentialCommandGroup(
+          startSequence(),
+          new ParallelCommandGroup(
+              new DrivePath(m_drive, false),
+              new Pickup(m_arm))
+          );
+        case TWO_NOTE: 
+          return new SequentialCommandGroup(
+              getAutoCommand(ONE_NOTE),
+              new DrivePath(m_drive, true),
+              new Shoot(m_arm, m_drive)
+              );
+        case THREE_NOTE: 
         return new SequentialCommandGroup(
-          new AlignWheels(m_drive,2),
-          //new Shoot(m_drive, 2.0),
-          new ParallelCommandGroup(
-            new DrivePath(m_drive,false)
-            // Move arm to pickUp pos
-            // new setAngle(Constants.kPickup);
-            //new PickUp(m_arm, 2.0)
-          ),
-         //new AlignWheels(m_drive, 2.0),
-          new ParallelCommandGroup(
-            //new SetArmAngle(m_arm, Constants.kSpeaker),
-            new DrivePath(m_drive,true)
-          ),
-          new DrivePath(m_drive,false)
-          //new Shoot(m_drive, 2.0)
-        );
+            startSequence(),
+            twoNoteSequence(TargetMgr.CENTER),
+            twoNoteSequence(TargetMgr.LEFT)
+            );
+        case FOUR_NOTE: 
+        return new SequentialCommandGroup(
+            getAutoCommand(THREE_NOTE),
+            twoNoteSequence(TargetMgr.RIGHT)
+            );
+      
       //case PATHPLANNER: /* Uses a command group from PathPlanner */
       //  return new SequentialCommandGroup(drivePathplanner());
     }

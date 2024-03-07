@@ -6,49 +6,47 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Drivetrain;
 
 public class Shoot extends Command {
   Drivetrain m_drive;
-  double m_timeout;
+  Arm m_arm;
+  double m_timeout=2; // shoot emulation
   Timer m_timer = new Timer();
   
   /** Creates a new Shoot. */
-  public Shoot(Drivetrain drive, double tm) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_drive = drive;
-    m_timeout = tm;
+  public Shoot(Arm arm, Drivetrain drive) {
+    addRequirements(drive);
+    m_arm = arm;
+    m_drive=drive;
     m_timer.start();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Debug
-    System.out.println("Shooting started");
-
-    // Reset timer
+    Autonomous.log("Shoot.end");
     m_timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Resets wheels
-    m_drive.drive(-0.003, 0, 0, false);
+    m_drive.drive(-0.001, 0, 0, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // Debug
-    System.out.println("Shooting done");
+    Autonomous.log("Shoot.end");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.get() > m_timeout;
+    return m_timer.get() >= m_timeout;
   }
 }
 
