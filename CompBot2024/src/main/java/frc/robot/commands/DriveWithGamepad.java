@@ -26,7 +26,7 @@ public class DriveWithGamepad extends Command {
   boolean m_aligning = false;
   AlignWheels m_align = null;
 
-  boolean m_autotest=true;
+  boolean m_enable_align=false;
 
   /**
    * Creates a new ExampleCommand.
@@ -86,7 +86,8 @@ public class DriveWithGamepad extends Command {
     // for testing auto routines we need to realign wheels at autonomous start or redeploy the code
     // - this is because the optimizer may have switched some of the wheels 180 
     // this mode may be disabled for competition by setting m_autotest to false
-    if (m_autotest && m_controller.getRightStickButtonPressed()) { 
+    
+    if (m_enable_align && m_controller.getRightStickButtonPressed()) { 
       System.out.println("Aligning");
       if (!m_aligning) {
         m_align.initialize();

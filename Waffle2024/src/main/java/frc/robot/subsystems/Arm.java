@@ -4,17 +4,21 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.BNO055;
+import frc.robot.sensors.DriveGyro;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
@@ -29,7 +33,7 @@ public class Arm extends SubsystemBase {
     bno2Offsets
   );
   
-  
+  //DriveGyro m_gyro=new DriveGyro(DriveGyro.gyros.FRC450);
   private static boolean have_arm=true; // test first !
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
@@ -46,11 +50,13 @@ public class Arm extends SubsystemBase {
   //DigitalInput input = new DigitalInput(1);
   private boolean m_initialized;
 
+  AHRS m_gyro=new AHRS(SerialPort.Port.kUSB);
+
   /** Creates a new Arm. */
   public Arm() {
    if(have_arm){
       m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
-      m_PID = new PIDController(0.03, 0, 0);
+      m_PID = new PIDController(0.02, 0, 0);
       m_PID.setTolerance(1.0);
       m_PID.reset(); 
    }
@@ -61,9 +67,9 @@ public class Arm extends SubsystemBase {
       return;
     m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
-    double output = m_PID.calculate(current);
+    double output = -m_PID.calculate(current);
     
-   // m_armPosMotor.set(output);
+    m_armPosMotor.set(output);
     if (newAngle){
       String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
       SmartDashboard.putString("Arm", s);
@@ -78,7 +84,8 @@ public class Arm extends SubsystemBase {
     armSetAngle=angle;
   }
   public double getAngle() {
-    double angle= -getAngleFromGyro()+180;
+    //double angle= -getAngleFromGyro()+180;
+    double angle= getAngleFromGyro();
     angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
     angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
     return angle;
@@ -116,28 +123,31 @@ public class Arm extends SubsystemBase {
     // get X and Z gravity vectors
     // Convert to angle
     // when Z == g, angle is 0 degrees (toward front of robot)
-    double xGravity = m_armGyro.getVector()[0];
-    double zGravity = m_armGyro.getVector()[2];
+    // double xGravity = m_armGyro.getVector()[0];
+    // double zGravity = m_armGyro.getVector()[2];
    
-    Rotation2d result = Rotation2d.fromRadians(Math.atan2(zGravity, xGravity));
-    result = result.minus(Rotation2d.fromDegrees(90));
-    double a=result.getDegrees(); 
-   // System.out.println(a);
-    a=a>180?180:a;
-    a=a<0?180:a;
-    return a;
+    // Rotation2d result = Rotation2d.fromRadians(Math.atan2(zGravity, xGravity));
+    // result = result.minus(Rotation2d.fromDegrees(90));
+    // double a=result.getDegrees(); 
+
+    // a=a>180?180:a;
+    // a=a<0?180:a;
+    // return a;
+    double val=m_gyro.getRoll();
+    return 26-val;
   }
   void log(){
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
     SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
     SmartDashboard.putBoolean("Gyro Initialized", m_initialized);
+    //SmartDashboard.putNumber("FRCGyro", m_gyro.getAngle());
   }
 
   @Override
   public void periodic() {
-    if (!m_initialized) 
-      waitForGyroInit(); // Make sure the gyro is ready before we move
-    else
+    // if (!m_initialized) 
+    //   waitForGyroInit(); // Make sure the gyro is ready before we move
+    // else
       setAngle();
     log();
   }

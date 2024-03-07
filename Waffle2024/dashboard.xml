@@ -1,7 +1,14 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Gyro Initialized" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="202" y="89"/>
+	</widget>
+	<widget field="Arm Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="194" y="62"/>
+		<width>146</width>
+	</widget>
 	<widget field="Arm Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="194" y="49"/>
+		<location x="206" y="38"/>
 	</widget>
 	<widget field="ShowTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="207" y="110"/>
@@ -15,18 +22,11 @@
 	<widget field="Pathplanner" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="517" y="118"/>
 	</widget>
-	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="19" y="105"/>
-		<width>154</width>
-	</widget>
-	<widget field="Gyro Present" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="49" y="15"/>
-	</widget>
 	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="436" y="67"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="135" y="12"/>
+		<location x="47" y="14"/>
 		<width>76</width>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -41,22 +41,6 @@
 	</widget>
 	<widget field="Autoset" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="291" y="83"/>
-	</widget>
-	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="310" y="565"/>
-		<width>289</width>
-	</widget>
-	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="15" y="565"/>
-		<width>286</width>
-	</widget>
-	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="310" y="541"/>
-		<width>293</width>
-	</widget>
-	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="16" y="540"/>
-		<width>285</width>
 	</widget>
 	<widget field="Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="88" y="49"/>
@@ -107,8 +91,8 @@
 		<property name="Automatically Show Widgets" value="false"/>
 		<property name="Grid Cell Width(s)" value="16"/>
 		<property name="Grid Cell Height(s)" value="16"/>
-		<property name="Window X Position" value="1219"/>
-		<property name="Window Y Position" value="101"/>
+		<property name="Window X Position" value="1239"/>
+		<property name="Window Y Position" value="336"/>
 		<property name="Window Width" value="652"/>
 		<property name="Window Height" value="659"/>
 		<property name="Save File" value=".\dashboard.xml"/>
@@ -117,5 +101,4 @@
 </live-window>
 	<hidden field="OkToRun"/>
 	<hidden field="Placement"/>
-	<hidden field="Arm Setpoint"/>
 </xml>

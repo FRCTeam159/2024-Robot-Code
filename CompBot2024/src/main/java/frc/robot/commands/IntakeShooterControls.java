@@ -46,54 +46,37 @@ public class IntakeShooterControls extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (testmode) { // manually control shooting
-      if (m_controller.getLeftBumperPressed()) {
-        m_intakeShooter.setIntakeOn();
+    if (m_controller.getRightBumperPressed()) {
+      if (!m_shooting) {
+        shoot.initialize();
+        m_shooting = true;
+      } else {
+        shoot.end(true);
+        m_shooting = false;
       }
-      if (m_controller.getLeftBumperReleased()) {
-        m_intakeShooter.setIntakeOff();
+    } else if (m_controller.getLeftBumperPressed()) {
+      if (!m_pickup) {
+        pickup.initialize();
+        m_pickup = true;
+      } else {
+        pickup.end(true);
+        m_pickup = false;
       }
-
-      if (m_controller.getRightBumperPressed()) {
+    } else if (m_controller.getLeftStickButtonPressed()) {
+      if (!m_eject) {
+        m_eject = true;
         m_intakeShooter.setShooterOn();
-      }
-      if (m_controller.getRightBumperReleased()) {
+        m_intakeShooter.setPushOn();
+      } else {
+        m_eject = false;
         m_intakeShooter.setShooterOff();
+        m_intakeShooter.setPushOff();
       }
-    } 
-    else { // use Pickup (left bumper) and Shoot(right bumper)commands
-      if (m_controller.getRightBumperPressed()) {
-        if (!m_shooting) {
-          shoot.initialize();
-          m_shooting = true;
-        } else {
-          shoot.end(true);
-          m_shooting = false;
-        }
-      } else if (m_controller.getLeftBumperPressed()) {
-        if (!m_pickup) {
-          pickup.initialize();
-          m_pickup = true;
-        } else{
-          pickup.end(true);
-          m_pickup = false;
-        }
-      } else if (m_controller.getLeftStickButtonPressed()) {
-        if (!m_eject) {
-          m_eject = true;
-          m_intakeShooter.setShooterOn();
-          m_intakeShooter.setPushOn();
-        } else {
-          m_eject = false;
-          m_intakeShooter.setShooterOff();
-          m_intakeShooter.setPushOff();
-        }
-      }
-      if (m_shooting)
-        shoot();
-      else if (m_pickup)
-        pickup();
     }
+    if (m_shooting)
+      shoot();
+    else if (m_pickup)
+      pickup();
   }
 
   void shoot() {

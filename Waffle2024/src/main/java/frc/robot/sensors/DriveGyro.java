@@ -25,7 +25,7 @@ public class DriveGyro {
   AHRS navx=null;
   ADXRS450_Gyro adx450=null;
   BNO055 bno=null;
-boolean bnoWasInitialized = false;
+  boolean bnoWasInitialized = false;
   
   /** Creates a new Gyro. */
   public DriveGyro(gyros type) {

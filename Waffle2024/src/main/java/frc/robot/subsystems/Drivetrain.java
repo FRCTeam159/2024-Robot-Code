@@ -86,7 +86,8 @@ public class Drivetrain extends SubsystemBase {
   boolean m_resetting = false;
 
   static int count = 0;
-  DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  //DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
+  DriveGyro m_gyro=new DriveGyro(DriveGyro.gyros.FRC450);
   // DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.NAVX);
 
   double last_heading = 0;

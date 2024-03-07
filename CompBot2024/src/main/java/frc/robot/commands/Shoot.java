@@ -15,7 +15,7 @@ public class Shoot extends Command{
   boolean shooter_ready=false;
   boolean shooting=false;
   Timer m_timer=new Timer();
-  boolean noteCaptured=false;
+  boolean m_note_at_start=false;
   public Shoot(IntakeShooter shooter) {
     m_shooter=shooter;
     addRequirements(shooter);
@@ -28,7 +28,7 @@ public class Shoot extends Command{
     Autonomous.log("Shoot.init");
     shooter_ready=false;
     shooting=false;
-    noteCaptured=m_shooter.noteAtIntake();
+    m_note_at_start=m_shooter.noteAtIntake();
     m_timer.reset();
     m_shooter.setShooterOn(); // turn shootere on flywheels
     m_shooter.setIntakeOff(); // turn off intake rollers
@@ -62,12 +62,18 @@ public class Shoot extends Command{
     if (!Autonomous.okToRun())
       return true;
     // turn on pusher wheels and wait a little to make sure note has cleared the shooter
-    if(shooter_ready && m_timer.get()>2 && !m_shooter.noteAtShooter()) 
+    if(shooter_ready && m_timer.get()>2 && !m_shooter.noteAtShooter()) {
+      Autonomous.log("Shoot - shot delivered");
       return true;
-    if(shooting && m_timer.get()>5) // taking too long - something isn't right
+    }
+    if(shooting && m_timer.get()>5){ // taking too long - something isn't right
+      Autonomous.log("Shoot - timed out");
       return true;
-    if(!noteCaptured) // never had a note to start with
+  }
+    if(!m_note_at_start){ // never had a note to start with
+      Autonomous.log("Shoot - no note at start - aborting");
       return true;
+    }
     return false;
   }
 }
