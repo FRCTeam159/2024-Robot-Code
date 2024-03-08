@@ -27,7 +27,7 @@ public class Shoot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Autonomous.log("Shoot.end");
+    Autonomous.log("Shoot.start");
     m_timer.reset();
   }
 

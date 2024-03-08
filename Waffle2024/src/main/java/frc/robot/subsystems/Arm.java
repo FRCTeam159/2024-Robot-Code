@@ -21,7 +21,10 @@ import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
   static boolean m_navx=true;
-  static double m_navx_offset=26.0; // observed gyro value when arm is horizontal
+  static double m_navx_offset=197.0; // observed gyro value when arm is horizontal
+
+  
+  double last_heading = 0;
 
   static AHRS m_NAVXgyro=new AHRS(SerialPort.Port.kUSB);
 
@@ -51,14 +54,12 @@ public class Arm extends SubsystemBase {
   //DigitalInput input = new DigitalInput(1);
   private boolean m_initialized;
 
-  
-
   /** Creates a new Arm. */
   public Arm() {
    if(have_arm){
       m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
       m_PID = new PIDController(0.02, 0, 0);
-      m_PID.setTolerance(1.0);
+      m_PID.setTolerance(3.0);
       m_PID.reset(); 
     }
   }
@@ -68,7 +69,7 @@ public class Arm extends SubsystemBase {
       return;
     m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
-    double output = -m_PID.calculate(current);
+    double output = m_PID.calculate(current);
     
     m_armPosMotor.set(output);
     if (newAngle){
@@ -121,7 +122,11 @@ public class Arm extends SubsystemBase {
  public double getAngleFromGyro() {
     
     if(m_navx){
-      return m_navx_offset-m_NAVXgyro.getRoll(); // returned values are negative
+      //return m_navx_offset-m_NAVXgyro.getRoll(); // returned values are negative
+       double angle=m_NAVXgyro.getRoll()+m_navx_offset; // returned values are negative
+       angle = unwrap(last_heading, angle);
+       last_heading = angle;
+       return angle;
     }
     else{ //BN0 
       // gyro is in gravity mode
@@ -140,6 +145,12 @@ public class Arm extends SubsystemBase {
       return a;
     }
     
+  }
+  // removes heading discontinuity at 180 degrees
+  public static double unwrap(double previous_angle, double new_angle) {
+    double d = new_angle - previous_angle;
+    d = d >= 180 ? d - 360 : (d <= -180 ? d + 360 : d);
+    return previous_angle + d;
   }
   void log(){
     SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());

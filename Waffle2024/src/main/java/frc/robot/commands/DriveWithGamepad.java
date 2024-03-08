@@ -57,8 +57,8 @@ public class DriveWithGamepad extends Command {
     final var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
 
     if (m_controller.getRightStickButtonPressed()) {
-      System.out.println("Aligning");
       if (!m_aligning) {
+        System.out.println("Aligning");
         m_align.initialize();
         m_aligning = true;
       } else{
@@ -70,7 +70,7 @@ public class DriveWithGamepad extends Command {
       align();
     boolean do_targeting = TagDetector.isTargeting();
     if (!m_aligning && !do_targeting) {
-      final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 5))
+      final var rot = -rotSpeed*m_rotLimiter.calculate(Math.pow(MathUtil.applyDeadband(twistAxisValue, rotDeadband), 3))
           * Drivetrain.kMaxAngularVelocity;
       m_drive.drive(xSpeed, ySpeed, rot, Drivetrain.isFieldOriented());
     }

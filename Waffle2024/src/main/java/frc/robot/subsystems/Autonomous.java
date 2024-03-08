@@ -56,6 +56,8 @@ public class Autonomous extends SubsystemBase {
   static boolean m_inAuto = false;
   static double last_time = 0;
 
+  static double m_auto_time=0;
+
   static Timer m_timer=new Timer();
 
    /** Creates a new Autonomous. 
@@ -70,10 +72,10 @@ public class Autonomous extends SubsystemBase {
 
 	  m_path_chooser.addOption("Program", PROGRAM);
     //m_path_chooser.addOption("Path", PATH);
-    m_path_chooser.addOption("OneNote", ONE_NOTE);
-    m_path_chooser.addOption("TwoNote", TWO_NOTE);
-    m_path_chooser.addOption("ThreeNote(Ctr)", THREE_NOTE);
-    m_path_chooser.setDefaultOption("FourNote(Ctr)", FOUR_NOTE);
+    m_path_chooser.addOption("1-Note", ONE_NOTE);
+    m_path_chooser.addOption("2-Note", TWO_NOTE);
+    m_path_chooser.addOption("3-Note(Ctr)", THREE_NOTE);
+    m_path_chooser.setDefaultOption("4-Note(Ctr)", FOUR_NOTE);
 
     SmartDashboard.putData(m_path_chooser);
   
@@ -94,6 +96,8 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putBoolean("OkToRun", okToRun());
     SmartDashboard.putBoolean("ShowTags", m_showtags);
 
+    SmartDashboard.putNumber("AutoTime", m_auto_time);
+
     m_timer.start();
   }
 
@@ -105,6 +109,8 @@ public class Autonomous extends SubsystemBase {
     System.out.format("%-2.3f (%-2.3f) %s\n",tm,tm-last_time,msg);
     last_time=tm;
     SmartDashboard.putBoolean("OkToRun", okToRun());
+    m_auto_time=m_timer.get();
+    SmartDashboard.putNumber("AutoTime", m_auto_time);
   }
 
   // These methods are used to terminate auto if any command fails
@@ -119,6 +125,9 @@ public class Autonomous extends SubsystemBase {
     last_time=0;
     m_inAuto=false;
     m_ok2run=true;
+    m_auto_time=m_timer.get();
+    SmartDashboard.putNumber("AutoTime", m_auto_time);
+    m_timer.reset();
     log("Auto End");
   }
   public static boolean okToRun(){

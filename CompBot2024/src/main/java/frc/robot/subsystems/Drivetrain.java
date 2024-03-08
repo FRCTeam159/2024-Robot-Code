@@ -58,6 +58,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, kBl_Encoder, kBl_Offset, 4);
 
   public static boolean m_field_oriented = true;
+  boolean m_show_module_status = false;
 
   private final SwerveModule[] modules = { m_frontLeft, m_frontRight, m_backLeft, m_backRight };
 
@@ -173,9 +174,10 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putString("Pose", s);
     m_field_oriented = SmartDashboard.getBoolean("FieldOriented", m_field_oriented);
     SmartDashboard.putBoolean("Switch", input.get());
-
-    for (int i = 0; i < modules.length; i++)
-      modules[i].log();
+    if (m_show_module_status) {
+      for (int i = 0; i < modules.length; i++)
+        modules[i].log();
+    }
 
     SmartDashboard.putString("Status", Robot.status);
   }

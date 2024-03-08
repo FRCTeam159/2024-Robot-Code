@@ -1,5 +1,9 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="AutoTime" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="16" y="112"/>
+		<width>108</width>
+	</widget>
 	<widget field="Gyro Initialized" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="202" y="89"/>
 	</widget>
@@ -23,7 +27,7 @@
 		<location x="517" y="118"/>
 	</widget>
 	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="436" y="67"/>
+		<location x="147" y="113"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="47" y="14"/>
@@ -91,8 +95,8 @@
 		<property name="Automatically Show Widgets" value="false"/>
 		<property name="Grid Cell Width(s)" value="16"/>
 		<property name="Grid Cell Height(s)" value="16"/>
-		<property name="Window X Position" value="1239"/>
-		<property name="Window Y Position" value="336"/>
+		<property name="Window X Position" value="1245"/>
+		<property name="Window Y Position" value="123"/>
 		<property name="Window Width" value="652"/>
 		<property name="Window Height" value="659"/>
 		<property name="Save File" value=".\dashboard.xml"/>
@@ -101,4 +105,5 @@
 </live-window>
 	<hidden field="OkToRun"/>
 	<hidden field="Placement"/>
+	<hidden field="Arm"/>
 </xml>

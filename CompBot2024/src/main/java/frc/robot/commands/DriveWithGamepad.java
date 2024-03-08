@@ -27,6 +27,9 @@ public class DriveWithGamepad extends Command {
   AlignWheels m_align = null;
 
   boolean m_enable_align=false;
+  boolean m_dervish_mode=false; // set this to try and spin off a stuck note
+
+  boolean m_debug_input=false;
 
   /**
    * Creates a new ExampleCommand.
@@ -37,6 +40,7 @@ public class DriveWithGamepad extends Command {
     m_drive = drive;
     m_controller = controller;
     m_align = new AlignWheels(m_drive, 2.0);
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
   }
@@ -44,10 +48,11 @@ public class DriveWithGamepad extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double now = 0;// WPIUtilJNI.now() * 1e-6;
-    m_xspeedLimiter.reset(now);
-    m_yspeedLimiter.reset(now);
-    m_rotLimiter.reset(now);
+    m_xspeedLimiter.reset(0);
+    m_yspeedLimiter.reset(0);
+    m_rotLimiter.reset(0);
+    m_dervish_mode=false;
+    m_aligning=false;
 
     System.out.println("DriveWithGampad started");
   }
@@ -77,14 +82,12 @@ public class DriveWithGamepad extends Command {
     double rotSpeed = 0.2; // Old: 0.1 // Rotation speed
     double driveDeadband = 0.4;
     double rotDeadband = 0.2;
-
-    SmartDashboard.putString("controller",
+    if(m_debug_input)
+      SmartDashboard.putString("controller",
         String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
     var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
     var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
     var rot = -Drivetrain.kMaxAngularVelocity;
-
-    boolean m_dervish_mode=false; // set this to try and spin off a stuck note
 
     // for testing auto routines we need to realign wheels at autonomous start or redeploy the code
     // - this is because the optimizer may have switched some of the wheels 180 
@@ -92,8 +95,8 @@ public class DriveWithGamepad extends Command {
     
     if (m_controller.getRightStickButtonPressed()) {
       if (m_enable_align) {
-        System.out.println("Aligning");
         if (!m_aligning) {
+          System.out.println("Aligning");
           m_align.initialize();
           m_aligning = true;
         } else {
@@ -101,8 +104,9 @@ public class DriveWithGamepad extends Command {
           m_align.end(true);
         }
       }
-      else{
-        System.out.println("Spinning");
+      else {
+        if(!m_dervish_mode)
+          System.out.println("Spinning");
         m_dervish_mode=true;
       }
     }

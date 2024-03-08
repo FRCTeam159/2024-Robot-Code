@@ -18,16 +18,16 @@ public class TargetMgr {
     public static final double kSideX = Units.inchesToMeters(71);
     public static final double kSideY = Units.inchesToMeters(70);
   
-    public static final double kVertOffset = -0.4;
+    public static final double kVertOffset = -0.0;
     public static final double kHorizOffset = 0.0;
 
     static ArrayList<TagTarget> targets = new ArrayList<>();
 
-    static final public double XC = 0.9;//kCenterX-Drivetrain.kRobotLength; // center forward
+    static final public double XC = 1.0;//kCenterX-Drivetrain.kRobotLength; // center forward
     static final public double YC = 0;
     static final public double RC = 0;
 
-    static final public double XF = 1.1; //kSideX-Drivetrain.kRobotLength;
+    static final public double XF = 1.3; //kSideX-Drivetrain.kRobotLength;
     static final public double YF = -1.3; // Position from arm to note: 0.8, Position from bumper to note: -1.3;//-kSideY;
     
     static final public double XF2 = 1.2;  // optimized for center second pickup

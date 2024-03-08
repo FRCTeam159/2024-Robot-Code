@@ -51,9 +51,9 @@ public class DrivePath extends Command {
       Drivetrain.kTrackRadius);
 
   final HolonomicDriveController m_hcontroller = new HolonomicDriveController(
-      new PIDController(2, 0, 0),
-      new PIDController(2, 0, 0),
-      new ProfiledPIDController(5, 0, 0,
+      new PIDController(5, 0, 0),
+      new PIDController(5, 0, 0),
+      new ProfiledPIDController(6, 0, 0,
           new TrapezoidProfile.Constraints(scale * Drivetrain.kMaxAngularVelocity,
               scale * Drivetrain.kMaxAngularAcceleration)));
 
@@ -109,7 +109,7 @@ public class DrivePath extends Command {
     m_autoset = Autonomous.getAutoset();
 
     if (Autonomous.getPlotpath())
-      plot_type = utils.PlotUtils.PLOT_POSITION;
+      plot_type = utils.PlotUtils.PLOT_LOCATION;
 
     using_pathplanner = Autonomous.getUsePathplanner();
 

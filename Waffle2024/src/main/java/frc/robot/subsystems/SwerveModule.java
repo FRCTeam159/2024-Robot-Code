@@ -33,7 +33,7 @@ public class SwerveModule extends SubsystemBase {
   boolean m_optimize = true;
 
   // PID controllers for drive and steer motors
-  private final PIDController m_drivePIDController = new PIDController(2, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(4, 0, 0);
 
   private final PIDController m_turningPIDController = new PIDController(
       0.5,
@@ -70,7 +70,6 @@ public class SwerveModule extends SubsystemBase {
     m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
 
     name = Drivetrain.chnlnames[m_id - 1];
-    //SmartDashboard.putString(name, "Working");
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPositionConversionFactor(Drivetrain.kDistPerRot); // inches to meters

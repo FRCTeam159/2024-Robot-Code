@@ -204,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
     String s = String.format("X:%-2.1f Y:%-2.1f H:%-2.1f",
         pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     SmartDashboard.putString("Pose", s);
-    m_field_oriented = SmartDashboard.getBoolean("Field Oriented", m_field_oriented);
+    m_field_oriented = SmartDashboard.getBoolean("FieldOriented", m_field_oriented);
     //SmartDashboard.putBoolean("Switch", input.get()
     if (m_show_module_status) {
       for (int i = 0; i < modules.length; i++)
