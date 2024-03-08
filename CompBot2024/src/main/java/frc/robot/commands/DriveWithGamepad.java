@@ -80,8 +80,19 @@ public class DriveWithGamepad extends Command {
 
     SmartDashboard.putString("controller",
         String.format("X: %1.2f, Y: %1.2f, Z: %1.2f", xAxisValue, yAxisValue, twistAxisValue));
-    var xSpeed = -driveSpeed*m_xspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(xAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
-    var ySpeed = -driveSpeed*m_yspeedLimiter.calculate(Math.pow(MathUtil.applyDeadband(yAxisValue, driveDeadband), 3)) * Drivetrain.kMaxVelocity;
+
+    // Convert axis values to amgnitude and direction to avoid slow diagonals
+    var angle = Math.atan2(yAxisValue, xAxisValue);
+    var magnitude = Math.sqrt(Math.pow(xAxisValue, 2) + Math.pow(yAxisValue, 2));
+    magnitude = MathUtil.applyDeadband(magnitude, driveDeadband); // Apply deadband
+    magnitude = Math.pow(magnitude, 3); // Apply cubic to ease low speed control
+    // Convert back to X and Y components
+    var xSpeed = magnitude * Math.cos(angle);
+    var ySpeed = magnitude * Math.sin(angle);
+    // Scale to velocity units and desired drive speed scale
+    xSpeed = -driveSpeed * m_xspeedLimiter.calculate(xSpeed) * Drivetrain.kMaxVelocity;
+    ySpeed = -driveSpeed * m_yspeedLimiter.calculate(ySpeed) * Drivetrain.kMaxVelocity;
+
     var rot = -Drivetrain.kMaxAngularVelocity;
 
     boolean m_dervish_mode=false; // set this to try and spin off a stuck note
