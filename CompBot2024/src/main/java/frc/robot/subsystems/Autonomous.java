@@ -40,7 +40,7 @@ public class Autonomous extends SubsystemBase {
   static double rp=TargetMgr.RF;
 
   static boolean m_autoselect=true;
-  static boolean m_usetags=false;
+  static boolean m_usetags=true;
   static boolean m_showtags = false;
   static boolean m_reverse=false;
   static boolean m_plotpath=true;
