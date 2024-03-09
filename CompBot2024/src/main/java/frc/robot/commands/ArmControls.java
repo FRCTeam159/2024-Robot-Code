@@ -49,12 +49,11 @@ public class ArmControls extends Command {
     } else if(m_controller.getBButtonPressed())
       m_arm.setTargetAngle(Constants.kAmp);
     else if (m_controller.getXButtonPressed()) {
-        if (!TagDetector.isTargeting()) {
-          target.initialize();//enables targeting
+      if (!TagDetector.isTargeting()) {
+        target.initialize();// enables targeting
       }
-        }
-        else if (m_controller.getXButtonReleased()) {
-          target.end(true);//disables targeting
+    } else if (m_controller.getXButtonReleased()) {
+      target.end(true);// disables targeting
     } 
     else if (left > 0.1) {
       m_arm.adjustAngle(-left*ARM_MOVE_RATE);

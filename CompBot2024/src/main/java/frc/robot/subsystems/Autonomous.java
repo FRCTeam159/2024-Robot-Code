@@ -44,7 +44,7 @@ public class Autonomous extends SubsystemBase {
   static boolean m_showtags = false;
   static boolean m_reverse=false;
   static boolean m_plotpath=true;
-  static boolean m_pathplanner=false;
+  static boolean m_pathplanner=true;
   static boolean m_ontarget=false;
 
   static boolean m_ok2run = false;

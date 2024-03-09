@@ -41,7 +41,7 @@ import utils.PlotUtils;
 // =================================================
 public class DrivePath extends Command {
 
-  double scale = 0.7;
+  double scale = 1;
 
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
@@ -50,7 +50,7 @@ public class DrivePath extends Command {
 
   final HolonomicDriveController m_hcontroller = new HolonomicDriveController(new PIDController(2, 0, 0),
       new PIDController(2, 0, 0),
-      new ProfiledPIDController(8, 0, 0,
+      new ProfiledPIDController(8, 0, 0.1,
           new TrapezoidProfile.Constraints(Drivetrain.kMaxAngularVelocity, Drivetrain.kMaxAngularAcceleration)));
 
   Timer m_timer = new Timer();
@@ -89,6 +89,7 @@ public class DrivePath extends Command {
   @Override
   public void initialize() {
     Autonomous.log("Drivepath.init");
+    m_drive.resetPose(new Pose2d());
     m_autoset = Autonomous.getAutoset();
 
     if (Autonomous.getPlotpath())
@@ -209,21 +210,34 @@ public class DrivePath extends Command {
     List<Pose2d> points = new ArrayList<Pose2d>();
     double rpg = rPath;
     double rps = 0;
+    Pose2d intermediatePose = new Pose2d(0.3, 0.0, Rotation2d.fromDegrees(0));
 
     if (m_reversed) { // go back to 0,0 !
-      if (m_drive.getDistance() < 0.2) // probably an error to start too close to 0 ?
-        return null;
-
       Pose2d pose = m_drive.getPose(); // start at current robot pose
+      if (Math.abs(pose.getX()) < 0.2) {
+        // probably an error to start too close to 0 ?
+        return null;
+      }
       rpg = 0;
       rps = m_drive.getHeading();
       points.add(pose);
-      points.add(new Pose2d());
+      points.add(intermediatePose);
+      // We add some fudge factor below to get us to the right position at the end
+      if (TargetMgr.getStartPlacement() == TargetMgr.RIGHT) {
+        points.add(new Pose2d(0.05, -0.1, new Rotation2d()));
+      } else if (TargetMgr.getStartPlacement() == TargetMgr.LEFT) {
+        points.add(new Pose2d(0.05, 0.1, new Rotation2d()));
+      } else {
+        points.add(new Pose2d());
+      }
     } else {
-      if (m_drive.getDistance() > 0.2) // probably an error to start too far from 0 ?
+      Pose2d pose = m_drive.getPose(); // start at current robot pose
+      if (Math.abs(pose.getX()) > 0.2) {
+        // probably an error to start too far from 0 ?
         return null;
-
+      }
       points.add(new Pose2d()); // start at 0,0
+      points.add(intermediatePose);
       points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));
     }
 

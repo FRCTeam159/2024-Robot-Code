@@ -4,8 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
@@ -17,12 +19,12 @@ import objects.AprilTag;
 public class AutoTarget extends Command {
   Arm m_arm;
   Drivetrain m_drive;
-  PIDController turnPID = new PIDController(2, 0, 0);
+  PIDController turnPID = new PIDController(0.5, 0, 0);
   PIDController anglePID = new PIDController(1, 0, 0);
   AprilTag[] tags;
   Timer m_timer=new Timer();
   boolean have_tags=false;
-  static boolean debug=false;
+  static boolean debug=true;
 
   /** Creates a new AutoTarget. 
  * @param drive 
@@ -32,9 +34,9 @@ public class AutoTarget extends Command {
     m_drive=drive;
     addRequirements(arm);
     turnPID.setSetpoint(TargetMgr.kHorizOffset);
-    anglePID.setSetpoint(TargetMgr.kVertOffset); // y offset if at speaker steps
+    anglePID.setSetpoint(0.0); // y offset if at speaker steps
     anglePID.setTolerance(0.05,0.02);
-    turnPID.setTolerance(.05,0.02);
+    turnPID.setTolerance(.05,0.01);
     m_timer.start();
     tags=null;
    }
@@ -71,14 +73,27 @@ public class AutoTarget extends Command {
 
     double y=target.getY();
     double z=target.getZ();
+    double x = target.getX();
+    anglePID.setSetpoint(getZOffset(x));
     double acorr=anglePID.calculate(z);
     double a=m_arm.getTargetAngle();
     m_arm.setTargetAngle(a+acorr); // TODO: adjust angle based on distance (target.getX())
 
     double rcorr=turnPID.calculate(y);
     m_drive.drive(0, 0,-rcorr,false);
-    if(debug)
+    if(debug) {      
       System.out.println(target);
+      SmartDashboard.putNumber("Target Z", z);
+      SmartDashboard.putNumber("Target X", x);
+    }
+  }
+
+  public double getZOffset(double x) {
+    // X       Z
+    // 1.67    -0.2
+    // 2.5     -0.04
+    // 3.09    -0
+    return -0.2 + (x-1.67) * ((0 - -0.2) / (3.09 - 1.67));
   }
 
   // Called once the command ends or is interrupted.
@@ -94,7 +109,7 @@ public class AutoTarget extends Command {
   public boolean isFinished() {
     if (!Autonomous.okToRun())
       return true;
-    if(!have_tags && m_timer.get()>0.2){
+    if(!have_tags && m_timer.get()>0.5){
       Autonomous.log("Autotarget.end - no tags");
       return true;
     }
