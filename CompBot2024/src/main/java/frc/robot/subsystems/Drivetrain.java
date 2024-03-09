@@ -83,7 +83,13 @@ public class Drivetrain extends SubsystemBase {
   static int count = 0;
   public DriveGyro m_gyro = new DriveGyro(DriveGyro.gyros.PIGEON);
   double last_heading = 0;
-  
+
+  public static double max_vel=0;
+	public static double max_acc=0;
+	private double last_velocity = 0;
+	utils.Averager acc_average =new utils.Averager(5);
+  utils.Averager vel_average =new utils.Averager(2);
+
   public Drivetrain() {
     m_frontLeft.setDriveInverted(false);
     m_backLeft.setDriveInverted(false);
@@ -174,6 +180,15 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putString("Pose", s);
     m_field_oriented = SmartDashboard.getBoolean("FieldOriented", m_field_oriented);
     SmartDashboard.putBoolean("Switch", input.get());
+
+    double v = vel_average.getAve(Math.abs(getVelocity()));
+		max_vel = v > max_vel ? v : max_vel;
+		double acceleration = (v - last_velocity) / 0.02;
+		double a = acc_average.getAve(acceleration);
+		max_acc = a > max_acc ? a : max_acc;	
+		last_velocity = v;
+    SmartDashboard.putNumber("maxV", max_vel);
+		SmartDashboard.putNumber("maxA", max_acc);
     if (m_show_module_status) {
       for (int i = 0; i < modules.length; i++)
         modules[i].log();
@@ -202,6 +217,10 @@ public class Drivetrain extends SubsystemBase {
     m_odometry.resetPosition(getRotation2d(), m_positions, new Pose2d(0, 0, new Rotation2d()));
     last_heading = 0;
     updateOdometry();
+    max_vel=0;
+		max_acc=0;
+		acc_average.reset();
+		vel_average.reset();
   }
 
   public Pose2d getPose() {

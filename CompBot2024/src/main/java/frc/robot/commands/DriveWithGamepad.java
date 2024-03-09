@@ -26,7 +26,7 @@ public class DriveWithGamepad extends Command {
   boolean m_aligning = false;
   AlignWheels m_align = null;
 
-  boolean m_enable_align=false;
+  boolean m_enable_align=true;
   boolean m_dervish_mode=false; // set this to try and spin off a stuck note
 
   boolean m_debug_input=false;

@@ -1,50 +1,53 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="SendableChooser[3]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="237" y="1"/>
+	</widget>
+	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="10" y="96"/>
+		<width>140</width>
+	</widget>
+	<widget field="maxA" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="232" y="155"/>
+	</widget>
+	<widget field="maxV" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="102" y="157"/>
+	</widget>
 	<widget field="AutoTime" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="16" y="112"/>
-		<width>108</width>
-	</widget>
-	<widget field="Gyro Initialized" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="202" y="89"/>
-	</widget>
-	<widget field="Arm Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="194" y="62"/>
-		<width>146</width>
-	</widget>
-	<widget field="Arm Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="206" y="38"/>
+		<location x="132" y="13"/>
+		<width>106</width>
+		<height>20</height>
 	</widget>
 	<widget field="ShowTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="207" y="110"/>
+		<location x="174" y="76"/>
 	</widget>
 	<widget field="Status" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="225" y="12"/>
+		<location x="157" y="103"/>
+		<width>92</width>
 	</widget>
 	<widget field="Reverse" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="531" y="92"/>
+		<location x="530" y="87"/>
 	</widget>
 	<widget field="Pathplanner" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="517" y="118"/>
-	</widget>
-	<widget field="Plot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="147" y="113"/>
+		<location x="511" y="108"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="47" y="14"/>
 		<width>76</width>
+		<height>20</height>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="18" y="79"/>
-		<width>156</width>
+		<location x="8" y="73"/>
+		<width>142</width>
 	</widget>
 	<widget field="UseTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="287" y="110"/>
+		<location x="442" y="113"/>
 	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="425" y="1"/>
+		<location x="427" y="-10"/>
 	</widget>
 	<widget field="Autoset" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="291" y="83"/>
+		<location x="299" y="102"/>
 	</widget>
 	<widget field="Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="88" y="49"/>
@@ -55,7 +58,7 @@
 		<width>72</width>
 	</widget>
 	<widget field="SendableChooser[2]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="346" y="2"/>
+		<location x="350" y="-4"/>
 	</widget>
 	<widget field="yPath" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="523" y="37"/>
@@ -73,7 +76,7 @@
 		<height>21</height>
 	</widget>
 	<widget field="SendableChooser[1]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="345" y="53"/>
+		<location x="351" y="42"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="12" y="8"/>
@@ -86,7 +89,7 @@
 		<height>23</height>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="6" y="133"/>
+		<location x="17" y="132"/>
 		<width>610</width>
 		<height>483</height>
 		<property name="Camera Choice" value="RobotCamera"/>
@@ -105,5 +108,6 @@
 </live-window>
 	<hidden field="OkToRun"/>
 	<hidden field="Placement"/>
-	<hidden field="Arm"/>
+	<hidden field="Arm Angle"/>
+	<hidden field="Arm Setpoint"/>
 </xml>

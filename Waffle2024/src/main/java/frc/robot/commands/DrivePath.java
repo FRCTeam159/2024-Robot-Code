@@ -108,8 +108,7 @@ public class DrivePath extends Command {
     Autonomous.log("Drivepath.init");
     m_autoset = Autonomous.getAutoset();
 
-    if (Autonomous.getPlotpath())
-      plot_type = utils.PlotUtils.PLOT_LOCATION;
+    plot_type = PlotUtils.auto_plot_option;
 
     using_pathplanner = Autonomous.getUsePathplanner();
 

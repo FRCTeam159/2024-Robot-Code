@@ -64,6 +64,7 @@ public class Drivetrain extends SubsystemBase {
   public static boolean m_field_oriented = false;
   boolean m_show_module_status = false;
 
+
   private final SwerveModule[] modules = { m_frontLeft, m_frontRight, m_backLeft, m_backRight };
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
@@ -89,6 +90,12 @@ public class Drivetrain extends SubsystemBase {
   DriveGyro m_gyro=new DriveGyro(DriveGyro.gyros.FRC450);   // seems to work now (?)
 
   double last_heading = 0;
+
+  public static double max_vel=0;
+	public static double max_acc=0;
+	private double last_velocity = 0;
+	utils.Averager acc_average =new utils.Averager(5);
+  utils.Averager vel_average =new utils.Averager(2);
 
   public Drivetrain() {
     m_frontLeft.setDriveInverted(false);
@@ -205,6 +212,15 @@ public class Drivetrain extends SubsystemBase {
         pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     SmartDashboard.putString("Pose", s);
     m_field_oriented = SmartDashboard.getBoolean("FieldOriented", m_field_oriented);
+		
+    double v = vel_average.getAve(Math.abs(getVelocity()));
+		max_vel = v > max_vel ? v : max_vel;
+		double acceleration = (v - last_velocity) / 0.02;
+		double a = acc_average.getAve(acceleration);
+		max_acc = a > max_acc ? a : max_acc;	
+		last_velocity = v;
+    SmartDashboard.putNumber("maxV", max_vel);
+		SmartDashboard.putNumber("maxA", max_acc);
     //SmartDashboard.putBoolean("Switch", input.get()
     if (m_show_module_status) {
       for (int i = 0; i < modules.length; i++)
@@ -233,6 +249,10 @@ public class Drivetrain extends SubsystemBase {
     resetPositions();
     m_odometry.resetPosition(getRotation2d(), m_positions, new Pose2d(0, 0, new Rotation2d()));
     last_heading = 0;
+    max_vel=0;
+		max_acc=0;
+		acc_average.reset();
+		vel_average.reset();
   }
 
   public Pose2d getPose() {

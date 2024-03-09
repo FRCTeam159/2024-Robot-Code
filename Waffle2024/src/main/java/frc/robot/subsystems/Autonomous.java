@@ -22,6 +22,7 @@ import frc.robot.commands.Pickup;
 import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Wait;
+import utils.PlotUtils;
 
 public class Autonomous extends SubsystemBase {
   public static boolean autoReset = false;
@@ -40,6 +41,7 @@ public class Autonomous extends SubsystemBase {
   static SendableChooser<Integer> m_path_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_alliance_chooser = new SendableChooser<Integer>();
+  static SendableChooser<Integer> m_auto_plot_option = new SendableChooser<>();
 
   static double xp=TargetMgr.XF;
   static double yp=TargetMgr.YF;
@@ -91,13 +93,18 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putBoolean("Reverse",m_reverse);
     SmartDashboard.putBoolean("Autoset",m_autoselect);
     SmartDashboard.putBoolean("UseTags",m_usetags);
-    SmartDashboard.putBoolean("Plot",m_plotpath);
     SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
     SmartDashboard.putBoolean("OkToRun", okToRun());
     SmartDashboard.putBoolean("ShowTags", m_showtags);
 
     SmartDashboard.putNumber("AutoTime", m_auto_time);
 
+    m_auto_plot_option.setDefaultOption("No Plot", PlotUtils.PLOT_NONE);
+    m_auto_plot_option.addOption("Plot Dynamics", PlotUtils.PLOT_DYNAMICS);
+    m_auto_plot_option.addOption("Plot Location", PlotUtils.PLOT_LOCATION);
+    m_auto_plot_option.addOption("Plot Position", PlotUtils.PLOT_POSITION);
+
+    SmartDashboard.putData(m_auto_plot_option);
     m_timer.start();
   }
 
@@ -158,14 +165,13 @@ public class Autonomous extends SubsystemBase {
   static public boolean getShowtags() {
     return SmartDashboard.getBoolean("ShowTags", m_showtags);
   }
-  static public boolean getPlotpath(){
-    return SmartDashboard.getBoolean("Plot",m_plotpath);
-  }
+ 
   static public boolean getUsePathplanner(){
     return SmartDashboard.getBoolean("Pathplanner",m_pathplanner);
   }
    
   public SequentialCommandGroup getCommand(){
+    PlotUtils.auto_plot_option = m_auto_plot_option.getSelected();
     int auto_select= m_path_chooser.getSelected();
     SequentialCommandGroup acmnd=getAutoCommand(auto_select);
     if(acmnd==null){

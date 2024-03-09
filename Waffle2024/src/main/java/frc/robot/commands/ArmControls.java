@@ -42,6 +42,7 @@ public class ArmControls extends Command {
     double left = m_controller.getLeftTriggerAxis();
     double right = m_controller.getRightTriggerAxis();
 
+
     if (m_controller.getAButtonPressed())
       m_arm.setTargetAngle(Constants.kPickup);
     if (m_controller.getYButtonPressed())

@@ -38,7 +38,7 @@ public class Arm extends SubsystemBase {
     bno2Offsets
   );
 
-  private static boolean have_arm=true; // test first !
+
   private CANSparkMax m_armPosMotor=null;
   private PIDController m_PID=null;
 
@@ -56,17 +56,13 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-   if(have_arm){
-      m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
-      m_PID = new PIDController(0.02, 0, 0);
-      m_PID.setTolerance(3.0);
-      m_PID.reset(); 
-    }
+    m_armPosMotor=new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
+    m_PID = new PIDController(0.02, 0, 0);
+    m_PID.setTolerance(3.0);
+    m_PID.reset();  
   }
 
  void setAngle() {
-    if(!have_arm)
-      return;
     m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
     double output = m_PID.calculate(current);
@@ -106,9 +102,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean atTargetAngle() {
-    if(have_arm)
-      return m_PID.atSetpoint();
-    return true;
+    return m_PID.atSetpoint();
   }
 
   private void waitForGyroInit() {
@@ -119,6 +113,9 @@ public class Arm extends SubsystemBase {
       m_initialized=true;
     }
   }
+  // public double getAngleFromEncoder() {
+  //   return 360*m_armPosMotor.getEncoder().getPosition();
+  // }
  public double getAngleFromGyro() {
     
     if(m_navx){
@@ -153,8 +150,9 @@ public class Arm extends SubsystemBase {
     return previous_angle + d;
   }
   void log(){
-    SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
-    SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
+    //SmartDashboard.putNumber("Arm Angle", getAngleFromGyro());
+    //SmartDashboard.putNumber("Arm Setpoint", armSetAngle);
+    //SmartDashboard.putNumber("Arm Angle", getAngleFromEncoder());
   }
 
   @Override

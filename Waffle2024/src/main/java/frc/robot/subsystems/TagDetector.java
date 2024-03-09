@@ -74,7 +74,13 @@ public class TagDetector extends Thread {
     UsbCameraSink = CameraServer.getVideo(intakeCamera);
 
     wpi_detector = new AprilTagDetector();
-    wpi_detector.addFamily("tag16h5", 0);
+    try{
+      wpi_detector.addFamily("tag16h5", 0);
+      wpi_detector.addFamily("tag36h11", 0);
+      System.out.println("2 tag Families loaded");
+    } catch (Exception ex){
+      System.out.println("TagDetector exception:" + ex);
+    }
 
     wpi_poseEstConfig = new AprilTagPoseEstimator.Config(TargetMgr.targetSize, fx, fy, cx, cy);
     wpi_pose_estimator = new AprilTagPoseEstimator(wpi_poseEstConfig);
