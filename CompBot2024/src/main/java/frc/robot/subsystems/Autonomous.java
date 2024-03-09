@@ -45,6 +45,7 @@ public class Autonomous extends SubsystemBase {
   static boolean m_reverse=false;
   static boolean m_plotpath=true;
   static boolean m_pathplanner=false;
+  static boolean m_ontarget=false;
 
   static boolean m_ok2run = false;
   static boolean m_inAuto = false;
@@ -85,6 +86,7 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putBoolean("Plot",m_plotpath);
     SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
     SmartDashboard.putBoolean("OkToRun", okToRun());
+    SmartDashboard.putBoolean("OnTarget", m_ontarget);
 
     m_timer.start();
   }
@@ -140,6 +142,10 @@ public class Autonomous extends SubsystemBase {
   }
   static public boolean getShowtags(){
     return SmartDashboard.getBoolean("ShowTags",m_showtags);
+  }
+  static public void setOnTarget(boolean b){
+    m_ontarget=b;
+    SmartDashboard.putBoolean("OnTarget",b);
   }
   static public boolean getPlotpath(){
     return SmartDashboard.getBoolean("Plot",m_plotpath);

@@ -33,8 +33,8 @@ public class AutoTarget extends Command {
     addRequirements(arm);
     turnPID.setSetpoint(TargetMgr.kHorizOffset);
     anglePID.setSetpoint(TargetMgr.kVertOffset); // y offset if at speaker steps
-    anglePID.setTolerance(0.05);
-    turnPID.setTolerance(.05);
+    anglePID.setTolerance(0.05,0.02);
+    turnPID.setTolerance(.05,0.02);
     m_timer.start();
     tags=null;
    }
@@ -49,6 +49,7 @@ public class AutoTarget extends Command {
     have_tags=false;
     anglePID.reset();
     turnPID.reset();
+    Autonomous.setOnTarget(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -83,7 +84,7 @@ public class AutoTarget extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Autonomous.log("AutoTarget.end");
+    //Autonomous.log("AutoTarget.end");
     TagDetector.setTargeting(false);
     m_drive.drive(0, 0,0,false);
   }
@@ -94,11 +95,12 @@ public class AutoTarget extends Command {
     if (!Autonomous.okToRun())
       return true;
     if(!have_tags && m_timer.get()>0.2){
-      System.out.println("Autotarget.end - no tags");
+      Autonomous.log("Autotarget.end - no tags");
       return true;
     }
     if(anglePID.atSetpoint() && turnPID.atSetpoint()){
-      System.out.println("Autotarget.end - on target");
+      Autonomous.setOnTarget(true);
+      Autonomous.log("Autotarget.end - on target");
       return true;
     }
     return false;

@@ -30,12 +30,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final XboxController m_controller = new XboxController(0);
-  //Subsystems
+ 
+  private static final boolean m_test_motor = true; // overrides arm control to test a motor
+  private static final boolean m_have_arm = true;
 
-  public static final boolean have_arm=false; // test first !
+   //Subsystems
+
   private final Drivetrain m_drivetrain = new Drivetrain();
-  
-  private static final boolean have_test = true;
   private TestMotor m_test = null;
   private Arm m_arm=null;
   private final Autonomous m_auto = new Autonomous(m_drivetrain, m_arm);
@@ -47,13 +48,13 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
-    if(have_arm){
-      m_arm = new Arm();
-      m_arm.setDefaultCommand(new ArmControls(m_arm, m_drivetrain,m_controller));
-    }
-    else if(have_test){
+    if(m_test_motor){
       m_test = new TestMotor();
-      m_arm.setDefaultCommand(new TestCommands(m_test, m_controller));
+      m_test.setDefaultCommand(new TestCommands(m_test, m_controller));
+    }
+    else if(m_have_arm){
+      m_arm = new Arm();
+      m_arm.setDefaultCommand(new ArmControls(m_arm, m_drivetrain,m_controller));   
     }
     // Add commands to PathPlanner
     NamedCommands.registerCommand("Wait", new Wait(m_drivetrain, 2.0));
