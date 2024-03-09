@@ -40,7 +40,7 @@ public class Autonomous extends SubsystemBase {
   static double rp=TargetMgr.RF;
 
   static boolean m_autoselect=true;
-  static boolean m_usetags=true;
+  static boolean m_usetags=false;
   static boolean m_showtags = false;
   static boolean m_reverse=false;
   static boolean m_plotpath=true;
@@ -74,7 +74,7 @@ public class Autonomous extends SubsystemBase {
     m_alliance_chooser.addOption("Red", TargetMgr.RED);
     SmartDashboard.putData(m_alliance_chooser);
 
-    m_position_chooser.setDefaultOption("Outside", TargetMgr.CENTER);
+    m_position_chooser.setDefaultOption("Outside", TargetMgr.OUTSIDE);
     m_position_chooser.addOption("Center", TargetMgr.CENTER);
     m_position_chooser.addOption("Inside", TargetMgr.INSIDE);
     SmartDashboard.putData(m_position_chooser);

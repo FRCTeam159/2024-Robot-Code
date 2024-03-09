@@ -133,6 +133,7 @@ public class TargetMgr {
     }
 
     public static void setTarget(int side, int pos) {
+        System.out.println(String.format("TargetMgr.setTarget alliance %d position %d", side, pos));
         alliance = side;
         position = pos;
 
@@ -148,6 +149,7 @@ public class TargetMgr {
     }
 
     public static Pose2d getTarget() {
+        System.out.println(String.format("TargetMrg.getTarget: alliance %s position %s", alliance, position));
         double xf = XC; // center
         double yf = 0;
         double rf = 0;
@@ -164,6 +166,7 @@ public class TargetMgr {
             yf = YF;
             rf = RF;
         }
+        System.out.println(String.format("TargetMgr.getTarget: returning pose, %1.2f %1.2f %1.2f", xf, yf, rf));
         return new Pose2d(xf, yf, new Rotation2d(rf));
     }
 
