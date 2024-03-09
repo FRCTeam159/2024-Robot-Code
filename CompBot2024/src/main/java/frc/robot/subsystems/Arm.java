@@ -21,7 +21,7 @@ import frc.robot.sensors.BNO055;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
-  public final double kMaxArmVelocity = 240.0; // degrees/s
+  public final double kMaxArmVelocity = 400.0; // degrees/s
   public final double kMaxArmAcceleration = 60.0; // degrees/s^2
 
   private final ArmFeedforward m_shoulderFeedforward = new ArmFeedforward(0.01, 0.05, 0.01);

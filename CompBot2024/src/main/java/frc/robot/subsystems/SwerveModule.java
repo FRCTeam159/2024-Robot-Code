@@ -20,6 +20,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_driveMotor;
@@ -78,6 +79,7 @@ public class SwerveModule extends SubsystemBase {
     m_id = id;
 
     m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
+    m_driveMotor.setIdleMode(IdleMode.kBrake);
     m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
 
     name = Drivetrain.chnlnames[m_id - 1];

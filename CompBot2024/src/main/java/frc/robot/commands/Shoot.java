@@ -62,11 +62,11 @@ public class Shoot extends Command{
     if (!Autonomous.okToRun())
       return true;
     // turn on pusher wheels and wait a little to make sure note has cleared the shooter
-    if(shooter_ready && m_timer.get()>2 && !m_shooter.noteAtShooter()) {
+    if(shooter_ready && m_timer.get()>0.5 && !m_shooter.noteAtShooter()) {
       Autonomous.log("Shoot - shot delivered");
       return true;
     }
-    if(shooting && m_timer.get()>5){ // taking too long - something isn't right
+    if(shooting && m_timer.get()>3){ // taking too long - something isn't right
       Autonomous.log("Shoot - timed out");
       return true;
   }

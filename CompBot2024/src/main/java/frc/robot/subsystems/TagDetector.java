@@ -78,7 +78,7 @@ public class TagDetector extends Thread {
     try{
       wpi_detector.addFamily("tag16h5", 0);
       wpi_detector.addFamily("tag36h11", 0);
-      System.out.println("T ag Families loaded");
+      System.out.println("Tag Families loaded");
     } catch (Exception ex){
       System.out.println("TagDetector exception:" + ex);
     }
