@@ -50,6 +50,6 @@ public final class Constants {
 
     // arm angle settings
     public static final double kPickup = 10.0;
-    public static final double kSpeaker = 35.0; // Old = 30.0 (35=works for center only UNLESS lowSpeed then yes side no center, 40=works for side only)
-    public static final double kAmp = 105.0;
+    public static final double kSpeaker = 40.0; // Old = 30.0 (35=works for center only UNLESS lowSpeed then yes side no center, 40=works for side only)
+    public static final double kAmp = 110.0;
 }

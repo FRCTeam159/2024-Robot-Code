@@ -17,12 +17,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.sensors.BNO055;
 import frc.robot.sensors.BNO055.BNO055OffsetData;
 
 public class Arm extends SubsystemBase {
-  public final double kMaxArmVelocity = 120.0; // degrees/s
+  public final double kMaxArmVelocity = 400.0; // degrees/s
   public final double kMaxArmAcceleration = 60.0; // degrees/s^2
 
   private final ArmFeedforward m_shoulderFeedforward = new ArmFeedforward(0.01, 0.05, 0.01);
@@ -112,7 +111,7 @@ public class Arm extends SubsystemBase {
   // Use this to set the setpoint to the given angle
   public void setTargetAngle(double a){
     shoulderAngleSetpoint = a;
-    if (shoulderAngleSetpoint == Constants.kAmp) {
+    if (shoulderAngleSetpoint >= 90) {
       lowSpeed = true;
     } else {
       lowSpeed = false;

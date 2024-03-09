@@ -1,5 +1,8 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="ShowTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="341" y="678"/>
+	</widget>
 	<widget field="IntakeShooterSensor_2" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="425" y="96"/>
 	</widget>
@@ -49,9 +52,6 @@
 	</widget>
 	<widget field="IntakeShooterShooter1Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="717"/>
-	</widget>
-	<widget field="ShowTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="341" y="678"/>
 	</widget>
 	<widget field="Reverse" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="425" y="115"/>
@@ -126,6 +126,8 @@
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 		<property name="Team Number/Host" value="127.22.11.2"/>
+		<property name="Hide Menu" value="true"/>
+		<property name="Automatically Show Widgets" value="false"/>
 		<property name="Grid Cell Width(s)" value="16"/>
 		<property name="Grid Cell Height(s)" value="16"/>
 		<property name="Window X Position" value="826"/>
