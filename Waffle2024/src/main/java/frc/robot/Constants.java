@@ -34,6 +34,7 @@ public final class Constants {
     public static final int kBl_Turn = 4;
 
     public static final int kSpareSpark = 9;
+    public static final int kClimber = 9;
 
     public static final double kPickup = 0;
     public static final double kSpeaker = 15;

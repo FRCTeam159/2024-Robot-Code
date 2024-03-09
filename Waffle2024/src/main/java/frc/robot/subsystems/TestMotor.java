@@ -15,21 +15,28 @@ public class TestMotor extends SubsystemBase {
 
   /** Creates a new TestMotor. */
 
-  private CANSparkMax m_testMotor = new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushed);
+  private CANSparkMax m_testMotor = new CANSparkMax(Constants.kSpareSpark,CANSparkLowLevel.MotorType.kBrushless);
 
-  public TestMotor() {}
+  public TestMotor() {
+
+  }
 
   @Override
   public void periodic() {
-    m_testMotor.set(m_speed);
+    m_testMotor.setVoltage(m_speed);
+    //System.out.println("value="+m_speed);
+
     // This method will be called once per scheduler run
   }
   
   public void changevalue(double v){
     m_speed += v;
+    System.out.println("changevalue="+m_speed);
   }
     
   public void resetvalue(){
     m_speed = 0;
+    System.out.println("changevalue="+m_speed);
+
   }
 }

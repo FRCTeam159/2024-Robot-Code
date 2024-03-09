@@ -13,7 +13,7 @@ public class TestCommands extends Command {
   TestMotor m_test;
   XboxController m_controller;
 
-  double m_MotorIncrement = 0.1;
+  double m_MotorIncrement = 0.05;
 
   /** Creates a new TestCommands. 
    * @param m_controller 
