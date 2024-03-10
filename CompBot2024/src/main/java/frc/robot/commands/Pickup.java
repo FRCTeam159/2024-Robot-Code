@@ -29,6 +29,7 @@ public class Pickup extends Command{
     m_shooter.setIntakeOn();
     Robot.status="Intake";
     note_captured=false;
+    m_arm.setTargetAngle(Constants.kPickup);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -57,9 +58,8 @@ public class Pickup extends Command{
   public boolean isFinished() {  
     if (!Autonomous.okToRun())
       return true; 
-    if(note_captured){
+    if(note_captured)
       return true;
-    }
     return false;
   }
 }

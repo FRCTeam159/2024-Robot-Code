@@ -71,9 +71,6 @@
 		<location x="23" y="96"/>
 		<width>156</width>
 	</widget>
-	<widget field="UseTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="203" y="76"/>
-	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="340" y="-1"/>
 	</widget>

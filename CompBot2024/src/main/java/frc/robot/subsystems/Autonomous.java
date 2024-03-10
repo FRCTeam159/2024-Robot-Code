@@ -27,9 +27,8 @@ public class Autonomous extends SubsystemBase {
   IntakeShooter m_shooter;
 
   public static final int PROGRAM = 1;
-  public static final int ONENOTEAUTO = 2;
-  public static final int TWONOTEAUTO = 3;
-  public static final int PATHPLANNER = 4;
+  public static final int ONE_NOTE = 2;
+  public static final int TWO_NOTE = 3;
 
   static SendableChooser<Integer> m_path_chooser = new SendableChooser<Integer>();
   static SendableChooser<Integer> m_position_chooser = new SendableChooser<Integer>();
@@ -40,7 +39,6 @@ public class Autonomous extends SubsystemBase {
   static double rp=TargetMgr.RF;
 
   static boolean m_autoselect=true;
-  static boolean m_usetags=false;
   static boolean m_showtags = false;
   static boolean m_reverse=false;
   static boolean m_plotpath=true;
@@ -64,8 +62,8 @@ public class Autonomous extends SubsystemBase {
     SmartDashboard.putNumber("yPath", yp);
     SmartDashboard.putNumber("rPath", rp);
 
-	  m_path_chooser.setDefaultOption("TwoNoteAuto", TWONOTEAUTO);
-    m_path_chooser.addOption("OneNoteAuto", ONENOTEAUTO);
+	  m_path_chooser.setDefaultOption("TwoNoteAuto", TWO_NOTE);
+    m_path_chooser.addOption("OneNoteAuto", ONE_NOTE);
     m_path_chooser.addOption("TestPath", PROGRAM);
    // m_path_chooser.addOption("Pathplanner", PATHPLANNER);
     SmartDashboard.putData(m_path_chooser);
@@ -81,7 +79,7 @@ public class Autonomous extends SubsystemBase {
 
     SmartDashboard.putBoolean("Reverse",m_reverse);
     SmartDashboard.putBoolean("Autoset",m_autoselect);
-    SmartDashboard.putBoolean("UseTags",m_usetags);
+
     SmartDashboard.putBoolean("ShowTags",m_showtags);
     SmartDashboard.putBoolean("Plot",m_plotpath);
     SmartDashboard.putBoolean("Pathplanner",m_pathplanner);
@@ -137,9 +135,7 @@ public class Autonomous extends SubsystemBase {
   static public boolean getAutoset(){
     return SmartDashboard.getBoolean("Autoset",m_autoselect);
   }
-  static public boolean getUsetags(){
-    return SmartDashboard.getBoolean("UseTags",m_usetags);
-  }
+ 
   static public boolean getShowtags(){
     return SmartDashboard.getBoolean("ShowTags",m_showtags);
   }
@@ -154,57 +150,38 @@ public class Autonomous extends SubsystemBase {
     return SmartDashboard.getBoolean("Pathplanner",m_pathplanner);
   }
 
-  public SequentialCommandGroup getCommand(){
+   private SequentialCommandGroup startSequence() {
     return new SequentialCommandGroup(
-      //new SetArmAngle(m_arm,Constants.kSpeaker),
-      getAutoSequence());
+        new SetStartPose(m_arm),
+        new Shoot(m_shooter));
+    }
+  public SequentialCommandGroup getCommand(){
+     int auto_select = m_path_chooser.getSelected();
+      return new SequentialCommandGroup(
+      getAutoSequence(auto_select));
   }
-  private SequentialCommandGroup getAutoSequence(){
-    int selected_path = m_path_chooser.getSelected();
-    switch(selected_path){
-      default:
+  private SequentialCommandGroup getAutoSequence(int auto_select){
+    switch(auto_select){
       case PROGRAM: /* Uses values from SmartDashboard and can be reversed */
         return new SequentialCommandGroup(
           new DrivePath(m_drive, getReverse())
         );
-      case TWONOTEAUTO: /* Uses alliance and position from SmartDashboard to create path */
-         return twoNoteAuto();
-      case ONENOTEAUTO: /* Uses alliance and position from SmartDashboard to create path */
-         return oneNoteAuto();
-      //case PATHPLANNER: /* Uses a command group from PathPlanner */
-      //  return new SequentialCommandGroup(drivePathplanner());
+      case ONE_NOTE:
+      return new SequentialCommandGroup(
+        startSequence(),
+        new ParallelCommandGroup(
+            new DrivePath(m_drive, false),
+            new Pickup(m_shooter, m_arm))
+        );
+      default:
+      case TWO_NOTE:
+      return new SequentialCommandGroup(
+        getAutoSequence(ONE_NOTE),
+        new DrivePath(m_drive, true),
+        new Shoot(m_shooter),
+        new DrivePath(m_drive, false)
+        );
     }
   }
 
-  private SequentialCommandGroup oneNoteAuto() {
-    return new SequentialCommandGroup(
-        new SetStartPose(m_arm),
-        new Shoot(m_shooter),
-        new DrivePath(m_drive, false));
-  }
-  private SequentialCommandGroup twoNoteAuto() {
-    return new SequentialCommandGroup(
-        new SetStartPose(m_arm),
-        new Shoot(m_shooter),
-        new SetArmAngle(m_arm, Constants.kPickup),
-        new ParallelCommandGroup(
-            // At DrivePath.end set timer, if !hasNote, end auto
-            new DrivePath(m_drive, false),
-            new Pickup(m_shooter, m_arm)
-        ),
-        new ParallelCommandGroup(
-            new DrivePath(m_drive, true),
-            new SetArmAngle(m_arm, Constants.kSpeaker)
-        ),
-        new Shoot(m_shooter)
-    );
-  }
-  
-  public Command drivePathplanner() {
-    // An example command will be run in autonomous
-    m_drive.resetPose(new Pose2d());
-    String pathname="RightSideZeroed";
-    return AutoBuilder.buildAuto(pathname);
-    
-  }
 }

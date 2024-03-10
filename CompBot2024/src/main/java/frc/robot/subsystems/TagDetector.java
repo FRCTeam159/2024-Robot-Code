@@ -90,36 +90,28 @@ public class TagDetector extends Thread {
 
     while (!Thread.interrupted()) {
       try {
-        Thread.sleep(50);
-        // mat = new Mat();
+        Thread.sleep(30);
         long tm = UsbCameraSink.grabFrame(mat);
         if (tm == 0) // bad frame
           continue;
 
         boolean autoselect = Autonomous.getAutoset();
-        boolean usetags = Autonomous.getUsetags();
         boolean showtags = Autonomous.getShowtags();
 
         tags = null;
 
-        if (m_targeting || showtags || (autoselect && !TargetMgr.startPoseSet() && usetags)) {
+        if (m_targeting || showtags) {
           tags = getTags(mat);
-          if (tags != null && tags.length > 1) {
+          if (tags != null && tags.length > 1) 
             Arrays.sort(tags, new SortbyDistance());
-          }
         }
 
         // set initial starting position and alliance
 
         if (autoselect && !TargetMgr.startPoseSet()) {
-          if (usetags) {
-            if (tags != null && tags.length == 2)
-              TargetMgr.setStartPose(tags);
-          } else {
-            int alliance = Autonomous.getAlliance();
-            int position = Autonomous.getPosition();
-            TargetMgr.setTarget(alliance, position);
-          }
+          int alliance = Autonomous.getAlliance();
+          int position = Autonomous.getPosition();
+          TargetMgr.setTarget(alliance, position);
         }
         if (tags != null)
           showTags(tags, mat);

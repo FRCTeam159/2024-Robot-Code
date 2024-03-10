@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Drivetrain;
@@ -25,6 +26,7 @@ public class AutoTarget extends Command {
   Timer m_timer=new Timer();
   boolean have_tags=false;
   static boolean debug=true;
+  String prev_status="";
 
   /** Creates a new AutoTarget. 
  * @param drive 
@@ -44,6 +46,8 @@ public class AutoTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    prev_status=Robot.status;
+    Robot.status="Targeting";
     Autonomous.log("AutoTarget.init");
     TagDetector.setTargeting(true);
     tags=TagDetector.getTags();
@@ -99,9 +103,10 @@ public class AutoTarget extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //Autonomous.log("AutoTarget.end");
+    Autonomous.log("AutoTarget.end");
+    Robot.status=prev_status;
     TagDetector.setTargeting(false);
-    m_drive.drive(0, 0,0,false);
+    m_drive.drive(0.001, 0,0,false);
   }
 
   // Returns true when the command should end.
