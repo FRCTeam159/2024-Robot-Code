@@ -1,5 +1,18 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="ClimberUpperLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="351" y="650"/>
+	</widget>
+	<widget field="ClimberLowerLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="349" y="624"/>
+	</widget>
+	<widget field="OkToRun" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="36" y="22"/>
+	</widget>
+	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="17" y="670"/>
+		<width>203</width>
+	</widget>
 	<widget field="ShowTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="341" y="678"/>
 	</widget>
@@ -14,25 +27,6 @@
 	</widget>
 	<widget field="FieldOriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="63" y="56"/>
-	</widget>
-	<widget field="controller" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1" y="38"/>
-	</widget>
-	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="330" y="638"/>
-		<width>287</width>
-	</widget>
-	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="9" y="636"/>
-		<width>305</width>
-	</widget>
-	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="331" y="618"/>
-		<width>286</width>
-	</widget>
-	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="9" y="618"/>
-		<width>306</width>
 	</widget>
 	<widget field="Placement" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="177" y="13"/>
@@ -127,12 +121,16 @@
 		<property name="Automatically Show Widgets" value="false"/>
 		<property name="Grid Cell Width(s)" value="16"/>
 		<property name="Grid Cell Height(s)" value="16"/>
-		<property name="Window X Position" value="826"/>
-		<property name="Window Y Position" value="8"/>
+		<property name="Window X Position" value="464"/>
+		<property name="Window Y Position" value="148"/>
 		<property name="Window Width" value="641"/>
 		<property name="Window Height" value="830"/>
 		<property name="Save File" value=".\dashboard.xml"/>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Status"/>
+	<hidden field="maxV"/>
+	<hidden field="OnTarget"/>
+	<hidden field="maxA"/>
 </xml>
