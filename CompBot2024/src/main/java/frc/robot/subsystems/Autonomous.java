@@ -5,19 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.SetStartPose;
 import frc.robot.commands.Pickup;
-import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
 
 public class Autonomous extends SubsystemBase {
@@ -135,7 +130,7 @@ public class Autonomous extends SubsystemBase {
   static public boolean getAutoset(){
     return SmartDashboard.getBoolean("Autoset",m_autoselect);
   }
- 
+  
   static public boolean getShowtags(){
     return SmartDashboard.getBoolean("ShowTags",m_showtags);
   }
