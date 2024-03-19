@@ -38,8 +38,14 @@ public class ClimberControls extends Command {
       case 0: 
         m_climber.climbDown();
       break;
+      case 90: 
+        m_climber.climbToTarget();
+      break;
       case 180: 
         m_climber.climbUp();
+      break;
+      case 270: 
+        m_climber.hookChain();
       break;
     }
   }

@@ -27,6 +27,7 @@ public class Climber extends SubsystemBase {
   // assumes climber starts up at the middle of it's range
   static double m_max=7; // highest position (inches)
   static double m_min=-7;  // lowest position (inches)
+  static double m_climb_target=7; // highest position (inches)
   RelativeEncoder m_encoder;
   double inchesPerRotation=6.28/400;
 
@@ -77,6 +78,13 @@ public class Climber extends SubsystemBase {
   public void disable(){
      m_climbing=false;
   }
+  public void hookChain(){
+     m_position=m_min;
+  }
+  public void climbToTarget(){
+     m_position=m_climb_target;
+  }
+
   public void climbUp(){
     if(!atTopLinit()){
       m_position+=m_climb_increment;
