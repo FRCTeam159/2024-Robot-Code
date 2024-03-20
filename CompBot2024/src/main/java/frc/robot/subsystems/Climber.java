@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,10 +24,10 @@ public class Climber extends SubsystemBase {
 
   double m_position=0;
 
-  PIDController m_pid=new PIDController(001,0.01,0); // need to adjust these values
+  PIDController m_pid=new PIDController(4,0.0,0); // need to adjust these values
   // assumes climber starts up at the middle of it's range
-  static double m_max=7; // highest position (inches)
-  static double m_min=-7;  // lowest position (inches)
+  static double m_max=10.5; // highest position (inches)
+  static double m_min=-5;  // lowest position (inches)
   static double m_climb_target=7; // highest position (inches)
   RelativeEncoder m_encoder;
   double inchesPerRotation=6.28/400;
@@ -38,9 +39,12 @@ public class Climber extends SubsystemBase {
   public Climber() {
     m_climberMotor = new CANSparkMax(Constants.kClimber, CANSparkLowLevel.MotorType.kBrushless);
     m_climberMotor.setInverted(true);
+    m_climberMotor.setIdleMode(IdleMode.kBrake);
     m_encoder=m_climberMotor.getEncoder();
+    m_encoder.setPosition(0);
+    reset();
     m_upperLimit=m_climberMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    m_lowerLimit=m_climberMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    m_lowerLimit=m_climberMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
     m_upperLimit.enableLimitSwitch(true);
     m_lowerLimit.enableLimitSwitch(true);
     m_pid.setIntegratorRange(0, 0.3);
@@ -93,7 +97,7 @@ public class Climber extends SubsystemBase {
     }
   }
   public void climbDown(){
-    if(!atBottomLimit()){
+   if(!atBottomLimit()){
       m_position-=m_climb_increment;
       m_position=m_position<m_min?m_min:m_position;
       m_climbing=true;
