@@ -46,8 +46,10 @@ public class ArmControls extends Command {
       m_arm.setTargetAngle(Constants.kPickup); 
     } else if(m_controller.getYButtonPressed()) { 
       m_arm.setTargetAngle(Constants.kSpeaker);
-    } else if(m_controller.getBButtonPressed())
+    } else if(m_controller.getBButtonPressed()) {
       m_arm.setTargetAngle(Constants.kAmp);
+    } else if(m_controller.getStartButtonPressed())
+      m_arm.setTargetAngle(Constants.kStage);
     else if (m_controller.getXButtonPressed()) {
       if (!TagDetector.isTargeting()) {
         target.initialize();// enables targeting
