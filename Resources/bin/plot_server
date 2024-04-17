@@ -1,3 +1,0 @@
-#!/bin/bash
-pushd $TEAM_BIN
-java -jar PlotServer.jar "server"

@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.SetStartPose;
 import frc.robot.commands.Pickup;
+import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
 
 public class Autonomous extends SubsystemBase {
@@ -164,6 +166,7 @@ public class Autonomous extends SubsystemBase {
       case ONE_NOTE:
       return new SequentialCommandGroup(
         startSequence(),
+        new SetArmAngle(m_arm, Constants.kPickup),
         new ParallelCommandGroup(
             new DrivePath(m_drive, false),
             new Pickup(m_shooter, m_arm))

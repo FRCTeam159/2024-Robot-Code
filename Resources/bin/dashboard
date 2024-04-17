@@ -1,4 +1,0 @@
-#!/bin/bash
-#java -jar SmartDashboard-winx64.jar ip 159 file "./dashboard.xml"
-java -jar ${SMART_DASHBOARD} ip 159 file "./dashboard.xml"
-
