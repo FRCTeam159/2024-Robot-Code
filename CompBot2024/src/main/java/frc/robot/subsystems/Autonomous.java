@@ -176,8 +176,8 @@ public class Autonomous extends SubsystemBase {
       return new SequentialCommandGroup(
         getAutoSequence(ONE_NOTE),
         new DrivePath(m_drive, true),
-        new Shoot(m_shooter),
-        new DrivePath(m_drive, false)
+        new Shoot(m_shooter)
+        //new DrivePath(m_drive, false)
         );
     }
   }

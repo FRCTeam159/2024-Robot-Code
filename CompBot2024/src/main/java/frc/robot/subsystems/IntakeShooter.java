@@ -14,14 +14,15 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
+//import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import utils.Averager;
 
 
 public class IntakeShooter extends SubsystemBase { // Shooting speeds
-  double m_shoot_max_speed = 4800; // Old: 4800;
-  double m_shoot_initial_speed = 4200; // Old: 3500;  // units: RPM
+  double m_shoot_max_speed = 4800; // Old: 4200 // Older: 4800;
+  double m_shoot_initial_speed = 4200; // Old: 4200 // Older: 3500;  // units: RPM
   double m_shoot_amp_speed = 500; // Speed for amp
   double m_shoot_target_speed = m_shoot_initial_speed;
 
@@ -37,6 +38,7 @@ public class IntakeShooter extends SubsystemBase { // Shooting speeds
 
   DigitalInput noteSensor1 = new DigitalInput(1);
   DigitalInput noteSensor2 = new DigitalInput(2);
+  //PWM m_indicatorLights = new PWM(3);
   private static final String name = "IntakeShooter";
   public boolean m_shoot = false;
   public boolean m_intake = false;
@@ -63,6 +65,7 @@ public class IntakeShooter extends SubsystemBase { // Shooting speeds
     // This method will be called once per scheduler run
     log();
     runIntake();
+    //m_indicatorLights.setPosition(kShooterMotor2);
   }
 
   private void log() {
@@ -94,19 +97,34 @@ public class IntakeShooter extends SubsystemBase { // Shooting speeds
           m_hasNote = true;
       } else {
         // intake should run forward (in) if there is no note
+        // Intake speed
           intakeCommand = 1;
       }
     }
     m_intakeMotor.set(intakeCommand);
     // Override these for shooting mode
     if (m_shoot) {
+      if (noteAtIntake() && noteAtShooter()) {
+        // intake should run backward (out) if note sensor 2 is triggered
+          intakeCommand = -0.2;
+          m_noteHasReachedShooter = true;
+          m_hasNote = false;
+      } else if (noteAtIntake() && !noteAtShooter() && m_noteHasReachedShooter) {
+        // intake should stop if only note sensor 1 is triggered
+          intakeCommand = 0;
+          m_noteHasReachedShooter = false;
+          m_hasNote = true;
+      } else {
+        // intake should run forward (in) if there is no note
+        // Intake speed
+          intakeCommand = 1;
+      }
       // Lower shooting speed if arm is at amp angle
       if (Arm.lowSpeed) {
         m_shoot_target_speed = m_shoot_amp_speed;
       } else {
         m_shoot_target_speed = m_shoot_initial_speed;
-      } 
-
+      }
       // motor 1
       double command = m_shooterFeedforward.calculate(m_shoot_target_speed) + 
       m_shooter1PIDController.calculate(shooter1Speed(), m_shoot_target_speed);

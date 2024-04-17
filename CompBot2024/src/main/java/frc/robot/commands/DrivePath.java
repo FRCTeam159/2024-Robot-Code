@@ -41,7 +41,7 @@ import utils.PlotUtils;
 // =================================================
 public class DrivePath extends Command {
 
-  double scale = 0.5;
+  double scale = 1; // Old: 1
 
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
@@ -214,10 +214,10 @@ public class DrivePath extends Command {
 
     if (m_reversed) { // go back to 0,0 !
       Pose2d pose = m_drive.getPose(); // start at current robot pose
-      if (Math.abs(pose.getX()) < 0.2) {
+      // if (Math.abs(pose.getX()) < 0.2) {
         // probably an error to start too close to 0 ?
-        return null;
-      }
+        // return null;
+      // }
       rpg = 0;
       rps = m_drive.getHeading();
       points.add(pose);
@@ -232,10 +232,10 @@ public class DrivePath extends Command {
       }
     } else {
       Pose2d pose = m_drive.getPose(); // start at current robot pose
-      if (Math.abs(pose.getX()) > 0.2) {
-        // probably an error to start too far from 0 ?
-        return null;
-      }
+      // if (Math.abs(pose.getX()) > 0.2) {
+      //   // probably an error to start too far from 0 ?
+      //   return null;
+      // }
       points.add(new Pose2d()); // start at 0,0
       points.add(intermediatePose);
       points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));

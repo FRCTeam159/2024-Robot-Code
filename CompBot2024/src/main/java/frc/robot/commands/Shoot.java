@@ -66,7 +66,7 @@ public class Shoot extends Command{
       Autonomous.log("Shoot - shot delivered");
       return true;
     }
-    if(shooting && m_timer.get()>3){ // taking too long - something isn't right
+    if(shooting && m_timer.get()>2){ // taking too long - something isn't right
       Autonomous.log("Shoot - timed out");
       return true;
   }

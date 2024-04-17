@@ -55,7 +55,7 @@ public class SwerveModule extends SubsystemBase {
   // private final PIDController m_turningPIDController = new PIDController(7, 0,
   // 0);
 
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.01, 0.25);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.01, 0.25 /*Old: 0.25*/);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
   /**
