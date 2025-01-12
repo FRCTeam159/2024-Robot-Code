@@ -18,7 +18,7 @@ import frc.robot.commands.AlignWheels;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.GetStartPose;
 import frc.robot.commands.InitAuto;
-import frc.robot.commands.Pickup;
+import frc.robot.commands.PickUp;
 import frc.robot.commands.SetArmAngle;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Wait;
@@ -190,7 +190,7 @@ public class Autonomous extends SubsystemBase {
     return new SequentialCommandGroup(
         new ParallelCommandGroup(
             new DrivePath(m_drive, pos, false),
-            new Pickup(m_arm)),
+            new PickUp(m_arm)),
         new DrivePath(m_drive, pos, true),
         //new AutoTarget(m_arm, m_drive),
         new Shoot(m_arm, m_drive));
@@ -207,7 +207,7 @@ public class Autonomous extends SubsystemBase {
           startSequence(),
           new ParallelCommandGroup(
               new DrivePath(m_drive, false),
-              new Pickup(m_arm))
+              new PickUp(m_arm))
           );
         case TWO_NOTE: 
           return new SequentialCommandGroup(

@@ -10,13 +10,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
 
-public class Pickup extends Command {
+public class PickUp extends Command {
   double m_timeout=2.0; // pickup emulation
   Timer m_timer = new Timer();
   Arm m_arm;
   
   /** Creates a new PickUp. */
-  public Pickup(Arm arm) {
+  public PickUp(Arm arm) {
     m_timer.start();
     m_arm = arm;
     addRequirements(arm);
